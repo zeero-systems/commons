@@ -1,5 +1,5 @@
 {
-  "name": "ts-fns",
+  "name": "ts-functions",
   "module": "index.ts",
   "type": "module",
   "main": "dist/index.js",

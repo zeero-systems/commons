@@ -1,7 +1,7 @@
-import firstLetterToUppercaseFn from './functions/firstLetterToUppercaseFn'
+import toFirstLetterUppercaseFn from './functions/toFirstLetterUppercaseFn'
 
 export default {
     Functions: {
-        firstLetterToUppercaseFn
+        toFirstLetterUppercaseFn
     }
 }
