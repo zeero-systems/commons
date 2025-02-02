@@ -1,9 +1,12 @@
 
 export const firstLetterToUppercaseFn = function (text?: string | symbol | String) {
-  if (!text) text = String(this)
+  if (!text) {
+    text = String(this)
+  } else {
+    text = String(text)
+  }
   
-  const firstLetter = String(text).charAt(0).toUpperCase()
-  return `${firstLetter}${String(text).slice(1)}`
+  return `${text.charAt(0).toUpperCase()}${text.slice(1)}`
 }
 
 export default firstLetterToUppercaseFn
