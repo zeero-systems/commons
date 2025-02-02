@@ -2,12 +2,10 @@ import toFirstLetterUppercaseFn from "./functions/toFirstLetterUppercaseFn"
 
 declare global {
   interface String {
-    toFirstLetterUppercase(): string;
+    toFirstLetterUppercase(this: string): string;
   }
 }
 
-String.prototype.toFirstLetterUppercase = function () { 
-  return toFirstLetterUppercaseFn(this)
-}
+String.prototype.toFirstLetterUppercase = toFirstLetterUppercaseFn
 
 export default {}
