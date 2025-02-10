@@ -25,8 +25,8 @@ export const constructFn = <T>(
 		});
 	}
 
-  const canUpdateProperties = !targetMetadata || (targetMetadata.tags?.includes(ContextTagEnum.SINGLETON) && !targetMetadata.singleton)
-  
+	const canUpdateProperties = !targetMetadata || (targetMetadata.tags?.includes(ContextTagEnum.SINGLETON) && !targetMetadata.singleton);
+
 	const targetInstance = Reflect.construct(target, indexedArguments);
 
 	if (canUpdateProperties) {

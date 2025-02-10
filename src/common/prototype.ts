@@ -1,13 +1,13 @@
-import toFirstLetterUppercaseFn from "~/common/functions/toFirstLetterUppercaseFn.ts"
+import toFirstLetterUppercaseFn from '~/common/functions/toFirstLetterUppercaseFn.ts';
 
 declare global {
-  interface String {
-    toFirstLetterUppercase(this: string): string;
-  }
+	interface String {
+		toFirstLetterUppercase(this: string): string;
+	}
 }
 
 String.prototype.toFirstLetterUppercase = function () {
-  return toFirstLetterUppercaseFn(this)
-}
+	return toFirstLetterUppercaseFn(this);
+};
 
-export default {}
+export default {};

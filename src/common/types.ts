@@ -11,7 +11,6 @@ export type EntryType<T extends {}> = T extends readonly [unknown, ...unknown[]]
 			: never
 		: never
 	: never;
-
 export type GuardType = (record: any) => boolean;
 export type JsonType =
 	| string
@@ -24,7 +23,7 @@ export type JsonType =
 	| { readonly [key: string]: JsonType }
 	| { toJSON(): JsonType };
 export type MappedKeyType<T> = { [K in keyof T]: T[K] };
-export type MappedType<T, V> = { [K in keyof T]: V }
+export type MappedType<T, V> = { [K in keyof T]: V };
 export type OmitType<T, R> = { [P in keyof T as T[P] extends R ? never : P]: T[P] };
 export type PickType<T, R> = { [P in keyof T as T[P] extends R ? P : never]: T[P] };
 export type TupleEntryType<T extends readonly unknown[], I extends unknown[] = [], R = never> = T extends

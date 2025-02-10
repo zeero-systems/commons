@@ -1,4 +1,3 @@
-
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 
 import Singleton from '~/decorator/decorations/Singleton.ts';
@@ -11,18 +10,16 @@ import guardUndefinedFn from '~/common/guards/guardUndefinedFn.ts';
 export class Required implements ValidationInterface {
 	guards = [
 		guardNullFn,
-		guardUndefinedFn
-	]
+		guardUndefinedFn,
+	];
 
 	onValidation(record: string | number | null | undefined, _parameters: {}): ValidationEnum {
+		if (!guardNullFn(record) && !guardUndefinedFn(record)) {
+			return ValidationEnum.VALID;
+		}
 
-    if (!guardNullFn(record) && !guardUndefinedFn(record)) {
-      return ValidationEnum.VALID
-    }
-
-		return ValidationEnum.INVALID
+		return ValidationEnum.INVALID;
 	}
-
 }
 
-export default Required
+export default Required;

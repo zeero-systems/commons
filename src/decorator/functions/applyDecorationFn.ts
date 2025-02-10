@@ -4,13 +4,11 @@ import type { DecorationType, DecoratorContextType, DecoratorType } from '~/deco
 
 import Context from '~/decorator/services/Context.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
-import DecoratorTagEnum from '~/decorator/enums/ContextTagEnum.ts';
 
 import getParameterNamesFn from '~/common/functions/getParameterNamesFn.ts';
 
 export const applyDecorationFn = <T extends DecorationInterface, P>(Decoration: ConstructorType<T>, decorationParameters?: P) => {
 	return function <T>(target: T, context: DecoratorContextType<T, P>) {
-
 		// @ts-ignore targets can have name or not
 		const targetName = target?.name || target?.constructor?.name || '';
 		const targetParameters = target ? getParameterNamesFn(target) : [];

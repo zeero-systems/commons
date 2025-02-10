@@ -1,6 +1,5 @@
-
 export const guardUndefinedFn = (x: unknown): x is undefined => {
-  return typeof x === "undefined"
-}
+	return typeof x === 'undefined';
+};
 
-export default guardUndefinedFn
+export default guardUndefinedFn;

@@ -1,5 +1,5 @@
-import Exception from "~/common/services/Exception.ts";
+import Exception from '~/common/services/Exception.ts';
 
 export class DecoratorException extends Exception<'NOT_IMPLEMENTED' | 'EXCEPTION'> {}
 
-export default DecoratorException
+export default DecoratorException;

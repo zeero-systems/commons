@@ -1,16 +1,16 @@
-import { describe, it } from "@std/bdd";
-import { expect } from "@std/expect";
+import '~/common/prototype.ts';
 
-import toFirstLetterUppercaseFn from "~/common/functions/toFirstLetterUppercaseFn.ts";
-import "~/common/prototype.ts";
+import { describe, it } from '@std/bdd';
+import { expect } from '@std/expect';
 
-describe("Function toFirstLetterUpercaseFn", () => {
-  it("From the callback function", () => {
-    expect(toFirstLetterUppercaseFn('eduardo')).toEqual('Eduardo');
-  });
-  
-  it("From the extended prototype", () => {
-    expect('eduardo'.toFirstLetterUppercase()).toEqual('Eduardo');
-  });
-})
+import toFirstLetterUppercaseFn from '~/common/functions/toFirstLetterUppercaseFn.ts';
 
+describe('Function toFirstLetterUpercaseFn', () => {
+	it('From the callback function', () => {
+		expect(toFirstLetterUppercaseFn('eduardo')).toEqual('Eduardo');
+	});
+
+	it('From the extended prototype', () => {
+		expect('eduardo'.toFirstLetterUppercase()).toEqual('Eduardo');
+	});
+});

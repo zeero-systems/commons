@@ -1,6 +1,6 @@
-import { ValidationInterface } from '~/validator/interfaces.ts';
+import type { ValidationInterface } from '~/validator/interfaces.ts';
 
 export const guardValidationFn = (x: any): x is ValidationInterface => {
-  return x && x.onValidation
-}
-export default guardValidationFn
+	return x && x.onValidation;
+};
+export default guardValidationFn;
