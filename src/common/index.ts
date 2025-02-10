@@ -1,5 +1,5 @@
-import getFunctionParametersFn from './functions/getParameterNamesFn'
-import toFirstLetterUppercaseFn from './functions/toFirstLetterUppercaseFn'
+import getFunctionParametersFn from '~/common/functions/getParameterNamesFn.ts'
+import toFirstLetterUppercaseFn from '~/common/functions/toFirstLetterUppercaseFn.ts'
 
 export default {
     Functions: {

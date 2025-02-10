@@ -1,4 +1,4 @@
-import toFirstLetterUppercaseFn from "./functions/toFirstLetterUppercaseFn"
+import toFirstLetterUppercaseFn from "~/common/functions/toFirstLetterUppercaseFn.ts"
 
 declare global {
   interface String {
@@ -6,6 +6,8 @@ declare global {
   }
 }
 
-String.prototype.toFirstLetterUppercase = toFirstLetterUppercaseFn
+String.prototype.toFirstLetterUppercase = function () {
+  return toFirstLetterUppercaseFn(this)
+}
 
 export default {}
