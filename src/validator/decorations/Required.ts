@@ -8,7 +8,7 @@ import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
 
 @Singleton()
 export class Required extends RequiredValidation implements DecorationInterface {
-	tag = ContextTagEnum.VALIDATIONS;
+  tag = ContextTagEnum.VALIDATIONS;
 }
 
 export default () => applyDecorationFn(Required);

@@ -9,18 +9,18 @@ import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
 import applySingletonProxyFn from '~/decorator/functions/applySingletonProxyFn.ts';
 
 export class Singleton implements DecorationInterface {
-	tag = ContextTagEnum.SINGLETON;
+  tag = ContextTagEnum.SINGLETON;
 
-	onAttach<T, P>(decorator: DecoratorType<T, P>, _decoration: DecorationType<P>) {
-		if (decorator.context.kind == DecoratorKindEnum.CLASS) {
-			return applySingletonProxyFn<T, P>(decorator);
-		}
+  onAttach<T, P>(decorator: DecoratorType<T, P>, _decoration: DecorationType<P>) {
+    if (decorator.context.kind == DecoratorKindEnum.CLASS) {
+      return applySingletonProxyFn<T, P>(decorator);
+    }
 
-		throw new DecoratorException('Method not implemented for {name} on {kind}.', {
-			key: 'NOT_IMPLEMENTED',
-			context: { name: decorator.targetName, kind: decorator.context.kind },
-		});
-	}
+    throw new DecoratorException('Method not implemented for {name} on {kind}.', {
+      key: 'NOT_IMPLEMENTED',
+      context: { name: decorator.targetName, kind: decorator.context.kind },
+    });
+  }
 }
 
 export default () => applyDecorationFn(Singleton);

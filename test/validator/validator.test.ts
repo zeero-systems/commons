@@ -11,53 +11,53 @@ import validateValueFn from '../../src/validator/functions/validateValueFn.ts';
 import validateObjectFn from '~/validator/functions/validateObjectFn.ts';
 
 describe('Validator', () => {
-	describe('test validations', () => {
-		it('on single property', () => {
-			const userEntity = new UserEntityMock();
+  describe('test validations', () => {
+    it('on single property', () => {
+      const userEntity = new UserEntityMock();
 
-			const validations = [{ validation: new Required() }];
+      const validations = [{ validation: new Required() }];
 
-			const result = validateValueFn(userEntity.firstName, validations);
+      const result = validateValueFn(userEntity.firstName, validations);
 
-			expect(result[0].key).toBe(ValidationEnum.INVALID);
-		});
+      expect(result[0].key).toBe(ValidationEnum.INVALID);
+    });
 
-		it('on object properties', () => {
-			const userEntity = new UserEntityMock();
+    it('on object properties', () => {
+      const userEntity = new UserEntityMock();
 
-			userEntity.firstName = 'Eduardo';
+      userEntity.firstName = 'Eduardo';
 
-			const validations = {
-				firstName: [{ validation: new Required() }],
-			};
+      const validations = {
+        firstName: [{ validation: new Required() }],
+      };
 
-			const result = validateObjectFn(userEntity, validations);
+      const result = validateObjectFn(userEntity, validations);
 
-			expect(result).toEqual({
-				birthDate: [{ key: ValidationEnum.UNDEFINED }],
-				created: [{ key: ValidationEnum.UNDEFINED }],
-				email: [{ key: ValidationEnum.UNDEFINED }],
-				firstName: [{ key: ValidationEnum.UNGUARDED, name: 'Required' }],
-				lastName: [{ key: ValidationEnum.UNDEFINED }],
-			});
-		});
+      expect(result).toEqual({
+        birthDate: [{ key: ValidationEnum.UNDEFINED }],
+        created: [{ key: ValidationEnum.UNDEFINED }],
+        email: [{ key: ValidationEnum.UNDEFINED }],
+        firstName: [{ key: ValidationEnum.UNGUARDED, name: 'Required' }],
+        lastName: [{ key: ValidationEnum.UNDEFINED }],
+      });
+    });
 
-		it('on entity properties decorators', () => {
-			const userEntity = constructFn(SingletonUserEntityMock, {
-				arguments: {
-					firstName: 'eduardo',
-					lastName: 'segura',
-					email: [{ isMain: true, address: 'eduardo@zxxxro.com' }],
-				},
-			});
+    it('on entity properties decorators', () => {
+      const userEntity = constructFn(SingletonUserEntityMock, {
+        arguments: {
+          firstName: 'eduardo',
+          lastName: 'segura',
+          email: [{ isMain: true, address: 'eduardo@zxxxro.com' }],
+        },
+      });
 
-			expect(userEntity.validateProperties()).toEqual({
-				firstName: [],
-				lastName: [],
-				created: [],
-				birthDate: [{ key: 'INVALID', name: 'Required' }],
-				email: [],
-			});
-		});
-	});
+      expect(userEntity.validateProperties()).toEqual({
+        firstName: [],
+        lastName: [],
+        created: [],
+        birthDate: [{ key: 'INVALID', name: 'Required' }],
+        email: [],
+      });
+    });
+  });
 });

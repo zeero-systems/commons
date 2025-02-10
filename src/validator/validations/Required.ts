@@ -8,18 +8,18 @@ import guardUndefinedFn from '~/common/guards/guardUndefinedFn.ts';
 
 @Singleton()
 export class Required implements ValidationInterface {
-	guards = [
-		guardNullFn,
-		guardUndefinedFn,
-	];
+  guards = [
+    guardNullFn,
+    guardUndefinedFn,
+  ];
 
-	onValidation(record: string | number | null | undefined, _parameters: {}): ValidationEnum {
-		if (!guardNullFn(record) && !guardUndefinedFn(record)) {
-			return ValidationEnum.VALID;
-		}
+  onValidation(record: string | number | null | undefined, _parameters: {}): ValidationEnum {
+    if (!guardNullFn(record) && !guardUndefinedFn(record)) {
+      return ValidationEnum.VALID;
+    }
 
-		return ValidationEnum.INVALID;
-	}
+    return ValidationEnum.INVALID;
+  }
 }
 
 export default Required;
