@@ -1,13 +1,13 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import { UserEntityMock } from '../../test-mock/userEntityMocks.ts';
+import { UserEntityMock } from '-/test-mock/userEntityMocks.ts';
 import { SingletonUserEntityMock } from '-/test-mock/userEntityMocks.ts';
 
 import Required from '~/validator/validations/Required.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 import constructFn from '~/common/functions/constructFn.ts';
-import validateValueFn from '../../src/validator/functions/validateValueFn.ts';
+import validateValueFn from '~/validator/functions/validateValueFn.ts';
 import validateObjectFn from '~/validator/functions/validateObjectFn.ts';
 
 describe('Validator', () => {

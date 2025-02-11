@@ -2,7 +2,8 @@ import type ArrayMap from '~/structure/services/ArrayMap.ts';
 import type { DecorationInterface } from '~/decorator/interfaces.ts';
 import type { ConstructorType } from '~/common/types.ts';
 
-import ContextTagEnum from '~/decorator/enums/ContextTagEnum.ts';
+import ContextTagEnum, { DecoratorGroupEnum } from './enums/DecoratorGroupEnum.ts';
+import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
 
 export type AutoAccessorType = {
   get: () => any;
@@ -25,13 +26,13 @@ export type DecoratorType<T, P> = {
 };
 
 export type DecoratorContextType<T, P> = DecoratorContext & {
-  metadata: DecoratorMetadataType<T, P>;
+  metadata: MetadataType<T, P>;
 };
 
 export type DecoratorPropertyType = string | number | symbol;
 
-export type DecoratorMetadataType<T, P> = {
-  tags?: string[];
+export type MetadataType<T, P> = {
+  tags?: MetadataTagEnum[];
   singleton?: T;
-  decorators?: Map<DecoratorPropertyType, ArrayMap<ContextTagEnum, DecorationType<P>>>;
+  decorators?: Map<DecoratorPropertyType, ArrayMap<DecoratorGroupEnum, DecorationType<P>>>;
 };

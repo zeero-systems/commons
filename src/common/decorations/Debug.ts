@@ -2,10 +2,10 @@ import type { DecorationInterface } from '~/decorator/interfaces.ts';
 import type { DecorationType, DecoratorType } from '~/decorator/types.ts';
 
 import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
-import ContextTagEnum from '~/decorator/enums/ContextTagEnum.ts';
+import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
 
 export class Debug implements DecorationInterface {
-  tag = ContextTagEnum.COMMONS;
+  group = DecoratorGroupEnum.COMMONS;
 
   onAttach<T, P>(decorator: DecoratorType<T, P>, decoration: DecorationType<P>) {
     console.log('onAttach', { decorator, decoration });

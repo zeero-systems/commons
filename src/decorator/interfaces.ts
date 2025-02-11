@@ -1,9 +1,9 @@
 import type { DecorationType, DecoratorType } from '~/decorator/types.ts';
 
-import ContextTagEnum from '~/decorator/enums/ContextTagEnum.ts';
+import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
 
 export interface DecorationInterface {
-  tag: ContextTagEnum;
+  group: DecoratorGroupEnum;
 
   onAttach?<T, P>(decorator: DecoratorType<T, P>, decoration: DecorationType<P>): any;
   onInitialize?<T, P>(decorator: DecoratorType<T, P>, decoration: DecorationType<P>): any;

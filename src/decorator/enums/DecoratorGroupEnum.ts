@@ -1,9 +1,8 @@
-export enum ContextTagEnum {
+export enum DecoratorGroupEnum {
   COMMONS = 'commons',
   MODULES = 'modules',
   PROVIDERS = 'providers',
-  SINGLETON = 'singleton',
   VALIDATIONS = 'validations',
 }
 
-export default ContextTagEnum;
+export default DecoratorGroupEnum;

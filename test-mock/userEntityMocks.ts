@@ -1,6 +1,6 @@
 import Entity from '~/entity/services/Entity.ts';
 import Required from '~/validator/decorations/Required.ts';
-import Singleton from '~/decorator/decorations/Singleton.ts';
+import Singleton from '../src/common/decorations/Singleton.ts';
 
 export type UserEntityType = {
   firstName: string;

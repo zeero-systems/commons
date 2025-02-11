@@ -2,7 +2,7 @@ import type { ConstructorType } from '~/common/types.ts';
 import type { DecorationInterface } from '~/decorator/interfaces.ts';
 import type { DecorationType, DecoratorContextType, DecoratorType } from '~/decorator/types.ts';
 
-import Context from '~/decorator/services/Context.ts';
+import Metadata from '../services/Metadata.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
 import getParameterNamesFn from '~/common/functions/getParameterNamesFn.ts';
@@ -11,7 +11,7 @@ export const applyDecorationFn = <T extends DecorationInterface, P>(Decoration: 
   return function <T>(target: T, context: DecoratorContextType<T, P>) {
     // @ts-ignore targets can have name or not
     const targetName = target?.name || target?.constructor?.name || '';
-    const targetParameters = target ? getParameterNamesFn(target) : [];
+    const targetParameters = target ? getParameterNamesFn(target, 'constructor') : [];
     const targetProperty = context.kind != DecoratorKindEnum.CLASS ? context.name : 'constructor';
 
     const decoration: DecorationType<P> = {
@@ -19,7 +19,7 @@ export const applyDecorationFn = <T extends DecorationInterface, P>(Decoration: 
       parameters: decorationParameters,
     };
 
-    Context.addDecorator<T, P>(context, targetProperty, decoration);
+    Metadata.addDecorator<T, P>(context.metadata, targetProperty, decoration);
 
     const decorator: DecoratorType<T, P> = {
       target,
@@ -27,7 +27,7 @@ export const applyDecorationFn = <T extends DecorationInterface, P>(Decoration: 
       targetParameters,
       context,
     };
-
+		console.log('called')
     if (decoration.target.onInitialize) {
       context.addInitializer(function (this: any) {
         if (decoration.target.onInitialize) {

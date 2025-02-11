@@ -1,7 +1,7 @@
-import type { DecoratorMetadataType } from '~/decorator/types.ts';
+import type { MetadataType } from '~/decorator/types.ts';
 import type { ArgType } from '~/common/types.ts';
 
-import ContextTagEnum from '~/decorator/enums/ContextTagEnum.ts';
+import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
 
 import guardNumberFn from '~/common/guards/guardNumberFn.ts';
 
@@ -13,7 +13,7 @@ export const constructFn = <T>(
 ): InstanceType<new (...args: any) => T> => {
   const namedArguments: any = {};
   const indexedArguments: any[] = [];
-  const targetMetadata = target[Symbol.metadata] as DecoratorMetadataType<T, ArgType<T>>;
+  const targetMetadata = target[Symbol.metadata] as MetadataType<T, ArgType<T>>;
 
   if (targetOptions?.arguments) {
     Object.entries(targetOptions?.arguments).forEach(([key, value]) => {
@@ -25,7 +25,7 @@ export const constructFn = <T>(
     });
   }
 
-  const canUpdateProperties = !targetMetadata || (targetMetadata.tags?.includes(ContextTagEnum.SINGLETON) && !targetMetadata.singleton);
+  const canUpdateProperties = !targetMetadata || (targetMetadata.tags?.includes(MetadataTagEnum.SINGLETON) && !targetMetadata.singleton);
 
   const targetInstance = Reflect.construct(target, indexedArguments);
 

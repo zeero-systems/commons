@@ -1,15 +1,15 @@
 import type { DecorationInterface } from '~/decorator/interfaces.ts';
 import type { DecorationType, DecoratorType } from '~/decorator/types.ts';
 
-import ContextTagEnum from '~/decorator/enums/ContextTagEnum.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import DecoratorException from '~/decorator/exceptions/DecoratorException.ts';
 
 import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
 import applySingletonProxyFn from '~/decorator/functions/applySingletonProxyFn.ts';
+import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
 
 export class Singleton implements DecorationInterface {
-  tag = ContextTagEnum.SINGLETON;
+  group = DecoratorGroupEnum.COMMONS
 
   onAttach<T, P>(decorator: DecoratorType<T, P>, _decoration: DecorationType<P>) {
     if (decorator.context.kind == DecoratorKindEnum.CLASS) {

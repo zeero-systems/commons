@@ -1,6 +1,6 @@
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 
-import Singleton from '~/decorator/decorations/Singleton.ts';
+import Singleton from '~/common/decorations/Singleton.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 import guardNullFn from '~/common/guards/guardNullFn.ts';

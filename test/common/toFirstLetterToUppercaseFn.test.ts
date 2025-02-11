@@ -1,4 +1,4 @@
-import '~/common/prototype.ts';
+import '~/common/polyfills.ts';
 
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';

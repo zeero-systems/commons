@@ -1,6 +1,6 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import { SingletonUserMock } from '../../test-mock/userMocks.ts';
+import { SingletonUserMock } from '-/test-mock/userMocks.ts';
 
 import constructFn from '~/common/functions/constructFn.ts';
 
