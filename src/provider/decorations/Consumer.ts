@@ -8,7 +8,6 @@ import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
 import ProviderService from '~/provider/services/Provider.ts';
 import DecoratorException from '~/decorator/exceptions/DecoratorException.ts';
-import guardClassMemberDecoratorContextFn from '~/decorator/guards/guardClassMemberDecoratorContextFn.ts';
 import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
 import toFirstLetterUpperCase from "~/common/functions/toFirstLetterUppercaseFn.ts"
 
@@ -75,43 +74,6 @@ export class Consumer implements DecorationInterface {
       context: { name: decorator.targetName, kind: decorator.context.kind },
     })
   }
-
-  // onInitialize<T, P>(decorator: DecoratorType<T, P>, decoration: DecorationType<P>) {
-  //   const target = decorator.target as new (...args: any) => any;
-  //   const parameters = {
-  //     thrownable: true,
-  //     propertyDecorator: {
-  //       enumerable: true,
-  //       configurable: true
-  //     },
-  //     ...(decoration.parameters ?? {})
-  //   } as ParamsType
-    
-  //   if (guardClassMemberDecoratorContextFn(decorator.context)) {
-  //     if (decorator.context.kind == DecoratorKindEnum.FIELD || decorator.context.kind == DecoratorKindEnum.ACCESSOR) {
-  //       Object.defineProperty(target, decorator.context.name, {
-  //         set: function () {},
-  //         get: function () {
-  //           console.log(decorator.context.name)
-  //           if (!decorator.context.name) return undefined
-  //           return ProviderService.instantiateProvider(toFirstLetterUpperCase(decorator.context.name))
-  //         },
-  //         ...parameters.propertyDecorator,
-  //       });
-
-  //       return;
-  //     }
-  //   }
-
-  //   if (DecoratorKindEnum.CLASS == decorator.context.kind) {
-  //     return
-  //   }
-
-  //   throw new DecoratorException('Method not implemented for {name} on {kind}.', {
-  //     key: 'NOT_IMPLEMENTED',
-  //     context: { name: decorator.targetName, kind: decorator.context.kind },
-  //   })
-  // }
 }
 
 export default (parameters?: { providerName: string }) => applyDecorationFn(Consumer, parameters);

@@ -27,7 +27,7 @@ export const applyDecorationFn = <T extends DecorationInterface, P>(Decoration: 
       targetParameters,
       context,
     };
-		console.log('called')
+
     if (decoration.target.onInitialize) {
       context.addInitializer(function (this: any) {
         if (decoration.target.onInitialize) {
