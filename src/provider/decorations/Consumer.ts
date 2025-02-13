@@ -10,6 +10,11 @@ import ProviderService from '~/provider/services/Provider.ts';
 import DecoratorException from '~/decorator/exceptions/DecoratorException.ts';
 import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
 import toFirstLetterUpperCase from "~/common/functions/toFirstLetterUppercaseFn.ts"
+import { ConsumerObjectParameterType, ConsumerParameterType } from '~/provider/types.ts';
+import guardStringFn from '~/common/guards/guardStringFn.ts';
+import guardConsumerObjectParameterFn from '../guards/guardConsumerObjectParameterFn.ts';
+import ProviderException from '~/provider/exceptions/ProviderException.ts';
+import guardClassFn from '~/common/guards/guardClassFn.ts';
 
 type ParamsType = {
   propertyDecorator: {
@@ -21,12 +26,22 @@ type ParamsType = {
 export class Consumer implements DecorationInterface {
   group: DecoratorGroupEnum = DecoratorGroupEnum.COMMONS
 
-  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration: DecorationType<P> & { parameters?: { providerName: string } }) {
+  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration: DecorationType<P & ConsumerParameterType>) {
     
     const target = decorator.target as any;
     
+    let decoratorProvider: ConsumerObjectParameterType = {}
+    if (guardStringFn(decoration.parameters)) {
+      decoratorProvider[decoration.parameters] = { optional: true }
+    }
+    if (guardClassFn(decoration.parameters)) {
+      decoratorProvider[decoration.parameters.name] = { optional: true }
+    }
+    if (guardConsumerObjectParameterFn(decoration.parameters)) {
+      decoratorProvider = decoration.parameters
+    }
+    
     if (decorator.context.kind == DecoratorKindEnum.CLASS) {
-
       const targetParameters = decorator.targetParameters
       const context = decorator.context
 
@@ -41,8 +56,19 @@ export class Consumer implements DecorationInterface {
             }
             
             for (let index = 0; index < targetParameters.length; index++) {        
-              const parameterProviderName = firstLetterToUppercaseFn(String(targetParameters[index]))
-              currentArgs[index] = ProviderService.instantiateProvider(parameterProviderName)
+              const providerName = firstLetterToUppercaseFn(String(targetParameters[index]))
+              
+              if (
+                !ProviderService.exists(providerName) &&
+                !decoratorProvider[providerName]?.optional
+              ) {
+                throw new ProviderException("Provider {name} not found", {
+                  key: "NOT_FOUND",
+                  context: { name: providerName }
+                });
+              }
+              
+              currentArgs[index] = ProviderService.construct(providerName)
             }
 
             return Reflect.construct(currentTarget, currentArgs, newTarget);
@@ -58,8 +84,29 @@ export class Consumer implements DecorationInterface {
         set: function () {},
         get: function () {
           if (!decorator.context.name) return undefined
-          const providerName = decoration.parameters?.providerName || decorator.context.name
-          return ProviderService.instantiateProvider(toFirstLetterUpperCase(providerName))
+
+          let providerName = decorator.context.name
+          if (guardStringFn(decoration.parameters)) {
+            providerName = decoration.parameters
+          }
+          if (guardClassFn(decoration.parameters)) {
+            providerName = decoration.parameters.name
+          }
+
+          console.log('providerName', providerName)
+
+          if (
+            !ProviderService.exists(providerName) &&
+            decoratorProvider[providerName] &&
+            !decoratorProvider[providerName].optional
+          ) {
+            throw new ProviderException("Provider {name} not found", {
+              key: "NOT_FOUND",
+              context: { name: providerName }
+            });
+          }
+          
+          return ProviderService.construct(toFirstLetterUpperCase(providerName))
         },
         thrownable: true,
         propertyDecorator: {
@@ -76,4 +123,4 @@ export class Consumer implements DecorationInterface {
   }
 }
 
-export default (parameters?: { providerName: string }) => applyDecorationFn(Consumer, parameters);
+export default (parameters?: ConsumerParameterType) => applyDecorationFn(Consumer, parameters);

@@ -6,11 +6,11 @@ import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
 import guardNumberFn from '~/common/guards/guardNumberFn.ts';
 
 export const constructFn = <T>(
-  target: new (...args: any) => T,
+  target: new (...args: any[]) => T,
   targetOptions?: {
     arguments?: ArgType<T>;
   },
-): InstanceType<new (...args: any) => T> => {
+): T => {
   const namedArguments: any = {};
   const indexedArguments: any[] = [];
   const targetMetadata = target[Symbol.metadata] as MetadataType<T, ArgType<T>>;

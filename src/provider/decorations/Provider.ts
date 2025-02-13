@@ -1,15 +1,16 @@
 
-import firstLetterToUppercaseFn from '~/common/functions/toFirstLetterUppercaseFn.ts';
-import ContextTagEnum, { DecoratorGroupEnum } from '~/decorator/enums/DecoratorGroupEnum.ts';
-import Metadata from '~/decorator/services/Metadata.ts';
 import { DecorationInterface } from '~/decorator/interfaces.ts';
 import { DecorationType, DecoratorType } from '~/decorator/types.ts';
+
+import DecoratorException from '~/decorator/exceptions/DecoratorException.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
+import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
+import Metadata from '~/decorator/services/Metadata.ts';
 import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
 import ProviderService from '~/provider/services/Provider.ts';
-import DecoratorException from '~/decorator/exceptions/DecoratorException.ts';
-import guardClassMemberDecoratorContextFn from '~/decorator/guards/guardClassMemberDecoratorContextFn.ts';
+
 import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
+import firstLetterToUppercaseFn from '~/common/functions/toFirstLetterUppercaseFn.ts';
 
 type ParamsType = {
   propertyDecorator: {
@@ -32,7 +33,7 @@ export class Provider implements DecorationInterface {
 
       if (!Metadata.hasTag<T, P>(context.metadata, MetadataTagEnum.PROVIDER)) {
         Metadata.addTag<T, P>(context.metadata, MetadataTagEnum.PROVIDER)
-        ProviderService.setProvider(target, targetName)
+        ProviderService.set(target, targetName)
       }
       
       return target

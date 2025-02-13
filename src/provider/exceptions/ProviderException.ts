@@ -1,4 +1,4 @@
-import Exception from 'packages/common/Exception.ts';
+import Exception from '~/common/services/Exception.ts';
 
 export class ProviderException extends Exception<'NOT_FOUND' | 'EXCEPTION'> {}
 
