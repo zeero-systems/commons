@@ -2,7 +2,7 @@ import type { ConstructorType } from '~/common/types.ts';
 import type { DecorationInterface } from '~/decorator/interfaces.ts';
 import type { DecorationType, DecoratorContextType, DecoratorType } from '~/decorator/types.ts';
 
-import Metadata from '../services/Metadata.ts';
+import Metadata from '~/decorator/services/Metadata.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
 import getParameterNamesFn from '~/common/functions/getParameterNamesFn.ts';
@@ -19,7 +19,7 @@ export const applyDecorationFn = <T extends DecorationInterface, P>(Decoration: 
       parameters: decorationParameters,
     };
 
-    Metadata.addDecorator<T, P>(context.metadata, targetProperty, decoration);
+    Metadata.addDecorator<T, P>(context as any, targetProperty, decoration);
 
     const decorator: DecoratorType<T, P> = {
       target,

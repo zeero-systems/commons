@@ -34,5 +34,7 @@ export type DecoratorPropertyType = string | number | symbol;
 export type MetadataType<T, P> = {
   tags?: MetadataTagEnum[];
   singleton?: T;
-  decorators?: Map<DecoratorPropertyType, ArrayMap<DecoratorGroupEnum, DecorationType<P>>>;
+  decorators?: MetadataDecoratorType<P>;
 };
+
+export type MetadataDecoratorType<P> = Map<DecoratorPropertyType, ArrayMap<DecoratorGroupEnum, DecorationType<P>>>

@@ -1,53 +1,27 @@
-
-import { DecorationInterface } from '~/decorator/interfaces.ts';
-import { DecorationType, DecoratorType } from '~/decorator/types.ts';
+import type { DecorationInterface } from '~/decorator/interfaces.ts';
+import type { DecorationType, DecoratorType } from '~/decorator/types.ts';
+import type { ProviderParameterType, ProviderType } from '~/provider/types.ts';
 
 import DecoratorException from '~/decorator/exceptions/DecoratorException.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
-import Metadata from '~/decorator/services/Metadata.ts';
-import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
-import ProviderService from '~/provider/services/Provider.ts';
 
 import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
-import firstLetterToUppercaseFn from '~/common/functions/toFirstLetterUppercaseFn.ts';
-
-type ParamsType = {
-  propertyDecorator: {
-    enumerable: true,
-    configurable: true,
-  }
-}
+import applyProviderProxyFn from '~/provider/functions/applyProviderProxyFn.ts';
 
 export class Provider implements DecorationInterface {
-  group: DecoratorGroupEnum = DecoratorGroupEnum.PROVIDERS
+  group: DecoratorGroupEnum = DecoratorGroupEnum.PROVIDERS;
 
-  onAttach<T, P>(decorator: DecoratorType<T, P>, _decoration: DecorationType<P>) {
-    
-    const target = decorator.target as any;
-    
+  onAttach<T, P>(decorator: DecoratorType<T & ProviderType, P>, decoration?: DecorationType<P & ProviderParameterType>) {
     if (decorator.context.kind == DecoratorKindEnum.CLASS) {
-
-      const targetName = firstLetterToUppercaseFn(decorator.targetName)
-      const context = decorator.context
-
-      if (!Metadata.hasTag<T, P>(context.metadata, MetadataTagEnum.PROVIDER)) {
-        Metadata.addTag<T, P>(context.metadata, MetadataTagEnum.PROVIDER)
-        ProviderService.set(target, targetName)
-      }
-      
-      return target
-    }
-
-    if (decorator.context.kind == DecoratorKindEnum.FIELD || decorator.context.kind == DecoratorKindEnum.ACCESSOR) {
-      return
+      return applyProviderProxyFn(decorator, decoration)[0].target;
     }
 
     throw new DecoratorException('Method not implemented for {name} on {kind}.', {
       key: 'NOT_IMPLEMENTED',
       context: { name: decorator.targetName, kind: decorator.context.kind },
-    })
+    });
   }
 }
 
-export default (parameters?: ParamsType) => applyDecorationFn(Provider, parameters);
+export default (parameters?: ProviderParameterType) => applyDecorationFn(Provider, parameters);

@@ -1,24 +1,29 @@
-import DecorationInterface from 'packages/decorator/interfaces/DecorationInterface.ts';
-import DecorationType from 'packages/decorator/types/DecorationType.ts';
-import DecoratorType from 'packages/decorator/types/DecoratorType.ts';
-import DecoratorException from 'packages/decorator/exceptions/DecoratorException.ts';
-import ModuleArgumentsType from 'packages/module/types/ModuleArgumentsType.ts';
-import KindEnum from 'packages/decorator/enums/KindEnum.ts';
+import type { ModuleParametersType } from '~/module/types.ts';
+import type { DecorationInterface } from '~/decorator/interfaces.ts';
+import type { DecorationType, DecoratorType } from '~/decorator/types.ts';
 
-import decorateFn from 'packages/decorator/functions/decorateFn.ts';
-import moduleProxyFn from 'packages/module/functions/moduleProxyFn.ts';
+import DecoratorException from '~/decorator/exceptions/DecoratorException.ts';
+import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
+import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
-type ParamsType = ModuleArgumentsType;
+import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
+import applySingletonProxyFn from '~/common/functions/applySingletonProxyFn.ts';
+import applyConsumerProxyFn from '~/provider/functions/applyConsumerProxyFn.ts';
+import applyModuleProxyFn from '~/module/functions/applyModuleProxyFn.ts';
 
 export class Module implements DecorationInterface {
-  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration: DecorationType<P>) {
-    
-    if (decorator.context.kind == KindEnum.CLASS) {
-      return moduleProxyFn(decorator, decoration)
+  group: DecoratorGroupEnum = DecoratorGroupEnum.MODULES;
+
+  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P & ModuleParametersType>) {
+    if (decorator.context.kind == DecoratorKindEnum.CLASS) {
+      return applyModuleProxyFn(...applyConsumerProxyFn(...applySingletonProxyFn(decorator, decoration)))[0].target;
     }
 
-    throw new DecoratorException('Kind on attach not implemented', { key: 'NOT_IMPLEMENTED', context: { decorator, decoration } });
+    throw new DecoratorException('Method not implemented for {name} on {kind}.', {
+      key: 'NOT_IMPLEMENTED',
+      context: { name: decorator.targetName, kind: decorator.context.kind },
+    });
   }
 }
 
-export default (parameters?: ParamsType) => decorateFn(Module, parameters);
+export default (parameters?: ModuleParametersType) => applyDecorationFn(Module, parameters);

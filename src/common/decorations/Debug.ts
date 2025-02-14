@@ -7,11 +7,11 @@ import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
 export class Debug implements DecorationInterface {
   group = DecoratorGroupEnum.COMMONS;
 
-  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration: DecorationType<P>) {
+  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P>) {
     console.log('onAttach', { decorator, decoration });
   }
 
-  onInitialize<T, P>(decorator: DecoratorType<T, P>, decoration: DecorationType<P>) {
+  onInitialize<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P>) {
     console.log('onInitialize', { decorator, decoration });
   }
 }

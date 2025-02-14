@@ -1,6 +1,4 @@
-import { MetadataType } from '~/decorator/types.ts';
-
-export type ProviderClassType = new (...args: any) => any & MetadataType<any, any>;
+export type ProviderClassType = new (...args: any) => any;
 
 export type ProviderPlainType = {
   name: string;
@@ -13,7 +11,14 @@ export type ConsumerParameterType =
   | ConsumerObjectParameterType;
 
 export type ConsumerObjectParameterType = {
-  [key: string | symbol]: { optional?: boolean }
+  [key: string | symbol]: { optional?: boolean };
 };
 
 export type ProviderType = ProviderClassType | ProviderPlainType;
+
+export type ProviderParameterType = {
+  propertyDecorator: {
+    enumerable: true;
+    configurable: true;
+  };
+};
