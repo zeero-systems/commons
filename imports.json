@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "-/": "./",
+    "~/": "./src/",
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/bdd": "jsr:@std/testing/bdd",
+    "@std/expect": "jsr:@std/expect"
+  }
+}

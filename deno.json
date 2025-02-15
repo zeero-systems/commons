@@ -9,14 +9,15 @@
   "imports": {
     "-/": "./",
     "~/": "./src/",
-    "@std/assert": "jsr:@std/assert@1",
     "@std/bdd": "jsr:@std/testing/bdd",
+    "@std/assert": "jsr:@std/assert@1",
     "@std/expect": "jsr:@std/expect"
   },
   "fmt": {
     "files": {
       "include": [
         "index.ts",
+        "mod.ts",
         "src/",
         "test/"
       ]
@@ -31,7 +32,7 @@
   },
   "lint": {
     "files": {
-      "include": ["index.ts", "src/**/*.ts", "test/**/*.ts"]
+      "include": ["index.ts", "mod.ts", "src/**/*.ts", "test/**/*.ts"]
     },
     "rules": {
       "tags": ["recommended"],
