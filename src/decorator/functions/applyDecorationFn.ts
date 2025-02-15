@@ -7,7 +7,7 @@ import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
 import getParameterNamesFn from '~/common/functions/getParameterNamesFn.ts';
 
-export const applyDecorationFn = <T extends DecorationInterface, P>(Decoration: ConstructorType<T>, decorationParameters?: P): DecorationFunctionType<T> => {
+export const applyDecorationFn = <T extends DecorationInterface, P>(Decoration: ConstructorType<T>, decorationParameters?: P): ((target: any, context: DecoratorContextType<T, P>) => any) => {
   return function <T>(target: T, context: DecoratorContextType<T, P>) {
     // @ts-ignore targets can have name or not
     const targetName = target?.name || target?.constructor?.name || '';

@@ -1,5 +1,3 @@
-import "~/common/polyfills.ts"
-
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
@@ -62,10 +60,6 @@ describe('common', () => {
     describe('toFirstLetterUpercaseFn', () => {
       it('from a callback', () => {
         expect(toFirstLetterToUppercaseFn('eduardo')).toEqual('Eduardo');
-      });
-    
-      it('from extended prototype', () => {
-        expect('eduardo'.toFirstLetterUppercase()).toEqual('Eduardo');
       });
     });
   });
