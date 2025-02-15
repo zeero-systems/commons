@@ -13,7 +13,7 @@ import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
 export class Consumer implements DecorationInterface {
   group: DecoratorGroupEnum = DecoratorGroupEnum.CONSUMERS;
 
-  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P & ConsumerParameterType>) {
+  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P & ConsumerParameterType>): any {
     if (decorator.context.kind == DecoratorKindEnum.CLASS) {
       return applyConsumerProxyFn(decorator, decoration)[0].target;
     }

@@ -12,7 +12,7 @@ import applyProviderProxyFn from '~/provider/functions/applyProviderProxyFn.ts';
 export class Provider implements DecorationInterface {
   group: DecoratorGroupEnum = DecoratorGroupEnum.PROVIDERS;
 
-  onAttach<T, P>(decorator: DecoratorType<T & ProviderType, P>, decoration?: DecorationType<P & ProviderParameterType>) {
+  onAttach<T, P>(decorator: DecoratorType<T & ProviderType, P>, decoration?: DecorationType<P & ProviderParameterType>): any {
     if (decorator.context.kind == DecoratorKindEnum.CLASS) {
       return applyProviderProxyFn(decorator, decoration)[0].target;
     }

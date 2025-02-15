@@ -15,3 +15,5 @@ export interface ExceptionOptionsInterface extends ErrorOptions {
 export interface KeyableExceptionOptionsInterface<T> extends ExceptionOptionsInterface {
   key?: T;
 }
+
+export default {};

@@ -10,6 +10,7 @@ import applyConsumerProxyFn from '~/provider/functions/applyConsumerProxyFn.ts';
 import applyProviderProxyFn from '~/provider/functions/applyProviderProxyFn.ts';
 import applySingletonProxyFn from '~/common/functions/applySingletonProxyFn.ts';
 import toFirstLetterToUppercaseFn from '~/common/functions/toFirstLetterUppercaseFn.ts';
+import getParameterNamesFn from '~/common/functions/getParameterNamesFn.ts';
 
 export const applyModuleProxyFn = <T, P>(
   decorator: DecoratorType<T, P>,
@@ -55,7 +56,7 @@ export const applyModuleProxyFn = <T, P>(
             const consumerDecorator: DecoratorType<any, P> = {
               target: consumerTarget,
               targetName: consumerTargetName,
-              targetParameters: [],
+              targetParameters: getParameterNamesFn(consumerTarget, 'constructor'),
               context: {
                 kind: DecoratorKindEnum.CLASS,
                 name: consumerTargetName,
@@ -63,7 +64,7 @@ export const applyModuleProxyFn = <T, P>(
               } as any,
             };
 
-            applyConsumerProxyFn(consumerDecorator);
+            applyProviderProxyFn(...applyConsumerProxyFn(consumerDecorator));
           }
         }
 

@@ -6,3 +6,5 @@ export interface ValidationInterface {
   guards: Array<GuardType>;
   onValidation(record: any, ...parameters: any[]): ValidationEnum;
 }
+
+export default {};

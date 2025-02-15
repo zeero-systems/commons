@@ -1,4 +1,4 @@
-import { UserType } from './commonMocks.ts';
+import { UserType } from '-/test/mocks/commonMocks.ts';
 
 import Singleton from '~/common/decorations/Singleton.ts';
 

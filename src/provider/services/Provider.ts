@@ -1,8 +1,8 @@
 import type { ProviderType } from '~/provider/types.ts';
 
 import constructFn from '~/common/functions/constructFn.ts';
-import guardProviderPlainFn from '~/provider/guards/guardProviderPlainFn.ts';
-import guardProviderClassFn from '~/provider/guards/guardProviderClassFn.ts';
+import guardProviderPlainFn from '~/provider/guards/isProviderPlainFn.ts';
+import guardProviderClassFn from '~/provider/guards/isProviderClassFn.ts';
 
 export class Provider {
   static providers: Map<string | symbol, ProviderType> = new Map();

@@ -29,3 +29,5 @@ export type PickType<T, R> = { [P in keyof T as T[P] extends R ? P : never]: T[P
 export type TupleEntryType<T extends readonly unknown[], I extends unknown[] = [], R = never> = T extends
   readonly [infer Head, ...infer Tail] ? TupleEntryType<Tail, [...I, unknown], R | [`${I['length']}`, Head]>
   : R;
+
+export default {};

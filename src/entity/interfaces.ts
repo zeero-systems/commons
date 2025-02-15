@@ -9,3 +9,5 @@ export interface EntityInterface {
   getPropertyKeys<K extends keyof OmitType<this, Function>>(): K[];
   getPropertyType<K extends keyof OmitType<this, Function>>(propertyKey: K): string;
 }
+
+export default {};

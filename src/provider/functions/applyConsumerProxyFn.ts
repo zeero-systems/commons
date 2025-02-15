@@ -6,9 +6,9 @@ import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
 import Provider from '~/provider/services/Provider.ts';
 import ProviderException from '~/provider/exceptions/ProviderException.ts';
 
-import guardStringFn from '~/common/guards/guardStringFn.ts';
-import guardClassFn from '~/common/guards/guardClassFn.ts';
-import guardConsumerObjectParameterFn from '~/provider/guards/guardConsumerObjectParameterFn.ts';
+import isStringFn from '~/common/guards/isStringFn.ts';
+import isClassFn from '~/common/guards/isClassFn.ts';
+import isConsumerObjectParameterFn from '~/provider/guards/isConsumerObjectParameterFn.ts';
 import toFirstLetterToUppercaseFn from '~/common/functions/toFirstLetterUppercaseFn.ts';
 
 export const applyConsumerProxyFn = <T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P & ConsumerParameterType>): [DecoratorType<T, P>, DecorationType<any> | undefined] => {
@@ -19,13 +19,13 @@ export const applyConsumerProxyFn = <T, P>(decorator: DecoratorType<T, P>, decor
     Metadata.applyTag<T, P>(context, MetadataTagEnum.CONSUMER);
 
     let decoratorProvider: ConsumerObjectParameterType = {};
-    if (guardStringFn(decoration?.parameters)) {
+    if (isStringFn(decoration?.parameters)) {
       decoratorProvider[decoration.parameters] = { optional: true };
     }
-    if (guardClassFn(decoration?.parameters)) {
+    if (isClassFn(decoration?.parameters)) {
       decoratorProvider[decoration.parameters.name] = { optional: true };
     }
-    if (guardConsumerObjectParameterFn(decoration?.parameters)) {
+    if (isConsumerObjectParameterFn(decoration?.parameters)) {
       decoratorProvider = decoration.parameters;
     }
 

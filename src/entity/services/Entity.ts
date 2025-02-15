@@ -7,7 +7,7 @@ import type { ValidationInterface } from '~/validator/interfaces.ts';
 import Context from '~/decorator/services/Metadata.ts';
 import ContextTagEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
 
-import guardDateFn from '~/common/guards/guardDateFn.ts';
+import isDateFn from '~/common/guards/isDateFn.ts';
 import getObjectEntriesFn from '~/common/functions/getObjectEntriesFn.ts';
 import validateValueFn from '~/validator/functions/validateValueFn.ts';
 
@@ -33,7 +33,7 @@ export class Entity implements EntityInterface {
   }
 
   public getPropertyType<K extends keyof OmitType<this, Function>>(propertyKey: K): string {
-    if (guardDateFn(this[propertyKey])) {
+    if (isDateFn(this[propertyKey])) {
       return `[object Date]`;
     }
 

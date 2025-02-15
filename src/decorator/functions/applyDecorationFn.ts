@@ -1,13 +1,13 @@
 import type { ConstructorType } from '~/common/types.ts';
 import type { DecorationInterface } from '~/decorator/interfaces.ts';
-import type { DecorationType, DecoratorContextType, DecoratorType } from '~/decorator/types.ts';
+import type { DecorationFunctionType, DecorationType, DecoratorContextType, DecoratorType } from '~/decorator/types.ts';
 
 import Metadata from '~/decorator/services/Metadata.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
 import getParameterNamesFn from '~/common/functions/getParameterNamesFn.ts';
 
-export const applyDecorationFn = <T extends DecorationInterface, P>(Decoration: ConstructorType<T>, decorationParameters?: P) => {
+export const applyDecorationFn = <T extends DecorationInterface, P>(Decoration: ConstructorType<T>, decorationParameters?: P): DecorationFunctionType<T> => {
   return function <T>(target: T, context: DecoratorContextType<T, P>) {
     // @ts-ignore targets can have name or not
     const targetName = target?.name || target?.constructor?.name || '';

@@ -4,9 +4,9 @@ import type { DecorationType, DecoratorType } from '~/decorator/types.ts';
 import Provider from '~/provider/services/Provider.ts';
 import ProviderException from '~/provider/exceptions/ProviderException.ts';
 
-import guardStringFn from '~/common/guards/guardStringFn.ts';
-import guardClassFn from '~/common/guards/guardClassFn.ts';
-import guardConsumerObjectParameterFn from '~/provider/guards/guardConsumerObjectParameterFn.ts';
+import isStringFn from '~/common/guards/isStringFn.ts';
+import isClassFn from '~/common/guards/isClassFn.ts';
+import isConsumerObjectParameterFn from '~/provider/guards/isConsumerObjectParameterFn.ts';
 import toFirstLetterToUppercaseFn from '~/common/functions/toFirstLetterUppercaseFn.ts';
 
 export const applyConsumerAccessorFn = <T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P & ConsumerParameterType>) => {
@@ -14,13 +14,13 @@ export const applyConsumerAccessorFn = <T, P>(decorator: DecoratorType<T, P>, de
   const context = decorator.context as any
 
   let decoratorProvider: ConsumerObjectParameterType = {};
-  if (guardStringFn(decoration?.parameters)) {
+  if (isStringFn(decoration?.parameters)) {
     decoratorProvider[decoration.parameters] = { optional: true };
   }
-  if (guardClassFn(decoration?.parameters)) {
+  if (isClassFn(decoration?.parameters)) {
     decoratorProvider[decoration.parameters.name] = { optional: true };
   }
-  if (guardConsumerObjectParameterFn(decoration?.parameters)) {
+  if (isConsumerObjectParameterFn(decoration?.parameters)) {
     decoratorProvider = decoration.parameters;
   }
 
@@ -30,10 +30,10 @@ export const applyConsumerAccessorFn = <T, P>(decorator: DecoratorType<T, P>, de
       if (!context.name) return undefined;
 
       let providerName = context.name;
-      if (guardStringFn(decoration?.parameters)) {
+      if (isStringFn(decoration?.parameters)) {
         providerName = decoration.parameters;
       }
-      if (guardClassFn(decoration?.parameters)) {
+      if (isClassFn(decoration?.parameters)) {
         providerName = decoration.parameters.name;
       }
 

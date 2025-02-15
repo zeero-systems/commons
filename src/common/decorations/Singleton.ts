@@ -11,7 +11,7 @@ import applySingletonProxyFn from '~/common/functions/applySingletonProxyFn.ts';
 export class Singleton implements DecorationInterface {
   group = DecoratorGroupEnum.COMMONS;
 
-  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P>) {
+  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P>): any {
     if (decorator.context.kind == DecoratorKindEnum.CLASS) {
       return applySingletonProxyFn(decorator, decoration)[0].target
     }

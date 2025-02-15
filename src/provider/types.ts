@@ -22,3 +22,5 @@ export type ProviderParameterType = {
     configurable: true;
   };
 };
+
+export default {};

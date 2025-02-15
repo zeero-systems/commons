@@ -10,3 +10,4 @@ export type ModuleParametersType = {
 
 export type ModuleType = ModuleClassType
 
+export default {};

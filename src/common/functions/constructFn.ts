@@ -3,7 +3,7 @@ import type { ArgType } from '~/common/types.ts';
 
 import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
 
-import guardNumberFn from '~/common/guards/guardNumberFn.ts';
+import isNumberFn from '~/common/guards/isNumberFn.ts';
 
 export const constructFn = <T>(
   target: new (...args: any[]) => T,
@@ -17,7 +17,7 @@ export const constructFn = <T>(
 
   if (targetOptions?.arguments) {
     Object.entries(targetOptions?.arguments).forEach(([key, value]) => {
-      if (guardNumberFn(key)) {
+      if (isNumberFn(key)) {
         indexedArguments[Number(key)] = value;
       } else {
         namedArguments[key] = value;
@@ -25,7 +25,8 @@ export const constructFn = <T>(
     });
   }
 
-  const canUpdateProperties = !targetMetadata || (targetMetadata.tags?.includes(MetadataTagEnum.SINGLETON) && !targetMetadata.singleton);
+  const canUpdateProperties = !targetMetadata ||
+    (targetMetadata.tags?.includes(MetadataTagEnum.SINGLETON) && !targetMetadata.singleton);
 
   const targetInstance = Reflect.construct(target, indexedArguments);
 

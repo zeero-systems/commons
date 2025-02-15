@@ -1,4 +1,9 @@
-export * from './src/common/polyfills.ts';
-export * from './src/decorator/polyfills.ts';
+import '~/common/polyfills.ts';
+import '~/decorator/polyfills.ts';
 
-export { default as Common } from '~/common/index.ts';
+export * from '~/common/index.ts';
+export * from '~/common/interfaces.ts';
+export * from '~/common/types.ts';
+
+export * from '~/decorator/index.ts';
+export * from '~/decorator/interfaces.ts';

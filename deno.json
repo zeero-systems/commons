@@ -1,4 +1,8 @@
 {
+  "name": "@zxxxro/ts-commons",
+  "version": "0.1.0",
+  "license": "GPL-3.0",
+  "exports": "./mod.ts",
   "tasks": {
     "dev": "deno run --watch main.ts"
   },
@@ -12,14 +16,14 @@
   "fmt": {
     "files": {
       "include": [
+        "index.ts",
         "src/",
-        "test/",
-        "test-mock/"
+        "test/"
       ]
     },
     "options": {
       "useTabs": false,
-      "lineWidth": 140,
+      "lineWidth": 120,
       "indentWidth": 2,
       "singleQuote": true,
       "proseWrap": "preserve"
@@ -27,7 +31,7 @@
   },
   "lint": {
     "files": {
-      "include": ["src/**/*.ts", "test/**/*.ts", "test-mock/**/*.ts"]
+      "include": ["index.ts", "src/**/*.ts", "test/**/*.ts"]
     },
     "rules": {
       "tags": ["recommended"],
