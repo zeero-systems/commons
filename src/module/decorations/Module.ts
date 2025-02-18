@@ -1,22 +1,24 @@
-import type { ModuleParametersType } from '~/module/types.ts';
+import type { ComponentParametersType } from '~/module/types.ts';
 import type { DecorationInterface } from '~/decorator/interfaces.ts';
 import type { DecorationType, DecoratorType } from '~/decorator/types.ts';
 
+import Consumer from '~/provider/decorations/Consumer.ts';
+import Component from '~/module/decorations/Component.ts';
 import DecoratorException from '~/decorator/exceptions/DecoratorException.ts';
 import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
+import Mixin from '~/decorator/decorations/Mixin.ts';
+import Provider from '~/provider/decorations/Provider.ts';
+import Singleton from '~/common/decorations/Singleton.ts';
 
-import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
-import applySingletonProxyFn from '~/common/functions/applySingletonProxyFn.ts';
-import applyConsumerProxyFn from '~/provider/functions/applyConsumerProxyFn.ts';
-import applyModuleProxyFn from '~/module/functions/applyModuleProxyFn.ts';
+import decorateFn from '~/decorator/functions/decorateFn.ts';
 
 export class Module implements DecorationInterface {
-  group: DecoratorGroupEnum = DecoratorGroupEnum.MODULES;
+  group: DecoratorGroupEnum = DecoratorGroupEnum.COMMONS;
 
-  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P & ModuleParametersType>) {
+  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P & ComponentParametersType>) {
     if (decorator.context.kind == DecoratorKindEnum.CLASS) {
-      return applyModuleProxyFn(...applyConsumerProxyFn(...applySingletonProxyFn(decorator, decoration)))[0].target;
+      return Mixin([Consumer(), Provider(), Component(decoration?.parameters), Singleton() ])(decorator.target, decorator.context as any)
     }
 
     throw new DecoratorException('Method not implemented for {name} on {kind}.', {
@@ -26,4 +28,4 @@ export class Module implements DecorationInterface {
   }
 }
 
-export default (parameters?: ModuleParametersType) => applyDecorationFn(Module, parameters);
+export default (parameters?: ComponentParametersType) => decorateFn(Module, parameters);

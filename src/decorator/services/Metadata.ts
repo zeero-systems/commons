@@ -7,17 +7,20 @@ import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
 export class Metadata {
 
   static addDecorator<T, P>(
-    context: T & { metadata: MetadataType<T, P> },
+    target: T & { metadata: MetadataType<T, P> },
     property: string | symbol,
     decoration: DecorationType<P>,
   ): void {
-    if (!context.metadata.decorators) {
-      context.metadata.decorators = new Map<DecoratorPropertyType, ArrayMap<DecoratorGroupEnum, DecorationType<P>>>();
+    if (!target.metadata.decorators) {
+      target.metadata.decorators = new Map<DecoratorPropertyType, ArrayMap<DecoratorGroupEnum, DecorationType<P>>>();
     }
-    if (!context.metadata.decorators.has(property)) {
-      context.metadata.decorators.set(property, new ArrayMap<DecoratorGroupEnum, DecorationType<P>>());
+    if (!target.metadata.decorators.has(property)) {
+      target.metadata.decorators.set(property, new ArrayMap<DecoratorGroupEnum, DecorationType<P>>());
     }
-    context.metadata.decorators.get(property)?.add(decoration.target.group, decoration);
+    const decorations = target.metadata.decorators.get(property)?.get(decoration.target.group)
+    if (!decorations?.some((d) => d.target.constructor.name == decoration.target.constructor.name)) {
+      target.metadata.decorators.get(property)?.add(decoration.target.group, decoration);
+    }
   }
 
   static getDecorator<T, P>(target: T): MetadataDecoratorType<P> | undefined {

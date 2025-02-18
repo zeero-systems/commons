@@ -1,3 +1,4 @@
+// deno-lint-ignore-file ban-types
 import type ArrayMap from '~/structure/services/ArrayMap.ts';
 import type { DecorationInterface } from '~/decorator/interfaces.ts';
 import type { ConstructorType } from '~/common/types.ts';
@@ -10,7 +11,6 @@ export type AutoAccessorType = {
   set: (value: any) => void;
 };
 
-// deno-lint-ignore ban-types
 export type DecoratorTargetType<T> = ConstructorType<T> | AutoAccessorType | Function | undefined;
 
 export type DecorationType<P> = {

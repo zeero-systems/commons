@@ -1,6 +1,6 @@
-// deno-lint-ignore ban-types
-export type ArgType<T> = OmitType<T, object | Function> & Partial<PickType<T, object>>;
 export type ConstructorType<T> = T extends new (...args: infer A) => infer R ? new (...args: A) => R : new (...args: any) => any;
+// deno-lint-ignore ban-types
+export type ConstructorArgType<T> = OmitType<T, object | Function> & Partial<PickType<T, object>>;
 // deno-lint-ignore ban-types
 export type EntryType<T extends {}> = T extends readonly [unknown, ...unknown[]] ? TupleEntryType<T>
   : T extends ReadonlyArray<infer U> ? [`${number}`, U]

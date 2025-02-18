@@ -14,9 +14,13 @@ export class SettingProviderMock {
   }
 }
 
+interface UserProviderMockInterface {
+  getUserFirstName(): string
+}
+
 @Provider()
-export class UserProviderMock {
-  public getUserFirstName() {
+export class UserProviderMock implements UserProviderMockInterface {
+  public getUserFirstName(): string {
     return 'Eduardo'
   }
 }
@@ -30,9 +34,7 @@ export class ConsumerAccountMock {
   @Consumer(UserProviderMock)
   accessor secondAccessorUserProviderMock!: any;
   
-  constructor(public userProviderMock: UserProviderMock) {
-    console.log(UserProviderMock.name)
-  }
+  constructor(public userProviderMock: UserProviderMockInterface) {}
 
   public getUserFirstName() {
     return this.userProviderMock.getUserFirstName()

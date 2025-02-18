@@ -3,7 +3,7 @@ import { ConstructorType } from '~/common/types.ts';
 
 export type ModuleClassType = new (...args: any) => any
 
-export type ModuleParametersType = {
+export type ComponentParametersType = {
   providers?: Array<ProviderType>
   consumers?: Array<ConstructorType<any>>
 }

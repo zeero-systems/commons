@@ -1,5 +1,7 @@
 
 import Module from '~/module/decorations/Module.ts';
+import Singleton from '~/common/decorations/Singleton.ts';
+import Consumer from '~/provider/decorations/Consumer.ts';
 
 export class NonProviderMock {
   public getName() {
@@ -11,9 +13,11 @@ export class NonConsumerMock {
   constructor(public nonProviderMock: NonProviderMock) {}
 }
 
+@Singleton()
 @Module()
 export class EmptyApp {}
 
+@Singleton()
 @Module({
   providers: [NonProviderMock]
 })

@@ -1,7 +1,7 @@
 import type { JsonType } from '~/common/types.ts';
 
-export interface ExceptionInterface<T> extends Error {
-  key?: T | 'EXCEPTION';
+export interface ExceptionInterface<K> extends Error {
+  key?: K | 'EXCEPTION';
   name: string;
   message: string;
   context?: JsonType;
@@ -12,8 +12,8 @@ export interface ExceptionOptionsInterface extends ErrorOptions {
   context?: JsonType;
 }
 
-export interface KeyableExceptionOptionsInterface<T> extends ExceptionOptionsInterface {
-  key?: T;
+export interface KeyableExceptionOptionsInterface<K> extends ExceptionOptionsInterface {
+  key?: K;
 }
 
 export default {};

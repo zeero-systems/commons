@@ -1,4 +1,4 @@
-export const getParameterNamesFn = function (target: any, fnName?: string): string[] {
+export const parameterNamesFn = function (target: any, fnName?: string): string[] {
   const regex = `${fnName != undefined ? fnName : target.prototype ? target.name : ''}\\((.+)\\)`;
   const match = target.toString().match(regex);
   
@@ -9,4 +9,4 @@ export const getParameterNamesFn = function (target: any, fnName?: string): stri
   return [];
 };
 
-export default getParameterNamesFn;
+export default parameterNamesFn;

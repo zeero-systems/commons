@@ -1,10 +1,10 @@
-import type { ValidationInterface } from '~/validator/interfaces.ts';
 
 import Singleton from '~/common/decorations/Singleton.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 import isNullFn from '~/common/guards/isNullFn.ts';
 import isUndefinedFn from '~/common/guards/isUndefinedFn.ts';
+import { ValidationInterface } from '~/validator/interfaces.ts';
 
 @Singleton()
 export class Required implements ValidationInterface {
@@ -21,5 +21,3 @@ export class Required implements ValidationInterface {
     return ValidationEnum.INVALID;
   }
 }
-
-export default Required;

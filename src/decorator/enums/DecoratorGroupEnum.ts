@@ -1,8 +1,6 @@
 export enum DecoratorGroupEnum {
+  HIDDEN = 'hidden',
   COMMONS = 'commons',
-  MODULES = 'modules',
-  PROVIDERS = 'providers',
-  CONSUMERS = 'consumers',
   VALIDATIONS = 'validations',
 }
 

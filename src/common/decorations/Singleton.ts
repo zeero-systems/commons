@@ -4,16 +4,41 @@ import type { DecorationType, DecoratorType } from '~/decorator/types.ts';
 import DecoratorException from '~/decorator/exceptions/DecoratorException.ts';
 import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
+import Metadata from '~/decorator/services/Metadata.ts';
+import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
 
-import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
-import applySingletonProxyFn from '~/common/functions/applySingletonProxyFn.ts';
+import decorateFn from '~/decorator/functions/decorateFn.ts';
 
 export class Singleton implements DecorationInterface {
   group = DecoratorGroupEnum.COMMONS;
 
-  onAttach<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P>): any {
+  onAttach<T, P>(decorator: DecoratorType<T, P>, _decoration?: DecorationType<P>): any {
+    let target = decorator.target as any;
+    const context = decorator.context as any;
+    
     if (decorator.context.kind == DecoratorKindEnum.CLASS) {
-      return applySingletonProxyFn(decorator, decoration)[0].target
+
+      if (!Metadata.hasTag<T, P>(context, MetadataTagEnum.SINGLETON)) {
+        Metadata.applyTag<T, P>(context, MetadataTagEnum.SINGLETON);
+
+        target = new Proxy(target as any, {
+          construct(currentTarget, currentArgs, newTarget) {
+            if (currentTarget.prototype !== newTarget.prototype) {
+              return Reflect.construct(currentTarget, currentArgs, newTarget);
+            }
+
+            if (!context.metadata.singleton) {
+              context.metadata.singleton = Reflect.construct(currentTarget, currentArgs, newTarget);
+            }
+
+            return context.metadata.singleton;
+          },
+        });
+
+        target.toString = Function.prototype.toString.bind(decorator.target)
+      }
+
+      return target
     }
 
     throw new DecoratorException('Method not implemented for {name} on {kind}.', {
@@ -23,4 +48,4 @@ export class Singleton implements DecorationInterface {
   }
 }
 
-export default () => applyDecorationFn(Singleton);
+export default () => decorateFn(Singleton);

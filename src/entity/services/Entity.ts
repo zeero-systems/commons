@@ -8,12 +8,12 @@ import Context from '~/decorator/services/Metadata.ts';
 import ContextTagEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
 
 import isDateFn from '~/common/guards/isDateFn.ts';
-import getObjectEntriesFn from '~/common/functions/getObjectEntriesFn.ts';
+import objectEntriesFn from '~/common/functions/objectEntriesFn.ts';
 import validateValueFn from '~/validator/functions/validateValueFn.ts';
 
 export class Entity implements EntityInterface {
   public toEntries(): ReadonlyArray<EntryType<OmitType<this, Function>>> {
-    return getObjectEntriesFn<OmitType<this, Function>>(this);
+    return objectEntriesFn<OmitType<this, Function>>(this);
   }
 
   public toPlain(): string {

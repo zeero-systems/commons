@@ -1,8 +1,8 @@
 export enum MetadataTagEnum {
   ANY = 'any',
-  MODULE = 'module',
   PROVIDER = 'provider',
   CONSUMER = 'consumer',
+  COMPONENT = 'component',
   SINGLETON = 'singleton',
 }
 

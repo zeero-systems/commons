@@ -1,5 +1,5 @@
 import type { MetadataType } from '~/decorator/types.ts';
-import type { ArgType } from '~/common/types.ts';
+import type { ConstructorArgType } from '~/common/types.ts';
 
 import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
 
@@ -8,12 +8,12 @@ import isNumberFn from '~/common/guards/isNumberFn.ts';
 export const constructFn = <T>(
   target: new (...args: any[]) => T,
   targetOptions?: {
-    arguments?: ArgType<T>;
+    arguments?: ConstructorArgType<T>;
   },
 ): T => {
   const namedArguments: any = {};
   const indexedArguments: any[] = [];
-  const targetMetadata = target[Symbol.metadata] as MetadataType<T, ArgType<T>>;
+  const targetMetadata = target[Symbol.metadata] as MetadataType<T, ConstructorArgType<T>>;
 
   if (targetOptions?.arguments) {
     Object.entries(targetOptions?.arguments).forEach(([key, value]) => {

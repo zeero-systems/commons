@@ -5,7 +5,7 @@ import { AnotherProviderConsumerApp, ConsumerApp, EmptyApp, ProviderApp, Provide
 
 import Metadata from '~/decorator/services/Metadata.ts';
 import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
-import Provider from '~/provider/services/Provider.ts';
+import Injector from '~/provider/services/Injector.ts';
 
 import constructFn from '~/common/functions/constructFn.ts';
 
@@ -13,12 +13,12 @@ describe('module', () => {
   it('add empty module', () => {
     const appModule = new EmptyApp()
 
-    expect(Metadata.getTags(appModule)?.includes(MetadataTagEnum.MODULE))
+    expect(Metadata.getTags(appModule)?.includes(MetadataTagEnum.COMPONENT))
   });
 
   it('apply providers', () => {
     new ProviderApp()
-    expect(Provider.providers.get("NonProviderMock")).not.toBeUndefined()
+    expect(Injector.providers.get("NonProviderMock")).not.toBeUndefined()
   })
 
   it('instantiate providers', () => {
@@ -38,8 +38,6 @@ describe('module', () => {
     
     expect(anotherProviderConsumerApp.providerConsumerApp.nonProviderMock.getName()).not.toBeUndefined()
     expect(anotherProviderConsumerApp.providerConsumerApp.nonConsumerMock.nonProviderMock.getName()).not.toBeUndefined()
-
-    console.log(Provider.providers)
   })
 
 });

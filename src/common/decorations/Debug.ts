@@ -1,7 +1,7 @@
 import type { DecorationInterface } from '~/decorator/interfaces.ts';
 import type { DecorationType, DecoratorType } from '~/decorator/types.ts';
 
-import applyDecorationFn from '~/decorator/functions/applyDecorationFn.ts';
+import decorateFn from '~decorator/functions/decorateFn.ts';
 import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
 
 export class Debug implements DecorationInterface {
@@ -16,4 +16,4 @@ export class Debug implements DecorationInterface {
   }
 }
 
-export default () => applyDecorationFn(Debug);
+export default () => decorateFn(Debug);

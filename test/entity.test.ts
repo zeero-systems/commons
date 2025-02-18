@@ -55,7 +55,7 @@ describe('entity', () => {
 
     it('properties validation', () => {
       expect(requiredEntityMock.validateProperties()).toEqual({
-        birthDate: [{ key: 'INVALID', name: 'Required' }]
+        birthDate: [{ key: 'INVALID', name: 'RequiredDecoration' }]
       });
     });
   });

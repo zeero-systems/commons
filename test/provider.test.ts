@@ -22,32 +22,4 @@ describe('provider', () => {
     expect(consumerAccountMock.getFirstAccessorUserFirstName()).toEqual('Eduardo')
     expect(consumerAccountMock.getSecondAccessorUserFirstName()).toEqual('Eduardo')
   });
-    
-
-  
-  
-  // const userEntity = constructFn(ConsumerUserMock);
-  
-  // describe('injeted from a constructor class', () => {
-  //   it('service was injected', () => {
-  //     expect(userEntity.fromParamPropsUserMock).toBeDefined()
-  //   });
-    
-  //   it('field has correct value', () => {
-  //     expect(userEntity.fromParamPropsUserMock.firstName).toEqual("Eduardo")
-  //   });
-  // });
-  
-
-
-  
-  // describe('injeted from a accessor field name', () => {        
-  //   it('service was injected', () => {
-  //     expect(userEntity.serviceUserMock).toBeDefined()
-  //   });
-
-  //   it('field has correct value', () => {
-  //     expect(userEntity.serviceUserMock.firstName).toEqual("Eduardo")
-  //   });
-  // });
 });
