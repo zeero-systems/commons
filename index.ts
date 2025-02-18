@@ -27,6 +27,7 @@ import DecoratorException from '~/decorator/exceptions/DecoratorException.ts';
 import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import Metadata from '~/decorator/services/Metadata.ts';
+import Mixin from '~/decorator/decorations/Mixin.ts';
 import decorateFn from '~/decorator/functions/decorateFn.ts';
 import isClassDecoratorContextFn from '~/decorator/guards/isClassDecoratorContextFn.ts';
 import isClassMemberDecoratorContextFn from '~/decorator/guards/isClassMemberDecoratorContextFn.ts';
@@ -69,11 +70,12 @@ export default {
     ValidationEnum,
   },
   decorators: {
-    Debug,
-    Singleton,
-    Module,
     Consumer,
-    Provider
+    Debug,
+    Mixin,
+    Module,
+    Provider,
+    Singleton,
   },
   functions: {
     decorateFn,
