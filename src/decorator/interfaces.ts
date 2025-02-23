@@ -1,10 +1,6 @@
-import type { DecorationType, DecoratorType } from '~/decorator/types.ts';
+import type { DecorationType, ArtifactType } from '~/decorator/types.ts';
 
-import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
-
-export interface DecorationInterface {
-  group: DecoratorGroupEnum;
-
-  onAttach?<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P>): any;
-  onInitialize?<T, P>(decorator: DecoratorType<T, P>, decoration?: DecorationType<P>): any;
+export interface AnnotationInterface {  
+  onAttach?<P>(artifact: ArtifactType, decoration: DecorationType<P>): any;
+  onInitialize?<P>(artifact: ArtifactType, decoration: DecorationType<P>): any;
 }

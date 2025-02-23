@@ -1,13 +1,14 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
-import constructFn from '~/common/functions/constructFn.ts';
 import { RequiredEntityMock, UserEntityMock } from '-/test/mocks/entityMocks.ts';
+
+import Factory from '~/common/services/Factory.ts';
 
 describe('entity', () => {
   describe('extended class', () => {
 
-    const userEntity = constructFn(UserEntityMock, {
+    const userEntity = Factory.construct(UserEntityMock, {
       arguments: {
         firstName: 'eduardo',
         lastName: 'segura',
@@ -55,7 +56,9 @@ describe('entity', () => {
 
     it('properties validation', () => {
       expect(requiredEntityMock.validateProperties()).toEqual({
-        birthDate: [{ key: 'INVALID', name: 'RequiredDecoration' }]
+        firstName: [{ key: 'UNDEFINED' }],
+        lastName: [{ key: 'INVALID', name: 'Required' }],
+        birthDate: [{ key: 'INVALID', name: 'Required' }]
       });
     });
   });

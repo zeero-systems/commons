@@ -1,8 +1,16 @@
-import Debug from '~/common/decorations/Debug.ts';
+import ArrayMap from '~/structure/services/ArrayMap.ts';
+import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
+import Common from '~/common/services/Common.ts';
+import Container from '~/container/services/Container.ts';
+import Decorator from '~/decorator/services/Decorator.ts';
+import Entity from '~/entity/services/Entity.ts';
 import Exception from '~/common/services/Exception.ts';
-import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
-import Singleton from '~/common/decorations/Singleton.ts';
-import constructFn from '~/common/functions/constructFn.ts';
+import Factory from '~/common/services/Factory.ts';
+import Metadata from '~/common/services/Metadata.ts';
+import Objector from '~/common/services/Objector.ts';
+import Text from '~/common/services/Text.ts';
+import Validator from '~/validator/services/Validator.ts';
+
 import isClassFn from '~/common/guards/isClassFn.ts';
 import isDateFn from '~/common/guards/isDateFn.ts';
 import isArrayFn from '~/common/guards/isArrayFn.ts';
@@ -19,72 +27,53 @@ import isSymbolFn from '~/common/guards/isSymbolFn.ts';
 import isUndefinedFn from '~/common/guards/isUndefinedFn.ts';
 import isWeakMapFn from '~/common/guards/isWeakMapFn.ts';
 import isWeakSetFn from '~/common/guards/isWeakSetFn.ts';
-import getObjectEntriesFn from '~/common/functions/objectEntriesFn.ts';
-import getParameterNamesFn from '~/common/functions/parameterNamesFn.ts';
-import toFirstLetterToUppercaseFn from '~/common/functions/firstLetterUppercaseFn.ts';
-
-import DecoratorException from '~/decorator/exceptions/DecoratorException.ts';
-import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
-import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
-import Metadata from '~/decorator/services/Metadata.ts';
-import Mixin from '~/decorator/decorations/Mixin.ts';
-import decorateFn from '~/decorator/functions/decorateFn.ts';
 import isClassDecoratorContextFn from '~/decorator/guards/isClassDecoratorContextFn.ts';
 import isClassMemberDecoratorContextFn from '~/decorator/guards/isClassMemberDecoratorContextFn.ts';
-
-import Entity from '~/entity/services/Entity.ts';
-
-import Module from '~/module/decorations/Module.ts';
-import Modulator from '~/module/services/Modulator.ts';
-
-import Consumer from '~/provider/decorations/Consumer.ts';
-import Provider from '~/provider/decorations/Provider.ts';
-import Injector from '~/provider/services/Injector.ts';
-
-import ArrayMap from '~/structure/services/ArrayMap.ts';
-
-import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 import isValidationFn from '~/validator/guards/isValidationFn.ts';
-import validateObjectFn from '~/validator/functions/validateObjectFn.ts';
-import validateValueFn from '~/validator/functions/validateValueFn.ts';
+
+import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
+import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
+
+import Consumer from '~/container/annotations/Consumer.ts';
+import Debug from '~/common/annotations/Debug.ts';
+import Mixin from '~/common/annotations/Mixin.ts';
+import Module from '~/container/annotations/Module.ts';
+import Provider from '~/container/annotations/Provider.ts';
+import Singleton from '~/common/annotations/Singleton.ts';
 
 export * from '~/common/interfaces.ts';
 export * from '~/common/types.ts';
 export * from '~/decorator/interfaces.ts';
 export * from '~/entity/interfaces.ts';
-export * from '~/module/types.ts';
-export * from '~/provider/types.ts';
+export * from '~/container/types.ts';
 export * from '~/structure/interfaces.ts';
 export * from '~/validator/interfaces.ts';
 export * from '~/validator/types.ts';
 
 export default {
+  AnnotationException,
   ArrayMap,
+  Common,
+  Container,
+  Decorator,
+  Factory,
   Entity,
   Exception,
-  DecoratorException,
+  Metadata,
+  Objector,
+  Text,
+  Validator,
   enums: {
-    DecoratorGroupEnum,
     DecoratorKindEnum,
-    MetadataTagEnum,
     ValidationEnum,
   },
-  decorators: {
+  annotations: {
     Consumer,
     Debug,
     Mixin,
     Module,
     Provider,
     Singleton,
-  },
-  functions: {
-    decorateFn,
-    constructFn,
-    getObjectEntriesFn,
-    getParameterNamesFn,
-    toFirstLetterToUppercaseFn,
-    validateObjectFn,
-    validateValueFn,
   },
   guards: {
     isArrayFn,
@@ -106,9 +95,5 @@ export default {
     isWeakMapFn,
     isWeakSetFn,
     isValidationFn,
-  },
-
-  Injector,
-  Modulator,
-  Metadata,
+  }
 }

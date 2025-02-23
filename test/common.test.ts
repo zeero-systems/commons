@@ -1,25 +1,25 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
-import constructFn from '~/common/functions/constructFn.ts';
-import parameterNamesFn from '~/common/functions/parameterNamesFn.ts';
-import firstLetterUppercaseFn from '~/common/functions/firstLetterUppercaseFn.ts';
 import { UserMock } from '-/test/mocks/commonMocks.ts';
 import { UserEntityMock } from '-/test/mocks/entityMocks.ts';
 import { SingletonUserMock } from '-/test/mocks/singletonMocks.ts';
+
+import Factory from '~/common/services/Factory.ts';
+import Text from '~/common/services/Text.ts';
 
 describe('common', () => {
 
   describe('construct', () => {
     it('from simple class', () => {
-      const userMock = constructFn(UserMock, { arguments: { firstName: 'eduardo', lastName: 'segura' } });
+      const userMock = Factory.construct(UserMock, { arguments: { firstName: 'eduardo', lastName: 'segura' } });
 
       expect(userMock.firstName).toBe('eduardo');
       expect(userMock.lastName).toBe('segura');
     });
 
     it('from a entity class', () => {
-      const userEntityMock = constructFn(UserEntityMock, { arguments: { firstName: 'jaime', lastName: 'castro' } });
+      const userEntityMock = Factory.construct(UserEntityMock, { arguments: { firstName: 'jaime', lastName: 'castro' } });
 
       expect(userEntityMock.firstName).toBe('jaime');
       expect(userEntityMock.lastName).toBe('castro');
@@ -37,29 +37,29 @@ describe('common', () => {
 
   describe('functions', () => {
 
-    describe('parameterNamesFn', () => {
+    describe('Factory.getParameterNames', () => {
       it('with normal parameters', () => {
         function normalFunctionName(_text: string) {}
     
-        expect(parameterNamesFn(normalFunctionName)).toEqual(['_text']);
+        expect(Factory.getParameterNames(normalFunctionName)).toEqual(['_text']);
       });
     
       it('with this parameters', () => {
         function functionWithThis(this: string) {}
     
-        expect(parameterNamesFn(functionWithThis)).toEqual([]);
+        expect(Factory.getParameterNames(functionWithThis)).toEqual([]);
       });
     
       it('with an arrow function', () => {
         const arrowFunctionWithoutName = (_id: number) => {};
     
-        expect(parameterNamesFn(arrowFunctionWithoutName)).toEqual(['_id']);
+        expect(Factory.getParameterNames(arrowFunctionWithoutName)).toEqual(['_id']);
       });
     });
 
     describe('toFirstLetterUpercaseFn', () => {
       it('from a callback', () => {
-        expect(firstLetterUppercaseFn('eduardo')).toEqual('Eduardo');
+        expect(Text.toFirstLetterUppercase('eduardo')).toEqual('Eduardo');
       });
     });
   });

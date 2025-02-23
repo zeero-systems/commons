@@ -1,13 +1,15 @@
-class ArrayMap<K, A> extends Map<K, A[]> {
+class ArrayMap<K, A> extends Map<K, Array<A>> {
   constructor() {
     super(new Map<K, A[]>());
   }
 
-  add(key: K, value: A): this {
+  addUnique(key: K, value: A): this {
     if (!this.has(key)) {
       this.set(key, new Array<A>());
     }
-    this.get(key)?.push(value);
+    if (!this.get(key)?.some(v => v === value)) {
+      this.get(key)?.push(value);
+    }
 
     return this;
   }

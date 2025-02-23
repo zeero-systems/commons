@@ -1,6 +1,9 @@
-export type ConstructorType<T> = T extends new (...args: infer A) => infer R ? new (...args: A) => R : new (...args: any) => any;
+export type ConstructorType<T> = T extends new (...args: infer A) => infer R ? new (...args: A) => R
+  : new (...args: any) => any;
+
 // deno-lint-ignore ban-types
 export type ConstructorArgType<T> = OmitType<T, object | Function> & Partial<PickType<T, object>>;
+
 // deno-lint-ignore ban-types
 export type EntryType<T extends {}> = T extends readonly [unknown, ...unknown[]] ? TupleEntryType<T>
   : T extends ReadonlyArray<infer U> ? [`${number}`, U]
@@ -11,7 +14,9 @@ export type EntryType<T extends {}> = T extends readonly [unknown, ...unknown[]]
       : never
     : never
   : never;
+
 export type GuardType = (record: any) => boolean;
+
 export type JsonType =
   | string
   | number
@@ -23,9 +28,17 @@ export type JsonType =
   | { readonly [key: string]: JsonType }
   | { toJSON(): JsonType };
 export type MappedKeyType<T> = { [K in keyof T]: T[K] };
+
 export type MappedType<T, V> = { [K in keyof T]: V };
+
+export type MetadataType = { [key: string | symbol]: any };
+
 export type OmitType<T, R> = { [P in keyof T as T[P] extends R ? never : P]: T[P] };
+
 export type PickType<T, R> = { [P in keyof T as T[P] extends R ? P : never]: T[P] };
+
+export type TargetPropertyType = string | number | symbol;
+
 export type TupleEntryType<T extends readonly unknown[], I extends unknown[] = [], R = never> = T extends
   readonly [infer Head, ...infer Tail] ? TupleEntryType<Tail, [...I, unknown], R | [`${I['length']}`, Head]>
   : R;

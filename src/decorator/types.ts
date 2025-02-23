@@ -1,44 +1,43 @@
-// deno-lint-ignore-file ban-types
-import type ArrayMap from '~/structure/services/ArrayMap.ts';
-import type { DecorationInterface } from '~/decorator/interfaces.ts';
-import type { ConstructorType } from '~/common/types.ts';
+import type { AnnotationInterface } from '~/decorator/interfaces.ts';
+import type { MetadataType } from '~/common/types.ts';
 
-import DecoratorGroupEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
-import MetadataTagEnum from '~/common/enums/MetadataTagEnum.ts';
-
-export type AutoAccessorType = {
-  get: () => any;
-  set: (value: any) => void;
+export type ArtifactType = {
+  name: string;
+  target: any;
+  parameters: string[];
 };
 
-export type DecoratorTargetType<T> = ConstructorType<T> | AutoAccessorType | Function | undefined;
+export type DecoratorFunctionType = (
+  target: any,
+  context: DecoratorContextType,
+  options?: AnnotationOptionsType,
+) => any;
 
-export type DecorationType<P> = {
-  target: DecorationInterface;
+export type DecoratorContextType = DecoratorContext & {
+  kind: string;
+  name: string | symbol | undefined;
+  static?: boolean;
+  private?: boolean;
+  access?: { get?: (object: any) => any, set?: (object: any, value: any) => void };
+  addInitializer(initializer: () => void): void;
+  metadata: MetadataType;
+};
+
+export type DecorationMetadataType<P> = {
+  kind: 'class' | 'method' | 'getter' | 'setter' | 'field' | 'accessor';
+  static?: boolean;
+  private?: boolean;
+  annotation: AnnotationInterface;
+  options?: AnnotationOptionsType;
   parameters?: P;
 };
 
-export type DecoratorType<T, P> = {
-  target: T;
-  targetName: string;
-  targetParameters: string[];
-  context: DecoratorContextType<T, P>;
+export type DecorationType<P> = DecorationMetadataType<P> & {
+  context: DecoratorContextType;
 };
 
-export type DecoratorContextType<T, P> = DecoratorContext & {
-  metadata: MetadataType<T, P>;
+export type AnnotationOptionsType = {
+  stackable?: boolean;
 };
-
-export type DecoratorPropertyType = string | number | symbol;
-
-export type MetadataType<T, P> = {
-  tags?: MetadataTagEnum[];
-  singleton?: T;
-  decorators?: MetadataDecoratorType<P>;
-};
-
-export type MetadataDecoratorType<P> = Map<DecoratorPropertyType, ArrayMap<DecoratorGroupEnum, DecorationType<P>>>
-
-export type DecorationFunctionType<T> = (target: T, context: DecoratorContextType<T, any>) => any
 
 export default {};

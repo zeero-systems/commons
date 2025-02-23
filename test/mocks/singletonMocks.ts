@@ -1,6 +1,6 @@
 import { UserType } from '-/test/mocks/commonMocks.ts';
 
-import Singleton from '~/common/decorations/Singleton.ts';
+import Singleton from '~/common/annotations/Singleton.ts';
 
 @Singleton()
 export class SingletonUserMock implements UserType {

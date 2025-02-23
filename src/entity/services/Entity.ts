@@ -2,18 +2,19 @@
 import type { EntryType, OmitType } from '~/common/types.ts';
 import type { EntityInterface } from '~/entity/interfaces.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
-import type { ValidationInterface } from '~/validator/interfaces.ts';
 
-import Context from '~/decorator/services/Metadata.ts';
-import ContextTagEnum from '~/decorator/enums/DecoratorGroupEnum.ts';
+import Decorator from '~/decorator/services/Decorator.ts';
+import Metadata from '~/common/services/Metadata.ts';
+import Validator from '~/validator/services/Validator.ts';
 
 import isDateFn from '~/common/guards/isDateFn.ts';
-import objectEntriesFn from '~/common/functions/objectEntriesFn.ts';
-import validateValueFn from '~/validator/functions/validateValueFn.ts';
+import isDecoratorMetadataFn from '~/decorator/guards/isDecoratorMetadataFn.ts';
+import isValidationFn from '~/validator/guards/isValidationFn.ts';
+import Objector from '~/common/services/Objector.ts';
 
 export class Entity implements EntityInterface {
   public toEntries(): ReadonlyArray<EntryType<OmitType<this, Function>>> {
-    return objectEntriesFn<OmitType<this, Function>>(this);
+    return Objector.getEntries<OmitType<this, Function>>(this);
   }
 
   public toPlain(): string {
@@ -41,20 +42,26 @@ export class Entity implements EntityInterface {
   }
 
   public validateProperty<K extends keyof OmitType<this, Function>>(propertyKey: K): ValidationResultType[] {
-    const decorator = Context.getDecorator<typeof this, any>(this);
-    const decorators = decorator?.get(propertyKey)?.get(ContextTagEnum.VALIDATIONS);
+    let validations: any[] = []
+    const metadata = Metadata.getProperty(this, Decorator.metadata)
 
-    if (!decorators) return [];
+    if (isDecoratorMetadataFn(metadata)) {        
+      validations = metadata.get(propertyKey)?.reduce((previous: any, current) => {
+        if (isValidationFn(current.annotation)) {
+          previous.push({
+            validation: current.annotation,
+            parameters: current.parameters
+          })
+        }
+        return previous
+      }, [])
+    }
 
-    const validations = decorators.map((decorator) => {
-      return { validation: decorator.target as unknown as ValidationInterface, parameters: decorator.parameters };
-    });
-
-    return validateValueFn(this[propertyKey], validations);
+    return Validator.validateValue(this[propertyKey], validations);
   }
 
   public validateProperties(): { [key in keyof OmitType<this, Function>]: ValidationResultType[] } {
-    return this.toEntries().reduce((a, [key, value]) => {
+    return this.toEntries().reduce((a, [key, _value]) => {
       return { ...a, [key]: this.validateProperty(key as any) };
     }, {}) as { [key in keyof OmitType<this, Function>]: ValidationResultType[] };
   }
