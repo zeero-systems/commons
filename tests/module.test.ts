@@ -1,16 +1,61 @@
 
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import { AnotherProviderConsumerApp, ConsumerApp, EmptyApp, ProviderApp, ProviderConsumerApp } from '-/test/mocks/moduleMock.ts';
 
 import Container from '~/container/services/Container.ts';
-
-import Metadata from '~/common/services/Metadata.ts';
-import isDecoratorMetadataFn from '~/decorator/guards/isDecoratorMetadataFn.ts';
 import Factory from '~/common/services/Factory.ts';
+import Metadata from '~/common/services/Metadata.ts';
+import Module from '~/container/annotations/Module.ts';
+
+import isDecoratorMetadataFn from '~/decorator/guards/isDecoratorMetadataFn.ts';
 
 describe('module', () => {
-  it('add empty module', () => {
+
+  class NonProviderMock {
+    public getName() {
+      return 'NonProvider'
+    }
+  }
+  
+  class NonConsumerMock {
+    constructor(public nonProviderMock: NonProviderMock) {}
+  }
+  
+  @Module()
+  class EmptyApp {}
+  
+  @Module({
+    providers: [NonProviderMock]
+  })
+  class ProviderApp {}
+  
+  @Module({
+    providers: [NonProviderMock]
+  })
+  class ConsumerApp {
+    constructor(public nonProviderMock: NonProviderMock) {}
+  }
+  
+  @Module({
+    providers: [NonProviderMock],
+    consumers: [NonConsumerMock],
+  })
+  class ProviderConsumerApp {
+    constructor(
+      public nonProviderMock: NonProviderMock,
+      public nonConsumerMock: NonConsumerMock
+    ) {}
+  }
+  
+  @Module({
+    providers: [ProviderConsumerApp]
+  })
+  class AnotherProviderConsumerApp {
+    constructor(public providerConsumerApp: ProviderConsumerApp) {}
+  }
+
+
+  it('check annotation', () => {
     const appModule = new EmptyApp()
     const metadata = Metadata.get(appModule);
     
@@ -30,19 +75,19 @@ describe('module', () => {
     expect(Container.providers.get("NonProviderMock")).not.toBeUndefined()
   })
 
-  it('instantiate providers', () => {
+  it('inject providers', () => {
     const consumerApp = Factory.construct(ConsumerApp)
     expect(consumerApp.nonProviderMock.getName()).not.toBeUndefined()
   })
 
-  it('instantiate consumer and providers', () => {
+  it('inject consumer and providers', () => {
     const providerConsumerApp = Factory.construct(ProviderConsumerApp)
     
     expect(providerConsumerApp.nonProviderMock.getName()).not.toBeUndefined()
     expect(providerConsumerApp.nonConsumerMock.nonProviderMock.getName()).not.toBeUndefined()
   })
 
-  it('instantiate another module', () => {
+  it('inject another module', () => {
     const anotherProviderConsumerApp = Factory.construct(AnotherProviderConsumerApp)
     
     expect(anotherProviderConsumerApp.providerConsumerApp.nonProviderMock.getName()).not.toBeUndefined()

@@ -1,6 +1,7 @@
 // deno-lint-ignore-file ban-types
 import type { EntryType, OmitType } from '~/common/types.ts';
 import type { EntityInterface } from '~/entity/interfaces.ts';
+import type { MappedEntityPropertyType } from '~/entity/types.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
 
 import Decorator from '~/decorator/services/Decorator.ts';
@@ -60,10 +61,10 @@ export class Entity implements EntityInterface {
     return Validator.validateValue(this[propertyKey], validations);
   }
 
-  public validateProperties(): { [key in keyof OmitType<this, Function>]: ValidationResultType[] } {
+  public validateProperties(): MappedEntityPropertyType<this, ValidationResultType[]> {
     return this.toEntries().reduce((a, [key, _value]) => {
       return { ...a, [key]: this.validateProperty(key as any) };
-    }, {}) as { [key in keyof OmitType<this, Function>]: ValidationResultType[] };
+    }, {}) as MappedEntityPropertyType<this, ValidationResultType[]>
   }
 }
 

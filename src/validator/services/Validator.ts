@@ -12,7 +12,7 @@ export class Validator {
   public static validateObject<T extends {}>(
     target: T,
     validators: {
-      [key: string | symbol]: Array<{ validation: ValidationInterface; parameters?: unknown[] }>;
+      [key: string | symbol]: Array<{ validation: ValidationInterface; parameters?: unknown }>;
     },
   ) {
     return Objector.getEntries(target).reduce((previous, [key, value]: EntryType<T>) => {
@@ -22,7 +22,7 @@ export class Validator {
 
   public static validateValue<T>(
     value: T,
-    validations?: { validation: ValidationInterface; parameters?: unknown[] }[],
+    validations?: { validation: ValidationInterface; parameters?: unknown }[],
   ) {
     const validationResults: Array<ValidationResultType> = [];
 

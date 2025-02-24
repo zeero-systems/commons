@@ -10,7 +10,7 @@ export type ValidationType = {
 export type ValidationResultType = {
   key: ValidationEnum;
   name: string;
-  parameters?: unknown[];
+  parameters?: unknown;
 };
 
 export default {};
