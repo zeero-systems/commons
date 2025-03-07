@@ -33,7 +33,7 @@ import isValidationFn from '~/validator/guards/isValidationFn.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
-import validations from '~/validator/validations.ts';
+import Validations from '~/validator/validations.ts';
 
 import Consumer from '~/container/annotations/Consumer.ts';
 import Debug from '~/common/annotations/Debug.ts';
@@ -59,57 +59,59 @@ export * from '~/entity/types.ts';
 export * from '~/validator/interfaces.ts';
 export * from '~/validator/types.ts';
 
+export const Annotations ={
+  Consumer,
+  Debug,
+  Equal,
+  GreaterThan,
+  GreaterThanEqual,
+  LessThan,
+  LessThanEqual,
+  Mixin,
+  Module,
+  Provider,
+  Regex,
+  Required,
+  Singleton,
+}
+
+export const Guards = {
+  isArrayFn,
+  isBigIntFn,
+  isBooleanFn,
+  isClassFn,
+  isClassDecoratorContextFn,
+  isClassMemberDecoratorContextFn,
+  isDateFn,
+  isFunctionFn,
+  isMapFn,
+  isNullFn,
+  isNumberFn,
+  isObjectFn,
+  isSetFn,
+  isStringFn,
+  isSymbolFn,
+  isUndefinedFn,
+  isWeakMapFn,
+  isWeakSetFn,
+  isValidationFn,
+}
+
 export default {
   AnnotationException,
+  Annotations,
   Common,
   Container,
   Decorator,
-  Factory,
+  DecoratorKindEnum,
   Entity,
   Exception,
+  Factory,
+  Guards,
   Metadata,
   Objector,
   Text,
   Validator,
-  annotations: {
-    Consumer,
-    Debug,
-    Equal,
-    GreaterThan,
-    GreaterThanEqual,
-    LessThan,
-    LessThanEqual,
-    Mixin,
-    Module,
-    Provider,
-    Regex,
-    Required,
-    Singleton,
-  },
-  enums: {
-    DecoratorKindEnum,
-    ValidationEnum,
-  },
-  guards: {
-    isArrayFn,
-    isBigIntFn,
-    isBooleanFn,
-    isClassFn,
-    isClassDecoratorContextFn,
-    isClassMemberDecoratorContextFn,
-    isDateFn,
-    isFunctionFn,
-    isMapFn,
-    isNullFn,
-    isNumberFn,
-    isObjectFn,
-    isSetFn,
-    isStringFn,
-    isSymbolFn,
-    isUndefinedFn,
-    isWeakMapFn,
-    isWeakSetFn,
-    isValidationFn,
-  },
-  validations
+  ValidationEnum,
+  Validations
 }
