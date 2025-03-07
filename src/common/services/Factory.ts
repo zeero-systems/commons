@@ -5,6 +5,12 @@ import Metadata from '~/common/services/Metadata.ts';
 
 import isNumberFn from '~/common/guards/isNumberFn.ts';
 
+/**
+ * Common operations for classes and functions
+ * 
+ * @member {Function} construct - Instantiate a class with arguments
+ * @member {Function} getParameterNames - Return a list with named parameters from a function
+ */ 
 export class Factory {
 
   public static construct<T>(
