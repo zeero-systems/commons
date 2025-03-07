@@ -43,28 +43,41 @@ export class Entity implements EntityInterface {
   }
 
   public validateProperty<K extends keyof OmitType<this, Function>>(propertyKey: K): ValidationResultType[] {
-    let validations: any[] = []
-    const metadata = Metadata.getProperty(this, Decorator.metadata)
-
-    if (isDecoratorMetadataFn(metadata)) {        
-      validations = metadata.get(propertyKey)?.reduce((previous: any, current) => {
-        if (isValidationFn(current.annotation)) {
-          previous.push({
-            validation: current.annotation,
-            parameters: current.parameters
-          })
-        }
-        return previous
-      }, [])
-    }
-
-    return Validator.validateValue(this[propertyKey], validations);
+      let validations: any[] = []
+      const metadata = Metadata.getProperty(this, Decorator.metadata)
+  
+      if (isDecoratorMetadataFn(metadata)) {        
+        validations = metadata.get(propertyKey)?.reduce((previous: any, current) => {
+          if (isValidationFn(current.annotation)) {
+            previous.push({
+              validation: current.annotation,
+              parameters: current.parameters
+            })
+          }
+          return previous
+        }, [])
+      }
+  
+    return Validator.validateValue(this[propertyKey], validations)
   }
 
-  public validateProperties(): MappedEntityPropertyType<this, ValidationResultType[]> {
-    return this.toEntries().reduce((a, [key, _value]) => {
-      return { ...a, [key]: this.validateProperty(key as any) };
-    }, {}) as MappedEntityPropertyType<this, ValidationResultType[]>
+  public validateProperties(): Promise<MappedEntityPropertyType<this, ValidationResultType[]>> {
+    return new Promise((resolve) => {
+
+      const promises: any = []
+      
+      for (const [key, _value] of this.toEntries()) {
+        promises.push({ key, result: this.validateProperty(key as any)})        
+      }
+
+      Promise.all(promises).then((items) => {
+        const validations: any = {}
+        for (const { key, result } of items) {
+          validations[key] = result
+        }
+        resolve(validations)
+      })
+    })
   }
 }
 

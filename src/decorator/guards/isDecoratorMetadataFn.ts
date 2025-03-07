@@ -1,9 +1,7 @@
-import type { OmitType, TargetPropertyType } from '~/common/types.ts';
-import type { DecorationType } from '~/decorator/types.ts';
+import type { TargetPropertyType } from '~/common/types.ts';
+import type { DecorationMetadataType } from '~/decorator/types.ts';
 
-import ArrayMap from '~/structure/services/ArrayMap.ts';
-
-export const isDecoratorMetadataFn = (x: any): x is ArrayMap<TargetPropertyType, DecorationType<any>> => {
+export const isDecoratorMetadataFn = (x: any): x is Map<TargetPropertyType, DecorationMetadataType<any>[]> => {
   return typeof x !== 'undefined' && typeof x === 'object'
 };
 

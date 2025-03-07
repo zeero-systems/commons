@@ -60,8 +60,8 @@ describe('entity', () => {
     expect(userEntity.getPropertyType('birthDate')).toEqual('undefined');
   });
 
-  it('validateProperties method', () => {
-    expect(userEntity.validateProperties()).toMatchObject({
+  it('validateProperties method', async() => {
+    expect(await userEntity.validateProperties()).toMatchObject({
         firstName: [{ key: 'VALID', name: 'Required' }],
         lastName: [{ key: 'UNDEFINED' }],
         created: [{ key: 'UNDEFINED' }],

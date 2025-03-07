@@ -1,4 +1,3 @@
-import ArrayMap from '~/structure/services/ArrayMap.ts';
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
 import Common from '~/common/services/Common.ts';
 import Container from '~/container/services/Container.ts';
@@ -34,11 +33,20 @@ import isValidationFn from '~/validator/guards/isValidationFn.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
+import validations from '~/validator/validations.ts';
+
 import Consumer from '~/container/annotations/Consumer.ts';
 import Debug from '~/common/annotations/Debug.ts';
+import Equal from '~/validator/annotations/Equal.ts';
+import GreaterThan from '~/validator/annotations/GreaterThan.ts';
+import GreaterThanEqual from '~/validator/annotations/GreaterThanEqual.ts';
+import LessThanEqual from '~/validator/annotations/LessThanEqual.ts';
+import LessThan from '~/validator/annotations/LessThan.ts';
 import Mixin from '~/common/annotations/Mixin.ts';
 import Module from '~/container/annotations/Module.ts';
 import Provider from '~/container/annotations/Provider.ts';
+import Regex from '~/validator/annotations/Regex.ts';
+import Required from '~/validator/annotations/Required.ts';
 import Singleton from '~/common/annotations/Singleton.ts';
 
 export * from '~/common/interfaces.ts';
@@ -46,13 +54,11 @@ export * from '~/common/types.ts';
 export * from '~/decorator/interfaces.ts';
 export * from '~/entity/interfaces.ts';
 export * from '~/container/types.ts';
-export * from '~/structure/interfaces.ts';
 export * from '~/validator/interfaces.ts';
 export * from '~/validator/types.ts';
 
 export default {
   AnnotationException,
-  ArrayMap,
   Common,
   Container,
   Decorator,
@@ -63,17 +69,24 @@ export default {
   Objector,
   Text,
   Validator,
-  enums: {
-    DecoratorKindEnum,
-    ValidationEnum,
-  },
   annotations: {
     Consumer,
     Debug,
+    Equal,
+    GreaterThan,
+    GreaterThanEqual,
+    LessThan,
+    LessThanEqual,
     Mixin,
     Module,
     Provider,
+    Regex,
+    Required,
     Singleton,
+  },
+  enums: {
+    DecoratorKindEnum,
+    ValidationEnum,
   },
   guards: {
     isArrayFn,
@@ -95,5 +108,6 @@ export default {
     isWeakMapFn,
     isWeakSetFn,
     isValidationFn,
-  }
+  },
+  validations
 }

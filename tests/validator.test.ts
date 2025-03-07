@@ -32,7 +32,7 @@ describe('validator', () => {
     expect(result[0].key).toBe(ValidationEnum.INVALID);
   });
 
-  it('validateObject method', () => {
+  it('validateObject method', async () => {
   
     userEntity.firstName = 'Eduardo';
     userEntity.birthDate = new Date();
@@ -42,7 +42,7 @@ describe('validator', () => {
       birthDate: [{ validation: new RequiredValidation() }],
     };
 
-    const result = Validator.validateObject(userEntity, validations);
+    const result = await Validator.validateObject(userEntity, validations);
 
     expect(result).toEqual({
       firstName: [{ key: ValidationEnum.VALID, name: 'Required' }],

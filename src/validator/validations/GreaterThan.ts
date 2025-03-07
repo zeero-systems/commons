@@ -12,7 +12,7 @@ import isNumberFn from '~/common/guards/isNumberFn.ts';
 import isDateFn from '~/common/guards/isDateFn.ts';
 
 @Singleton()
-export class LessThan implements ValidationInterface {
+export class GreaterThan implements ValidationInterface {
   guards?: GuardType[] | undefined = [
     isNullFn,
     isUndefinedFn,
@@ -27,12 +27,12 @@ export class LessThan implements ValidationInterface {
     if ([
       isNullFn(record),
       isUndefinedFn(record),
-      isArrayFn(record) && record.length < Number(comparison),
-      isStringFn(record) && isNumberFn(comparison) && record.length < Number(comparison),
-      isStringFn(record) && isStringFn(comparison) && record < String(comparison),
-      isNumberFn(record) && record < Number(comparison),
-      isDateFn(record) && isDateFn(comparison) && record < comparison,
-      isDateFn(record) && record < new Date(comparison),
+      isArrayFn(record) && record.length > Number(comparison),
+      isStringFn(record) && isNumberFn(comparison) && record.length > Number(comparison),
+      isStringFn(record) && isStringFn(comparison) && record > String(comparison),
+      isNumberFn(record) && record > Number(comparison),
+      isDateFn(record) && isDateFn(comparison) && record > comparison,
+      isDateFn(record) && record > new Date(comparison),
     ].some(r => r == true)) { 
       return ValidationEnum.VALID
     }
@@ -41,4 +41,4 @@ export class LessThan implements ValidationInterface {
   }
 }
 
-export default LessThan
+export default GreaterThan

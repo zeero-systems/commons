@@ -13,6 +13,7 @@ import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
 import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
+import Mixin from '~/common/annotations/Mixin.ts';
 
 export class Decorator {
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
@@ -43,7 +44,7 @@ export class Decorator {
       if (context.static) decoration.static = context.static;
       if (context.private) decoration.private = context.private;
 
-      if (decoration.context.metadata) {
+      if (decoration.context.metadata && decoration.annotation.constructor.name != Mixin.name) {
         Decorator.applyMetadata(decoration);
       }
 
@@ -71,7 +72,7 @@ export class Decorator {
     const stackable = decoration.options?.stackable === undefined ? true : decoration.options?.stackable;
     const decorations = decoration.context.metadata[Decorator.metadata].get(property);
     const alreadyExists = !decorations.some((d: DecorationMetadataType<P>) => {
-      // @ts-ignore always have a name
+      // @ts-ignore annotation always have a name
       return d.annotation.name === decoration.annotation.name;
     });
 

@@ -1,7 +1,7 @@
 // deno-lint-ignore-file ban-types
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
-import type { EntryType, MappedType, OmitType } from '~/common/types.ts';
+import type { MappedType, OmitType } from '~/common/types.ts';
 
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 import Objector from '~/common/services/Objector.ts';
@@ -14,10 +14,25 @@ export class Validator {
     validators: {
       [key: string | symbol]: Array<{ validation: ValidationInterface; parameters?: unknown }>;
     },
-  ) {
-    return Objector.getEntries(target).reduce((previous, [key, value]: EntryType<T>) => {
-      return { ...previous, [key]: [...Validator.validateValue(value, validators[key])] };
-    }, {} as MappedType<OmitType<T, Function>, Array<ValidationResultType>>);
+  ): Promise<MappedType<OmitType<T, Function>, Array<ValidationResultType>>> {
+    
+    return new Promise((resolve) => {
+
+      const promises: any = []
+      
+      for (const [key, _value] of Objector.getEntries(target)) {
+        promises.push({ key, result: Validator.validateValue(key as any, validators[key])})        
+      }
+
+      Promise.all(promises).then((items) => {
+        const validations: any = {}
+        for (const { key, result } of items) {
+          validations[key] = result
+        }
+        resolve(validations)
+      })
+    })
+
   }
 
   public static validateValue<T>(
