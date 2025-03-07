@@ -1,8 +1,17 @@
 {
   "name": "@zxxxro/commons",
-  "version": "0.13.2",
+  "version": "0.13.4",
   "license": "GPL-3.0",
   "exports": "./mod.ts",
+  "publish": {
+    "include": [
+      "LICENSE", 
+      "mod.ts",
+      "README.md", 
+      "src/**/*.ts"
+    ],
+    "exclude": ["!dist"]
+  },
   "tasks": {
     "dev": "deno run --watch index.ts"
   },
@@ -16,7 +25,6 @@
   "fmt": {
     "files": {
       "include": [
-        "index.ts",
         "mod.ts",
         "src/",
         "test/"
@@ -32,7 +40,7 @@
   },
   "lint": {
     "files": {
-      "include": ["index.ts", "mod.ts", "src/**/*.ts", "test/**/*.ts"]
+      "include": ["mod.ts", "src/**/*.ts", "test/**/*.ts"]
     },
     "rules": {
       "tags": ["recommended"],

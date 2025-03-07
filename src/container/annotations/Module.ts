@@ -1,7 +1,7 @@
 
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ComponentParametersType } from '~/container/types.ts';
-import type { DecorationType, ArtifactType } from '~/decorator/types.ts';
+import type { DecorationType, ArtifactType, DecoratorFunctionType } from '~/decorator/types.ts';
 
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
 import Component from '~/container/annotations/Component.ts';
@@ -25,4 +25,4 @@ export class Module implements AnnotationInterface {
   }
 }
 
-export default (parameters?: ComponentParametersType) => Decorator.apply(Module, parameters);
+export default (parameters?: ComponentParametersType): DecoratorFunctionType => Decorator.apply(Module, parameters);

@@ -1,5 +1,5 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
-import type { DecorationType, ArtifactType } from '~/decorator/types.ts';
+import type { DecorationType, ArtifactType, DecoratorFunctionType } from '~/decorator/types.ts';
 import type { ConsumerObjectParameterType, ConsumerParameterType } from '~/container/types.ts';
 
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
@@ -114,4 +114,4 @@ export class Consumer implements AnnotationInterface {
   }
 }
 
-export default (parameters?: ConsumerParameterType) => Decorator.apply(Consumer, parameters);
+export default (parameters?: ConsumerParameterType): DecoratorFunctionType => Decorator.apply(Consumer, parameters);

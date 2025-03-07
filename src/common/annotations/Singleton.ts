@@ -1,5 +1,5 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
-import type { ArtifactType, DecorationType } from '~/decorator/types.ts';
+import type { ArtifactType, DecorationType, DecoratorFunctionType } from '~/decorator/types.ts';
 
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
 import Common from '~/common/services/Common.ts';
@@ -36,4 +36,4 @@ export class Singleton implements AnnotationInterface {
   }
 }
 
-export default () => Decorator.apply(Singleton);
+export default (): DecoratorFunctionType => Decorator.apply(Singleton);

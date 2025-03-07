@@ -16,4 +16,4 @@ export class Mixin implements AnnotationInterface {
   }
 }
 
-export default (annotations: DecoratorFunctionType[]) => Decorator.apply(Mixin, annotations);
+export default (annotations: DecoratorFunctionType[]): DecoratorFunctionType => Decorator.apply(Mixin, annotations);

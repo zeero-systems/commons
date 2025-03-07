@@ -38,7 +38,7 @@ export class Validator {
   public static validateValue<T>(
     value: T,
     validations?: { validation: ValidationInterface; parameters?: unknown }[],
-  ) {
+  ): ValidationResultType[] {
     const validationResults: Array<ValidationResultType> = [];
 
     if (!validations || validations.length == 0) {

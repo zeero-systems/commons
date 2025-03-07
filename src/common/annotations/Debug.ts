@@ -1,5 +1,5 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
-import type { DecorationType, ArtifactType } from '~/decorator/types.ts';
+import type { DecorationType, ArtifactType, DecoratorFunctionType } from '~/decorator/types.ts';
 
 import Decorator from '~/decorator/services/Decorator.ts';
 
@@ -13,4 +13,4 @@ export class Debug implements AnnotationInterface {
   }
 }
 
-export default () => Decorator.apply(Debug);
+export default (): DecoratorFunctionType => Decorator.apply(Debug);
