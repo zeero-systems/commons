@@ -1,4 +1,5 @@
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
+import Artifact from '~/entity/services/Artifact.ts';
 import Common from '~/common/services/Common.ts';
 import Container from '~/container/services/Container.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
@@ -48,8 +49,8 @@ import Provider from '~/container/annotations/Provider.ts';
 import Regex from '~/validator/annotations/Regex.ts';
 import Required from '~/validator/annotations/Required.ts';
 import Singleton from '~/common/annotations/Singleton.ts';
-import Artifact from '~/entity/services/Artifact.ts';
 
+export { Artifact } from '~/entity/services/Artifact.ts';
 export { AnnotationException } from '~/decorator/exceptions/AnnotationException.ts';
 export { Common } from '~/common/services/Common.ts';
 export { Container } from '~/container/services/Container.ts';
