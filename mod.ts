@@ -48,6 +48,7 @@ import Provider from '~/container/annotations/Provider.ts';
 import Regex from '~/validator/annotations/Regex.ts';
 import Required from '~/validator/annotations/Required.ts';
 import Singleton from '~/common/annotations/Singleton.ts';
+import Artifact from '~/entity/services/Artifact.ts';
 
 export { AnnotationException } from '~/decorator/exceptions/AnnotationException.ts';
 export { Common } from '~/common/services/Common.ts';
@@ -125,6 +126,7 @@ export const Guards = {
 export default {
   AnnotationException,
   Annotations,
+  Artifact,
   Common,
   Container,
   Decorator,

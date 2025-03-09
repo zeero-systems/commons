@@ -1,8 +1,10 @@
 import type { ProviderType } from '~/container/types.ts';
+import type { ConstructorArgType } from '~/common/types.ts';
+
+import Factory from '~/common/services/Factory.ts';
 
 import guardProviderPlainFn from '~/container/guards/isProviderPlainFn.ts';
 import guardProviderClassFn from '~/container/guards/isProviderClassFn.ts';
-import Factory from '~/common/services/Factory.ts';
 
 export class Container {
   public static readonly module: unique symbol = Symbol('MODULE')
@@ -20,7 +22,7 @@ export class Container {
     return Container.providers.set(targetName, target);
   }
 
-  static construct(targetName: string | symbol): (new (...args: any) => any) | object | undefined {
+  static construct(targetName: string | symbol, options?: { arguments?: ConstructorArgType<any> }): (new (...args: any) => any) | object | undefined {
     if (Container.providers.has(targetName)) {
       const provider = Container.providers.get(targetName);
 
@@ -29,7 +31,7 @@ export class Container {
       }
 
       if (guardProviderClassFn(provider)) {
-        return Factory.construct(provider);
+        return Factory.construct(provider, options)
       }
 
       return;

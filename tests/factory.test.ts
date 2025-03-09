@@ -8,13 +8,11 @@ describe('factory', () => {
   class UserMock {
     firstName!: string;
     lastName!: string;
-    created!: Date;
-    email!: Array<{ isMain: boolean; address: string }>;
   }
 
-  class UserEntityMock extends Entity {
-    firstName!: string;
-    lastName!: string;
+  class UserEntityMock {
+    nickName?: string;
+    email!: string;
   }
 
   describe('construct method', () => {
@@ -27,11 +25,22 @@ describe('factory', () => {
 
     it('with a entity class', () => {
       const userEntityMock = Factory.construct(UserEntityMock, {
-        arguments: { firstName: 'jaime', lastName: 'castro' },
+        arguments: { nickName: 'jaime', email: 'test@email.com' },
       });
 
-      expect(userEntityMock.firstName).toBe('jaime');
-      expect(userEntityMock.lastName).toBe('castro');
+      expect(userEntityMock.nickName).toBe('jaime');
+      expect(userEntityMock.email).toBe('test@email.com');
+    });
+  });
+
+  describe('constructMix method', () => {
+    it('mix two classes', () => {
+      const mixed = Factory.constructMix({ 
+        mixTarget: UserMock, 
+        toMixTargets: [UserEntityMock] 
+      }, { arguments: { nickname: 'jaime' } }) as any
+
+      expect(mixed.nickName).toBe('jaime');
     });
   });
 

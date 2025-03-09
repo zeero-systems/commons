@@ -6,7 +6,7 @@ import Factory from '~/common/services/Factory.ts';
 import Required from '~/validator/annotations/Required.ts';
 
 describe('entity', () => {
-  class EntityMock extends Entity {
+  class EntityExtended extends Entity {
     @Required()
     firstName!: string;
     lastName!: string;
@@ -16,7 +16,7 @@ describe('entity', () => {
     email!: Array<{ isMain: boolean; address: string }>;
   }
 
-  const userEntity = Factory.construct(EntityMock, {
+  const entityExtended = Factory.construct(EntityExtended, {
     arguments: {
       firstName: 'eduardo',
       lastName: 'segura',
@@ -25,7 +25,7 @@ describe('entity', () => {
   });
 
   it('toEntries method', () => {
-    expect(userEntity.toEntries()).toEqual([
+    expect(entityExtended.toEntries()).toEqual([
       ['firstName', 'eduardo'],
       ['lastName', 'segura'],
       ['created', undefined],
@@ -35,7 +35,7 @@ describe('entity', () => {
   });
 
   it('toJson method', () => {
-    expect(userEntity.toJson()).toEqual({
+    expect(entityExtended.toJson()).toEqual({
       firstName: 'eduardo',
       lastName: 'segura',
       created: undefined,
@@ -45,28 +45,28 @@ describe('entity', () => {
   });
 
   it('toPlain method', () => {
-    expect(userEntity.toPlain()).toEqual(
+    expect(entityExtended.toPlain()).toEqual(
       'firstName=eduardo\nlastName=segura\ncreated=undefined\nbirthDate=undefined\nemail=[object Object]',
     );
   });
 
   it('getPropertyKeys method', () => {
-    expect(userEntity.getPropertyKeys()).toEqual(['firstName', 'lastName', 'created', 'birthDate', 'email']);
+    expect(entityExtended.getPropertyKeys()).toEqual(['firstName', 'lastName', 'created', 'birthDate', 'email']);
   });
 
   it('getPropertyType method', () => {
-    expect(userEntity.getPropertyType('firstName')).toEqual('string');
-    expect(userEntity.getPropertyType('lastName')).toEqual('string');
-    expect(userEntity.getPropertyType('birthDate')).toEqual('undefined');
+    expect(entityExtended.getPropertyType('firstName')).toEqual('string');
+    expect(entityExtended.getPropertyType('lastName')).toEqual('string');
+    expect(entityExtended.getPropertyType('birthDate')).toEqual('undefined');
   });
 
-  it('validateProperties method', async() => {
-    expect(await userEntity.validateProperties()).toMatchObject({
-        firstName: [{ key: 'VALID', name: 'Required' }],
-        lastName: [{ key: 'UNDEFINED' }],
-        created: [{ key: 'UNDEFINED' }],
-        birthDate: [{ key: 'INVALID', name: 'Required' }],
-        email: [{ key: 'UNDEFINED' }],
-    })
+  it('validateProperties method', async () => {
+    expect(await entityExtended.validateProperties()).toMatchObject({
+      firstName: [{ key: 'VALID', name: 'Required' }],
+      lastName: [{ key: 'UNDEFINED' }],
+      created: [{ key: 'UNDEFINED' }],
+      birthDate: [{ key: 'INVALID', name: 'Required' }],
+      email: [{ key: 'UNDEFINED' }],
+    });
   });
 });

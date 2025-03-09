@@ -24,7 +24,7 @@ export type ConsumerObjectParameterType = {
  *
  * @type ProviderClassType
  */
-export type ProviderClassType = ConstructorType<any>
+export type ProviderClassType = new (...args: any[]) => any
 
 /**
  * Defines a provider plain type

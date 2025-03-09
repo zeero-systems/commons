@@ -14,6 +14,7 @@ import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
 import Mixin from '~/common/annotations/Mixin.ts';
+import Metadata from '~/common/services/Metadata.ts';
 
 export class Decorator {
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
@@ -56,6 +57,30 @@ export class Decorator {
         return decoration.annotation.onAttach<P>(artifact, decoration) ?? undefined;
       }
     };
+  }
+
+  public static hasAnnotation<T extends {}>(
+    target: T,
+    annotation: ConstructorType<AnnotationInterface>,
+    propertyKey: PropertyKey = 'constructor',
+  ): boolean {
+    const metadata = Metadata.getProperty(target, Decorator.metadata);
+
+    return metadata && metadata.get(propertyKey)?.some((decorator: DecorationMetadataType<any>) => {
+      return decorator.annotation.constructor.name == annotation.name;
+    });
+  }
+
+  public static getDecoration<T extends {}>(
+    target: T,
+    annotation: ConstructorType<AnnotationInterface>,
+    propertyKey: PropertyKey = 'constructor',
+  ): DecorationMetadataType<any> | undefined {
+    const metadata = Metadata.getProperty(target, Decorator.metadata);
+
+    return metadata && metadata.get(propertyKey)?.find((decorator: DecorationMetadataType<any>) => {
+      return decorator.annotation.constructor.name == annotation.name;
+    });
   }
 
   private static applyMetadata<P>(decoration: DecorationType<P>): void {
