@@ -14,7 +14,7 @@ import Singleton from '~/common/annotations/Singleton.ts';
 import Text from '~/common/services/Text.ts';
 
 export class Component implements AnnotationInterface {
-  onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & ComponentParametersType>) {
+  onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & ComponentParametersType>): any {
     let target = artifact.target as any
 
     if (decoration.context.kind == DecoratorKindEnum.CLASS) {

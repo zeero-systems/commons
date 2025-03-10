@@ -13,7 +13,7 @@ import Provider from '~/container/annotations/Provider.ts';
 import Singleton from '~/common/annotations/Singleton.ts';
 
 export class Module implements AnnotationInterface {
-  onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & ComponentParametersType>) {
+  onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & ComponentParametersType>): any {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
       return Mixin([Consumer(), Provider(), Component(decoration.parameters), Singleton() ])(artifact.target, decoration.context)
     }
