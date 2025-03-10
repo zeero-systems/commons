@@ -66,15 +66,19 @@ export { Validator } from '~/validator/services/Validator.ts';
 export { DecoratorKindEnum } from '~/decorator/enums/DecoratorKindEnum.ts';
 export { ValidationEnum } from '~/validator/enums/ValidationEnum.ts';
 
-export {
-  Equal,
-  GreaterThan,
-  GreaterThanEqual,
-  LessThan,
-  LessThanEqual,
-  Regex,
-  Required
-} from '~/validator/validations.ts';
+export * as Consumer from '~/container/annotations/Consumer.ts';
+export * as Debug from '~/common/annotations/Debug.ts';
+export * as Equal from '~/validator/annotations/Equal.ts';
+export * as GreaterThan from '~/validator/annotations/GreaterThan.ts';
+export * as GreaterThanEqual from '~/validator/annotations/GreaterThanEqual.ts';
+export * as LessThanEqual from '~/validator/annotations/LessThanEqual.ts';
+export * as LessThan from '~/validator/annotations/LessThan.ts';
+export * as Mixin from '~/common/annotations/Mixin.ts';
+export * as Module from '~/container/annotations/Module.ts';
+export * as Provider from '~/container/annotations/Provider.ts';
+export * as Regex from '~/validator/annotations/Regex.ts';
+export * as Required from '~/validator/annotations/Required.ts';
+export * as Singleton from '~/common/annotations/Singleton.ts';
 
 export * from '~/common/interfaces.ts';
 export * from '~/common/types.ts';
