@@ -86,22 +86,6 @@ export * from '~/entity/types.ts';
 export * from '~/validator/interfaces.ts';
 export * from '~/validator/types.ts';
 
-export const Annotations ={
-  Consumer,
-  Debug,
-  Equal,
-  GreaterThan,
-  GreaterThanEqual,
-  LessThan,
-  LessThanEqual,
-  Mixin,
-  Module,
-  Provider,
-  Regex,
-  Required,
-  Singleton,
-}
-
 export const Guards = {
   isArrayFn,
   isBigIntFn,
@@ -126,7 +110,19 @@ export const Guards = {
 
 export default {
   AnnotationException,
-  Annotations,
+  Consumer,
+  Debug,
+  Equal,
+  GreaterThan,
+  GreaterThanEqual,
+  LessThan,
+  LessThanEqual,
+  Mixin,
+  Module,
+  Provider,
+  Regex,
+  Required,
+  Singleton,
   Artifact,
   Common,
   Container,
