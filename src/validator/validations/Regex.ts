@@ -4,16 +4,16 @@ import type { ValidationInterface } from '~/validator/interfaces.ts';
 import Singleton from '~/common/annotations/Singleton.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
-import isNullFn from '~/common/guards/isNullFn.ts';
-import isUndefinedFn from '~/common/guards/isUndefinedFn.ts';
-import isStringFn from '~/common/guards/isStringFn.ts';
+import isNull from '~/common/guards/isNull.ts';
+import isUndefined from '~/common/guards/isUndefined.ts';
+import isString from '~/common/guards/isString.ts';
 
 @Singleton()
 export class Regex implements ValidationInterface {
   guards?: GuardType[] | undefined = [
-    isNullFn,
-    isUndefinedFn,
-    isStringFn
+    isNull,
+    isUndefined,
+    isString
   ]
   
   onValidation(record: string, pattern: string | RegExp): ValidationEnum {
@@ -21,9 +21,9 @@ export class Regex implements ValidationInterface {
     const expression = new RegExp(pattern)
 
     if ([
-      isNullFn,
-      isUndefinedFn,
-      isStringFn(record) && expression.test(record),
+      isNull,
+      isUndefined,
+      isString(record) && expression.test(record),
     ].some(r => r == true)) { 
       return ValidationEnum.VALID
     }

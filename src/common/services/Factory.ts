@@ -3,7 +3,7 @@ import type { ConstructorArgType } from '~/common/types.ts';
 import Common from '~/common/services/Common.ts';
 import Metadata from '~/common/services/Metadata.ts';
 
-import isNumberFn from '~/common/guards/isNumberFn.ts';
+import isNumber from '~/common/guards/isNumber.ts';
 
 /**
  * Common operations for classes and functions
@@ -23,7 +23,7 @@ export class Factory {
 
     if (options?.arguments) {
       Object.entries(options?.arguments).forEach(([key, value]) => {
-        if (isNumberFn(key)) {
+        if (isNumber(key)) {
           indexedArguments[Number(key)] = value;
         } else {
           namedArguments[key] = value;
@@ -46,8 +46,8 @@ export class Factory {
     return targetInstance;
   }
 
-  public static getParameterNames(target: any, fnName?: string): string[] {
-    const regex = `${fnName != undefined ? fnName : target.prototype ? target.name : ''}\\((.+)\\)`;
+  public static getParameterNames(target: any, Name?: string): string[] {
+    const regex = `${Name != undefined ? Name : target.prototype ? target.name : ''}\\((.+)\\)`;
     const match = target.toString().match(regex);
 
     if (match && match[1]) {

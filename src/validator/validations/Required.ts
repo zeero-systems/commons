@@ -4,24 +4,24 @@ import type { GuardType } from '~/common/types.ts';
 import Singleton from '~/common/annotations/Singleton.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
-import isNullFn from '~/common/guards/isNullFn.ts';
-import isUndefinedFn from '~/common/guards/isUndefinedFn.ts';
-import isStringFn from '~/common/guards/isStringFn.ts';
-import isDateFn from '~/common/guards/isDateFn.ts';
+import isNull from '~/common/guards/isNull.ts';
+import isUndefined from '~/common/guards/isUndefined.ts';
+import isString from '~/common/guards/isString.ts';
+import isDate from '~/common/guards/isDate.ts';
 
 @Singleton()
 export class Required implements ValidationInterface {
   guards?: GuardType[] | undefined = [
-    isNullFn,
-    isUndefinedFn,
-    isStringFn,
-    isDateFn,
+    isNull,
+    isUndefined,
+    isString,
+    isDate,
   ]
 
   onValidation(record: any): ValidationEnum {
     if ([
-      !isStringFn(record) && !isNullFn(record) && !isUndefinedFn(record),
-      isStringFn(record) && !!record
+      !isString(record) && !isNull(record) && !isUndefined(record),
+      isString(record) && !!record
     ].some(r => r == true)) { 
       return ValidationEnum.VALID
     }

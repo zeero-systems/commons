@@ -4,35 +4,35 @@ import type { ValidationInterface } from '~/validator/interfaces.ts';
 import Singleton from '~/common/annotations/Singleton.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
-import isNullFn from '~/common/guards/isNullFn.ts';
-import isUndefinedFn from '~/common/guards/isUndefinedFn.ts';
-import isArrayFn from '~/common/guards/isArrayFn.ts';
-import isStringFn from '~/common/guards/isStringFn.ts';
-import isNumberFn from '~/common/guards/isNumberFn.ts';
-import isDateFn from '~/common/guards/isDateFn.ts';
+import isNull from '~/common/guards/isNull.ts';
+import isUndefined from '~/common/guards/isUndefined.ts';
+import isArray from '~/common/guards/isArray.ts';
+import isString from '~/common/guards/isString.ts';
+import isNumber from '~/common/guards/isNumber.ts';
+import isDate from '~/common/guards/isDate.ts';
 
 @Singleton()
 export class GreaterThanEqual implements ValidationInterface {
   guards?: GuardType[] | undefined = [
-    isNullFn,
-    isUndefinedFn,
-    isArrayFn,
-    isStringFn,
-    isNumberFn,
-    isDateFn
+    isNull,
+    isUndefined,
+    isArray,
+    isString,
+    isNumber,
+    isDate
   ]
   
   onValidation(record: any, comparison: any): ValidationEnum {
   
     if ([
-      isNullFn(record),
-      isUndefinedFn(record),
-      isArrayFn(record) && record.length >= Number(comparison),
-      isStringFn(record) && isNumberFn(comparison) && record.length >= Number(comparison),
-      isStringFn(record) && isStringFn(comparison) && record >= String(comparison),
-      isNumberFn(record) && record >= Number(comparison),
-      isDateFn(record) && isDateFn(comparison) && record >= comparison,
-      isDateFn(record) && record >= new Date(comparison),
+      isNull(record),
+      isUndefined(record),
+      isArray(record) && record.length >= Number(comparison),
+      isString(record) && isNumber(comparison) && record.length >= Number(comparison),
+      isString(record) && isString(comparison) && record >= String(comparison),
+      isNumber(record) && record >= Number(comparison),
+      isDate(record) && isDate(comparison) && record >= comparison,
+      isDate(record) && record >= new Date(comparison),
     ].some(r => r == true)) { 
       return ValidationEnum.VALID
     }

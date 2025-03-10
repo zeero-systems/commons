@@ -11,25 +11,26 @@ import Objector from '~/common/services/Objector.ts';
 import Text from '~/common/services/Text.ts';
 import Validator from '~/validator/services/Validator.ts';
 
-import isClassFn from '~/common/guards/isClassFn.ts';
-import isDateFn from '~/common/guards/isDateFn.ts';
-import isArrayFn from '~/common/guards/isArrayFn.ts';
-import isBigIntFn from '~/common/guards/isBigIntFn.ts';
-import isBooleanFn from '~/common/guards/isBooleanFn.ts';
-import isFunctionFn from '~/common/guards/isFunctionFn.ts';
-import isMapFn from '~/common/guards/isMapFn.ts';
-import isNullFn from '~/common/guards/isNullFn.ts';
-import isNumberFn from '~/common/guards/isNumberFn.ts';
-import isObjectFn from '~/common/guards/isObjectFn.ts';
-import isSetFn from '~/common/guards/isSetFn.ts';
-import isStringFn from '~/common/guards/isStringFn.ts';
-import isSymbolFn from '~/common/guards/isSymbolFn.ts';
-import isUndefinedFn from '~/common/guards/isUndefinedFn.ts';
-import isWeakMapFn from '~/common/guards/isWeakMapFn.ts';
-import isWeakSetFn from '~/common/guards/isWeakSetFn.ts';
-import isClassDecoratorContextFn from '~/decorator/guards/isClassDecoratorContextFn.ts';
-import isClassMemberDecoratorContextFn from '~/decorator/guards/isClassMemberDecoratorContextFn.ts';
-import isValidationFn from '~/validator/guards/isValidationFn.ts';
+import isClass from '~/common/guards/isClass.ts';
+import isDate from '~/common/guards/isDate.ts';
+import isArray from '~/common/guards/isArray.ts';
+import isBigInt from '~/common/guards/isBigInt.ts';
+import isBoolean from '~/common/guards/isBoolean.ts';
+import isClassDecoratorContext from '~/decorator/guards/isClassDecoratorContext.ts';
+import isClassMemberDecoratorContext from '~/decorator/guards/isClassMemberDecoratorContext.ts';
+import isDecoratorMetadata from '~/decorator/guards/isDecoratorMetadata.ts';
+import isFunction from '~/common/guards/isFunction.ts';
+import isMap from '~/common/guards/isMap.ts';
+import isNull from '~/common/guards/isNull.ts';
+import isNumber from '~/common/guards/isNumber.ts';
+import isObject from '~/common/guards/isObject.ts';
+import isSet from '~/common/guards/isSet.ts';
+import isString from '~/common/guards/isString.ts';
+import isSymbol from '~/common/guards/isSymbol.ts';
+import isUndefined from '~/common/guards/isUndefined.ts';
+import isWeakMap from '~/common/guards/isWeakMap.ts';
+import isWeakSet from '~/common/guards/isWeakSet.ts';
+import isValidation from '~/validator/guards/isValidation.ts';
 
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
@@ -37,6 +38,7 @@ import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 import Validations from '~/validator/validations.ts';
 
 import Consumer from '~/container/annotations/Consumer.ts';
+import Component from '~/container/annotations/Component.ts';
 import Debug from '~/common/annotations/Debug.ts';
 import Equal from '~/validator/annotations/Equal.ts';
 import GreaterThan from '~/validator/annotations/GreaterThan.ts';
@@ -44,7 +46,6 @@ import GreaterThanEqual from '~/validator/annotations/GreaterThanEqual.ts';
 import LessThanEqual from '~/validator/annotations/LessThanEqual.ts';
 import LessThan from '~/validator/annotations/LessThan.ts';
 import Mixin from '~/common/annotations/Mixin.ts';
-import Module from '~/container/annotations/Module.ts';
 import Provider from '~/container/annotations/Provider.ts';
 import Regex from '~/validator/annotations/Regex.ts';
 import Required from '~/validator/annotations/Required.ts';
@@ -67,6 +68,7 @@ export { DecoratorKindEnum } from '~/decorator/enums/DecoratorKindEnum.ts';
 export { ValidationEnum } from '~/validator/enums/ValidationEnum.ts';
 
 export { default as Consumer } from '~/container/annotations/Consumer.ts';
+export { default as Component } from '~/container/annotations/Component.ts';
 export { default as Debug } from '~/common/annotations/Debug.ts';
 export { default as Equal } from '~/validator/annotations/Equal.ts';
 export { default as GreaterThan } from '~/validator/annotations/GreaterThan.ts';
@@ -74,7 +76,6 @@ export { default as GreaterThanEqual } from '~/validator/annotations/GreaterThan
 export { default as LessThanEqual } from '~/validator/annotations/LessThanEqual.ts';
 export { default as LessThan } from '~/validator/annotations/LessThan.ts';
 export { default as Mixin } from '~/common/annotations/Mixin.ts';
-export { default as Module } from '~/container/annotations/Module.ts';
 export { default as Provider } from '~/container/annotations/Provider.ts';
 export { default as Regex } from '~/validator/annotations/Regex.ts';
 export { default as Required } from '~/validator/annotations/Required.ts';
@@ -91,29 +92,31 @@ export * from '~/validator/interfaces.ts';
 export * from '~/validator/types.ts';
 
 export const Guards = {
-  isArrayFn,
-  isBigIntFn,
-  isBooleanFn,
-  isClassFn,
-  isClassDecoratorContextFn,
-  isClassMemberDecoratorContextFn,
-  isDateFn,
-  isFunctionFn,
-  isMapFn,
-  isNullFn,
-  isNumberFn,
-  isObjectFn,
-  isSetFn,
-  isStringFn,
-  isSymbolFn,
-  isUndefinedFn,
-  isWeakMapFn,
-  isWeakSetFn,
-  isValidationFn,
+  isArray,
+  isBigInt,
+  isBoolean,
+  isClass,
+  isClassDecoratorContext,
+  isClassMemberDecoratorContext,
+  isDecoratorMetadata,
+  isDate,
+  isFunction,
+  isMap,
+  isNull,
+  isNumber,
+  isObject,
+  isSet,
+  isString,
+  isSymbol,
+  isUndefined,
+  isWeakMap,
+  isWeakSet,
+  isValidation,
 }
 
 export default {
   AnnotationException,
+  Component,
   Consumer,
   Debug,
   Equal,
@@ -122,7 +125,6 @@ export default {
   LessThan,
   LessThanEqual,
   Mixin,
-  Module,
   Provider,
   Regex,
   Required,

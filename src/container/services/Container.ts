@@ -3,8 +3,8 @@ import type { ConstructorArgType } from '~/common/types.ts';
 
 import Factory from '~/common/services/Factory.ts';
 
-import guardProviderPlainFn from '~/container/guards/isProviderPlainFn.ts';
-import guardProviderClassFn from '~/container/guards/isProviderClassFn.ts';
+import guardProviderPlain from '~/container/guards/isProviderPlain.ts';
+import guardProviderClass from '~/container/guards/isProviderClass.ts';
 
 export class Container {
   public static readonly module: unique symbol = Symbol('MODULE')
@@ -26,11 +26,11 @@ export class Container {
     if (Container.providers.has(targetName)) {
       const provider = Container.providers.get(targetName);
 
-      if (guardProviderPlainFn(provider)) {
+      if (guardProviderPlain(provider)) {
         return provider;
       }
 
-      if (guardProviderClassFn(provider)) {
+      if (guardProviderClass(provider)) {
         return Factory.construct(provider, options)
       }
 

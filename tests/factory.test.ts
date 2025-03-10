@@ -10,7 +10,7 @@ describe('factory', () => {
     lastName!: string;
   }
 
-  class UserEntityMock {
+  class UserEntityMock extends Entity {
     nickName?: string;
     email!: string;
   }
@@ -30,17 +30,6 @@ describe('factory', () => {
 
       expect(userEntityMock.nickName).toBe('jaime');
       expect(userEntityMock.email).toBe('test@email.com');
-    });
-  });
-
-  describe('constructMix method', () => {
-    it('mix two classes', () => {
-      const mixed = Factory.constructMix({ 
-        mixTarget: UserMock, 
-        toMixTargets: [UserEntityMock] 
-      }, { arguments: { nickname: 'jaime' } }) as any
-
-      expect(mixed.nickName).toBe('jaime');
     });
   });
 

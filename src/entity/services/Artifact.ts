@@ -7,9 +7,9 @@ import Decorator from '~/decorator/services/Decorator.ts';
 import Metadata from '~/common/services/Metadata.ts';
 import Validator from '~/validator/services/Validator.ts';
 
-import isDateFn from '~/common/guards/isDateFn.ts';
-import isDecoratorMetadataFn from '~/decorator/guards/isDecoratorMetadataFn.ts';
-import isValidationFn from '~/validator/guards/isValidationFn.ts';
+import isDate from '~/common/guards/isDate.ts';
+import isDecoratorMetadata from '~/decorator/guards/isDecoratorMetadata.ts';
+import isValidation from '~/validator/guards/isValidation.ts';
 import Objector from '~/common/services/Objector.ts';
 
 export class Artifact {
@@ -34,7 +34,7 @@ export class Artifact {
   }
 
   public static getPropertyType<T extends {}, K extends keyof OmitType<T, Function>>(target: T, propertyKey: K): string {
-    if (isDateFn(target[propertyKey])) {
+    if (isDate(target[propertyKey])) {
       return `[object Date]`;
     }
 
@@ -45,9 +45,9 @@ export class Artifact {
       let validations: any[] = []
       const metadata = Metadata.getProperty(target, Decorator.metadata)
   
-      if (isDecoratorMetadataFn(metadata)) {        
+      if (isDecoratorMetadata(metadata)) {        
         validations = metadata.get(propertyKey)?.reduce((previous: any, current) => {
-          if (isValidationFn(current.annotation)) {
+          if (isValidation(current.annotation)) {
             previous.push({
               validation: current.annotation,
               parameters: current.parameters

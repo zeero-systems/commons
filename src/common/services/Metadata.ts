@@ -1,6 +1,6 @@
 import type { MetadataType } from '~/common/types.ts';
 
-import isObjectFn from '~/common/guards/isObjectFn.ts';
+import isObject from '~/common/guards/isObject.ts';
 
 /**
  * Common operations for the metadata
@@ -12,7 +12,7 @@ import isObjectFn from '~/common/guards/isObjectFn.ts';
  */ 
 export class Metadata {
   static set(target: any): void {    
-    if (isObjectFn(target) && target.constructor && !target.constructor[Symbol.metadata]) {
+    if (isObject(target) && target.constructor && !target.constructor[Symbol.metadata]) {
       target.constructor[Symbol.metadata] = {}
     } else {
       target[Symbol.metadata] = {}

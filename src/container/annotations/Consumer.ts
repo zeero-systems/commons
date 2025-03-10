@@ -10,9 +10,9 @@ import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import Metadata from '~/common/services/Metadata.ts';
 import ProviderException from '~/container/exceptions/ProviderException.ts';
 
-import isStringFn from '~/common/guards/isStringFn.ts';
-import isClassFn from '~/common/guards/isClassFn.ts';
-import isConsumerObjectParameterFn from '~/container/guards/isConsumerObjectParameterFn.ts';
+import isString from '~/common/guards/isString.ts';
+import isClass from '~/common/guards/isClass.ts';
+import isConsumerObjectParameter from '~/container/guards/isConsumerObjectParameter.ts';
 import Text from '~/common/services/Text.ts';
 
 export class Consumer implements AnnotationInterface {
@@ -23,13 +23,13 @@ export class Consumer implements AnnotationInterface {
     const context = decoration.context as any;
 
     let decoratorProvider: ConsumerObjectParameterType = {};
-    if (isStringFn(decoration.parameters)) {
+    if (isString(decoration.parameters)) {
       decoratorProvider[decoration.parameters] = { optional: true };
     }
-    if (isClassFn(decoration.parameters)) {
+    if (isClass(decoration.parameters)) {
       decoratorProvider[decoration.parameters.name] = { optional: true };
     }
-    if (isConsumerObjectParameterFn(decoration.parameters)) {
+    if (isConsumerObjectParameter(decoration.parameters)) {
       decoratorProvider = decoration.parameters;
     }
 
@@ -77,10 +77,10 @@ export class Consumer implements AnnotationInterface {
           if (!context.name) return undefined;
 
           let providerName = context.name;
-          if (isStringFn(decoration?.parameters)) {
+          if (isString(decoration?.parameters)) {
             providerName = decoration.parameters;
           }
-          if (isClassFn(decoration?.parameters)) {
+          if (isClass(decoration?.parameters)) {
             providerName = decoration.parameters.name;
           }
 
