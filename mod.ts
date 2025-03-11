@@ -6,6 +6,7 @@ import Decorator from '~/decorator/services/Decorator.ts';
 import Entity from '~/entity/services/Entity.ts';
 import Exception from '~/common/services/Exception.ts';
 import Factory from '~/common/services/Factory.ts';
+import List from '~/common/services/List.ts';
 import Metadata from '~/common/services/Metadata.ts';
 import Objector from '~/common/services/Objector.ts';
 import Text from '~/common/services/Text.ts';
@@ -59,6 +60,7 @@ export { Decorator } from '~/decorator/services/Decorator.ts';
 export { Entity } from '~/entity/services/Entity.ts';
 export { Exception } from '~/common/services/Exception.ts';
 export { Factory } from '~/common/services/Factory.ts';
+export { List } from '~/common/services/List.ts';
 export { Metadata } from '~/common/services/Metadata.ts';
 export { Objector } from '~/common/services/Objector.ts';
 export { Text } from '~/common/services/Text.ts';
@@ -124,6 +126,7 @@ export default {
   GreaterThanEqual,
   LessThan,
   LessThanEqual,
+  List,
   Mixin,
   Provider,
   Regex,
