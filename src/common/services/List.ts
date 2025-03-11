@@ -1,7 +1,7 @@
 
 export class List {
 
-  public static getSortedIndex<T>(array: Array<T>, isLessThan: (current: T) => boolean) {
+  public static getSortedIndex<T>(array: Array<T>, isLessThan: (current: T) => boolean): number {
     let low = 0
     let high = array.length;
   
@@ -12,7 +12,7 @@ export class List {
     }
     return low;
   }
-  
+
 }
 
 export default List
