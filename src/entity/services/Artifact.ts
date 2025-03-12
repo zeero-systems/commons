@@ -61,25 +61,21 @@ export class Artifact {
     return Validator.validateValue(target[propertyKey], validations)
   }
 
-  public static validateProperties<T extends {}>(target: T, onlyResultWithKeys?: Array<ValidationEnum>): Promise<MappedEntityPropertyType<T, ValidationResultType[]>> {
+  public static validateProperties<T extends {}>(target: T, onlyResultWithKeys?: Array<ValidationEnum>): Promise<MappedEntityPropertyType<T, ValidationResultType[]> | undefined> {
     return new Promise((resolve) => {
+      let targetValidations: { [key: string | symbol]: ValidationResultType[] } | undefined
 
-      const promises: Array<{ key: any, result: ValidationResultType[] }> = []
-      
       for (const [key, _value] of Artifact.toEntries(target)) {
-        promises.push({ key, result: Artifact.validateProperty(target, key as any)})        
+        const validations = Artifact.validateProperty(target, key as any)
+        const onlyValidations = onlyResultWithKeys ? validations.filter(v => onlyResultWithKeys.includes(v.key)) : validations
+        
+        if (onlyValidations.length > 0) {
+          if (!targetValidations) targetValidations = {}
+          targetValidations[key] = onlyValidations
+        }
       }
 
-      Promise.all(promises).then((items) => {
-        const validations: any = {}
-        for (const { key, result } of items) {
-          const results = onlyResultWithKeys ? result.filter((r) => onlyResultWithKeys.includes(r.key)) : result
-          if (results.length > 0) {
-            validations[key] = results
-          }
-        }
-        resolve(validations)
-      })
+      resolve(targetValidations)
     })
   }
 }

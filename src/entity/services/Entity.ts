@@ -32,7 +32,7 @@ export class Entity implements EntityInterface {
     return Artifact.validateProperty(this, propertyKey)
   }
 
-  public validateProperties(onlyResultWithKeys?: Array<ValidationEnum>): Promise<MappedEntityPropertyType<this, ValidationResultType[]>> {
+  public validateProperties(onlyResultWithKeys?: Array<ValidationEnum>): Promise<MappedEntityPropertyType<this, ValidationResultType[]> | undefined> {
     return Artifact.validateProperties(this, onlyResultWithKeys)
   }
 }

@@ -2,6 +2,7 @@
 import type { EntryType, MappedKeyType, OmitType } from '~/common/types.ts';
 import { ValidationResultType } from '~/validator/types.ts';
 import { MappedEntityPropertyType } from '~/entity/types.ts';
+import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 /**
  * Shared common methods
@@ -29,7 +30,7 @@ export interface EntityInterface {
   getPropertyType<K extends keyof OmitType<this, Function>>(propertyKey: K): string;
 
   validateProperty<K extends keyof OmitType<this, Function>>(propertyKey: K): ValidationResultType[];
-  validateProperties(): Promise<MappedEntityPropertyType<this, ValidationResultType[]>>
+  validateProperties(onlyResultWithKeys?: Array<ValidationEnum>): Promise<MappedEntityPropertyType<this, ValidationResultType[]> | undefined>
 }
 
 export default {};
