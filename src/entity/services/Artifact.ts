@@ -11,6 +11,7 @@ import isDate from '~/common/guards/isDate.ts';
 import isDecoratorMetadata from '~/decorator/guards/isDecoratorMetadata.ts';
 import isValidation from '~/validator/guards/isValidation.ts';
 import Objector from '~/common/services/Objector.ts';
+import { ValidationEnum } from '-/mod.ts';
 
 export class Artifact {
   public static toEntries<T extends {}>(target: T): ReadonlyArray<EntryType<OmitType<T, Function>>> {
@@ -60,10 +61,10 @@ export class Artifact {
     return Validator.validateValue(target[propertyKey], validations)
   }
 
-  public static validateProperties<T extends {}>(target: T): Promise<MappedEntityPropertyType<T, ValidationResultType[]>> {
+  public static validateProperties<T extends {}>(target: T, onlyResultWithKeys?: Array<ValidationEnum>): Promise<MappedEntityPropertyType<T, ValidationResultType[]>> {
     return new Promise((resolve) => {
 
-      const promises: any = []
+      const promises: Array<{ key: any, result: ValidationResultType[] }> = []
       
       for (const [key, _value] of Artifact.toEntries(target)) {
         promises.push({ key, result: Artifact.validateProperty(target, key as any)})        
@@ -72,7 +73,10 @@ export class Artifact {
       Promise.all(promises).then((items) => {
         const validations: any = {}
         for (const { key, result } of items) {
-          validations[key] = result
+          const results = onlyResultWithKeys ? result.filter((r) => onlyResultWithKeys.includes(r.key)) : result
+          if (results.length > 0) {
+            validations[key] = results
+          }
         }
         resolve(validations)
       })

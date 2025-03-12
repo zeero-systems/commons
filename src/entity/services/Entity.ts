@@ -5,6 +5,7 @@ import type { MappedEntityPropertyType } from '~/entity/types.ts';
 import type { EntityInterface } from '~/entity/interfaces.ts';
 
 import Artifact from '~/entity/services/Artifact.ts';
+import { ValidationEnum } from '-/mod.ts';
 
 export class Entity implements EntityInterface {
   public toEntries(): ReadonlyArray<EntryType<OmitType<this, Function>>> {
@@ -31,8 +32,8 @@ export class Entity implements EntityInterface {
     return Artifact.validateProperty(this, propertyKey)
   }
 
-  public validateProperties(): Promise<MappedEntityPropertyType<this, ValidationResultType[]>> {
-    return Artifact.validateProperties(this)
+  public validateProperties(onlyResultWithKeys?: Array<ValidationEnum>): Promise<MappedEntityPropertyType<this, ValidationResultType[]>> {
+    return Artifact.validateProperties(this, onlyResultWithKeys)
   }
 }
 

@@ -4,6 +4,7 @@ import { expect } from '@std/expect';
 import Entity from '~/entity/services/Entity.ts';
 import Factory from '~/common/services/Factory.ts';
 import Required from '~/validator/annotations/Required.ts';
+import { ValidationEnum } from '-/mod.ts';
 
 describe('entity', () => {
   class EntityExtended extends Entity {
@@ -67,6 +68,12 @@ describe('entity', () => {
       created: [{ key: 'UNDEFINED' }],
       birthDate: [{ key: 'INVALID', name: 'Required' }],
       email: [{ key: 'UNDEFINED' }],
+    });
+  });
+
+  it('validateProperties onlyWithInvalidResults method', async () => {
+    expect(await entityExtended.validateProperties([ValidationEnum.INVALID])).toMatchObject({
+      birthDate: [{ key: 'INVALID', name: 'Required' }],
     });
   });
 });
