@@ -83,6 +83,13 @@ export { default as Regex } from '~/validator/annotations/Regex.ts';
 export { default as Required } from '~/validator/annotations/Required.ts';
 export { default as Singleton } from '~/common/annotations/Singleton.ts';
 
+import { Consumer as ConsumerAnnotation } from '~/container/annotations/Consumer.ts';
+import { Component as ComponentAnnotation } from '~/container/annotations/Component.ts';
+import { Debug as DebugAnnotation } from '~/common/annotations/Debug.ts';
+import { Mixin as MixinAnnotation } from '~/common/annotations/Mixin.ts';
+import { Provider as ProviderAnnotation } from '~/container/annotations/Provider.ts';
+import { Singleton as SingletonAnnotation } from '~/common/annotations/Singleton.ts';
+
 export * from '~/common/interfaces.ts';
 export * from '~/common/types.ts';
 export * from '~/container/types.ts';
@@ -116,7 +123,17 @@ export const Guards = {
   isValidation,
 }
 
+export const Annotations = {
+  Consumer: ConsumerAnnotation,
+  Component: ComponentAnnotation,
+  Debug: DebugAnnotation,
+  Mixin: MixinAnnotation,
+  Provider: ProviderAnnotation,
+  Singleton: SingletonAnnotation,
+}
+
 export default {
+  Annotations,
   AnnotationException,
   Component,
   Consumer,
