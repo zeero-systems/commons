@@ -10,21 +10,24 @@ export class Singleton implements AnnotationInterface {
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P>): any {
 
     if (decoration.kind == DecoratorKindEnum.CLASS) {
-      artifact.target = new Proxy(artifact.target as any, {
-        construct(currentTarget, currentArgs, newTarget) {
-          if (currentTarget.prototype !== newTarget.prototype) {
-            return Reflect.construct(currentTarget, currentArgs, newTarget);
-          }
-
-          if (!decoration.context.metadata[Common.singleton]) {
-            decoration.context.metadata[Common.singleton] = Reflect.construct(currentTarget, currentArgs, newTarget);
-          }
-
-          return decoration.context.metadata[Common.singleton];
-        },
-      });
-
-      artifact.target.toString = Function.prototype.toString.bind(artifact.target);
+      
+      if (!Decorator.hasAnnotation(artifact.target, Singleton)) {
+        artifact.target = new Proxy(artifact.target as any, {
+          construct(currentTarget, currentArgs, newTarget) {
+            if (currentTarget.prototype !== newTarget.prototype) {
+              return Reflect.construct(currentTarget, currentArgs, newTarget);
+            }
+  
+            if (!decoration.context.metadata[Common.singleton]) {
+              decoration.context.metadata[Common.singleton] = Reflect.construct(currentTarget, currentArgs, newTarget);
+            }
+  
+            return decoration.context.metadata[Common.singleton];
+          },
+        });
+  
+        artifact.target.toString = Function.prototype.toString.bind(artifact.target);
+      }
 
       return artifact.target;
     }

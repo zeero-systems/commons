@@ -15,10 +15,11 @@ import isClass from '~/common/guards/isClass.ts';
 import isConsumerObjectParameter from '~/container/guards/isConsumerObjectParameter.ts';
 import Text from '~/common/services/Text.ts';
 
+import { Singleton } from '~/common/annotations/Singleton.ts';
+
 export class Consumer implements AnnotationInterface {
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & ConsumerParameterType>): any {
     
-    let target = artifact.target as any;
     const targetName = artifact.name;
     const context = decoration.context as any;
 
@@ -35,8 +36,8 @@ export class Consumer implements AnnotationInterface {
 
     if (context.kind == DecoratorKindEnum.CLASS) {
 
-      if (!Metadata.getProperty(target, Common.singleton)) {
-        target = new Proxy(target as any, {
+      if (!Decorator.hasAnnotation(artifact.target, Singleton)) {
+        artifact.target = new Proxy(artifact.target as any, {
           construct(currentTarget, currentArgs, newTarget) {
             if (currentTarget.prototype !== newTarget.prototype) {
               return Reflect.construct(currentTarget, currentArgs, newTarget);
@@ -64,10 +65,10 @@ export class Consumer implements AnnotationInterface {
           },
         });
 
-        target.toString = Function.prototype.toString.bind(artifact.target)
+        artifact.target.toString = Function.prototype.toString.bind(artifact.target)
       }
 
-      return target;
+      return artifact.target;
     }
 
     if (context.kind == DecoratorKindEnum.ACCESSOR) {

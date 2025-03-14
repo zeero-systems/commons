@@ -2,24 +2,23 @@ import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ComponentParametersType } from '~/container/types.ts';
 import type { DecorationType, ArtifactType, DecoratorFunctionType } from '~/decorator/types.ts';
 
+import { Singleton } from '~/common/annotations/Singleton.ts';
+import SingletonDecoration from '~/common/annotations/Singleton.ts';
+
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
-import Common from '~/common/services/Common.ts';
 import Consumer from '~/container/annotations/Consumer.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
-import Metadata from '~/common/services/Metadata.ts';
 import Mixin from '~/common/annotations/Mixin.ts';
 import Provider from '~/container/annotations/Provider.ts';
-import Singleton from '~/common/annotations/Singleton.ts';
 import Text from '~/common/services/Text.ts';
 
 export class Component implements AnnotationInterface {
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & ComponentParametersType>): any {
-    let target = artifact.target as any
 
     if (decoration.context.kind == DecoratorKindEnum.CLASS) {
-      if (!Metadata.getProperty(target, Common.singleton)) {
-        target = new Proxy(target, {
+      if (!Decorator.hasAnnotation(artifact.target, Singleton)) {
+        artifact.target = new Proxy(artifact.target, {
           construct(currentTarget, currentArgs, newTarget) {
             if (currentTarget.prototype !== newTarget.prototype) {
               return Reflect.construct(currentTarget, currentArgs, newTarget);
@@ -36,7 +35,7 @@ export class Component implements AnnotationInterface {
                   }
                 } as any
 
-                Mixin([Provider(), Singleton()])(providerDecorator.target, providerDecorator.context);
+                Mixin([Provider(), SingletonDecoration()])(providerDecorator.target, providerDecorator.context);
               }
             }
 
@@ -60,10 +59,10 @@ export class Component implements AnnotationInterface {
           },
         });
 
-        target.toString = Function.prototype.toString.bind(artifact.target)
+        artifact.target.toString = Function.prototype.toString.bind(artifact.target)
       }
 
-      return target
+      return artifact.target
     }
 
     throw new AnnotationException('Method not implemented for {name} on {kind}.', {

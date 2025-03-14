@@ -4,7 +4,7 @@ import { expect } from '@std/expect';
 import Entity from '~/entity/services/Entity.ts';
 import Factory from '~/common/services/Factory.ts';
 import Required from '~/validator/annotations/Required.ts';
-import { ValidationEnum } from '-/mod.ts';
+import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 describe('entity', () => {
   class EntityExtended extends Entity {

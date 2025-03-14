@@ -5,7 +5,7 @@ import type { MappedEntityPropertyType } from '~/entity/types.ts';
 import type { EntityInterface } from '~/entity/interfaces.ts';
 
 import Artifact from '~/entity/services/Artifact.ts';
-import { ValidationEnum } from '-/mod.ts';
+import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 export class Entity implements EntityInterface {
   public toEntries(): ReadonlyArray<EntryType<OmitType<this, Function>>> {

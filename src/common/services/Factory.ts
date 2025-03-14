@@ -1,9 +1,11 @@
 import type { ConstructorArgType } from '~/common/types.ts';
 
-import Common from '~/common/services/Common.ts';
-import Metadata from '~/common/services/Metadata.ts';
+import { Singleton } from '~/common/annotations/Singleton.ts';
+
+import Decorator from '~/decorator/services/Decorator.ts';
 
 import isNumber from '~/common/guards/isNumber.ts';
+
 
 /**
  * Common operations for classes and functions
@@ -31,7 +33,7 @@ export class Factory {
       });
     }
 
-    const canUpdateProperties = !Metadata.getProperty(target, Common.singleton);
+    const canUpdateProperties = !Decorator.hasAnnotation(target, Singleton);
     const targetInstance = Reflect.construct(target, indexedArguments);
 
     if (canUpdateProperties) {
