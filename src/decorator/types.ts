@@ -47,7 +47,7 @@ export type DecorationMetadataType<P> = Pick<DecoratorContextType, 'static' | 'p
   kind: 'class' | 'method' | 'getter' | 'setter' | 'field' | 'accessor';
   annotation: AnnotationInterface;
   options?: AnnotationOptionsType;
-  parameters?: P;
+  parameters: P | undefined;
 };
 
 /**

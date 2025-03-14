@@ -37,6 +37,7 @@ export class Decorator {
       const decoration: DecorationType<P> = {
         kind: context.kind,
         annotation: Reflect.construct(annotation, []),
+        parameters: undefined,
         context,
       };
 
