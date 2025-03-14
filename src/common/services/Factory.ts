@@ -34,7 +34,7 @@ export class Factory {
     }
 
     const canUpdateProperties = !Decorator.hasAnnotation(target, Singleton);
-    const targetInstance = Reflect.construct(target, indexedArguments);
+    const targetInstance = new target(...indexedArguments);
 
     if (canUpdateProperties) {
       Object.entries(namedArguments).reduce((t: any, [key]: any) => {
