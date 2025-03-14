@@ -39,7 +39,6 @@ import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 import Validations from '~/validator/validations.ts';
 
 import Consumer from '~/container/annotations/Consumer.ts';
-import Component from '~/container/annotations/Component.ts';
 import Debug from '~/common/annotations/Debug.ts';
 import Equal from '~/validator/annotations/Equal.ts';
 import GreaterThan from '~/validator/annotations/GreaterThan.ts';
@@ -70,7 +69,6 @@ export { DecoratorKindEnum } from '~/decorator/enums/DecoratorKindEnum.ts';
 export { ValidationEnum } from '~/validator/enums/ValidationEnum.ts';
 
 export { default as Consumer } from '~/container/annotations/Consumer.ts';
-export { default as Component } from '~/container/annotations/Component.ts';
 export { default as Debug } from '~/common/annotations/Debug.ts';
 export { default as Equal } from '~/validator/annotations/Equal.ts';
 export { default as GreaterThan } from '~/validator/annotations/GreaterThan.ts';
@@ -84,7 +82,6 @@ export { default as Required } from '~/validator/annotations/Required.ts';
 export { default as Singleton } from '~/common/annotations/Singleton.ts';
 
 import { Consumer as ConsumerAnnotation } from '~/container/annotations/Consumer.ts';
-import { Component as ComponentAnnotation } from '~/container/annotations/Component.ts';
 import { Debug as DebugAnnotation } from '~/common/annotations/Debug.ts';
 import { Mixin as MixinAnnotation } from '~/common/annotations/Mixin.ts';
 import { Provider as ProviderAnnotation } from '~/container/annotations/Provider.ts';
@@ -125,7 +122,6 @@ export const Guards = {
 
 export const Annotations = {
   Consumer: ConsumerAnnotation,
-  Component: ComponentAnnotation,
   Debug: DebugAnnotation,
   Mixin: MixinAnnotation,
   Provider: ProviderAnnotation,
@@ -135,7 +131,6 @@ export const Annotations = {
 export default {
   Annotations,
   AnnotationException,
-  Component,
   Consumer,
   Debug,
   Equal,

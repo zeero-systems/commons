@@ -36,7 +36,7 @@ export class Consumer implements AnnotationInterface {
 
     if (context.kind == DecoratorKindEnum.CLASS) {
 
-      if (!Decorator.hasAnnotation(artifact.target, Singleton)) {
+      if (!Decorator.hasAnnotation(artifact.target, Consumer)) {
         artifact.target = new Proxy(artifact.target as any, {
           construct(currentTarget, currentArgs, newTarget) {
             if (currentTarget.prototype !== newTarget.prototype) {

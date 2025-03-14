@@ -13,9 +13,7 @@ import Text from '~/common/services/Text.ts';
 export class Provider implements AnnotationInterface {
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & ProviderParameterType>): any {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
-      if (!Decorator.hasAnnotation(artifact.target, Singleton)) {
-        Container.set(artifact.target, Text.toFirstLetterUppercase(artifact.name));
-      }
+      Container.set(artifact.target, Text.toFirstLetterUppercase(artifact.name));
 
       return artifact.target;
     }
