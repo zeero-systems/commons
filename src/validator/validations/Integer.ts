@@ -24,7 +24,7 @@ export class Integer implements ValidationInterface {
       isNull(record),
       isUndefined(record),
       isNumber(record) && Number.isInteger(record),
-      isString(record) && Number.isInteger(record)
+      isString(record) && Number.isInteger(Number(record))
     ].some(r => r == true)) { 
       return ValidationEnum.VALID
     }
