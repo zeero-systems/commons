@@ -7,13 +7,15 @@ import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 import isNull from '~/common/guards/isNull.ts';
 import isUndefined from '~/common/guards/isUndefined.ts';
 import isNumber from '~/common/guards/isNumber.ts';
+import isString from '~/common/guards/isString.ts';
 
 @Singleton()
 export class Integer implements ValidationInterface {
   guards?: GuardType[] | undefined = [
     isNull,
     isUndefined,
-    isNumber
+    isNumber,
+    isString,
   ]
   
   onValidation(record: any): ValidationEnum {
@@ -21,7 +23,8 @@ export class Integer implements ValidationInterface {
     if ([
       isNull(record),
       isUndefined(record),
-      isNumber(record) && Number.isInteger(record) 
+      isNumber(record) && Number.isInteger(record),
+      isString(record) && Number.isInteger(record)
     ].some(r => r == true)) { 
       return ValidationEnum.VALID
     }
