@@ -18,7 +18,7 @@ export class Container {
     return Container.providers.has(targetName);
   }
 
-  static set(target: ProviderType, targetName: string | symbol): Map<string | symbol, ProviderType> {
+  static set(targetName: string | symbol, target: ProviderType,): Map<string | symbol, ProviderType> {
     return Container.providers.set(targetName, target);
   }
 

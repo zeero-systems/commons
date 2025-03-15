@@ -15,7 +15,7 @@ import isNumber from '~/common/guards/isNumber.ts';
  */
 export class Factory {
   public static construct<T>(
-    target: new (...args: any[]) => T,
+    target: new (...args: any) => T,
     options?: {
       arguments?: ConstructorArgType<T>;
     },
@@ -34,7 +34,7 @@ export class Factory {
     }
 
     const canUpdateProperties = !Decorator.hasAnnotation(target, Singleton);
-    const targetInstance = new target(...indexedArguments);
+    const targetInstance = Reflect.construct(target, indexedArguments);
 
     if (canUpdateProperties) {
       Object.entries(namedArguments).reduce((t: any, [key]: any) => {
