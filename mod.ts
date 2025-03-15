@@ -43,6 +43,7 @@ import Debug from '~/common/annotations/Debug.ts';
 import Equal from '~/validator/annotations/Equal.ts';
 import GreaterThan from '~/validator/annotations/GreaterThan.ts';
 import GreaterThanEqual from '~/validator/annotations/GreaterThanEqual.ts';
+import Integer from '~/validator/annotations/Integer.ts';
 import LessThanEqual from '~/validator/annotations/LessThanEqual.ts';
 import LessThan from '~/validator/annotations/LessThan.ts';
 import Mixin from '~/common/annotations/Mixin.ts';
@@ -73,6 +74,7 @@ export { default as Debug } from '~/common/annotations/Debug.ts';
 export { default as Equal } from '~/validator/annotations/Equal.ts';
 export { default as GreaterThan } from '~/validator/annotations/GreaterThan.ts';
 export { default as GreaterThanEqual } from '~/validator/annotations/GreaterThanEqual.ts';
+export { default as Integer } from '~/validator/annotations/Integer.ts';
 export { default as LessThanEqual } from '~/validator/annotations/LessThanEqual.ts';
 export { default as LessThan } from '~/validator/annotations/LessThan.ts';
 export { default as Mixin } from '~/common/annotations/Mixin.ts';
@@ -136,6 +138,7 @@ export default {
   Equal,
   GreaterThan,
   GreaterThanEqual,
+  Integer,
   LessThan,
   LessThanEqual,
   List,
