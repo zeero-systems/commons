@@ -5,6 +5,7 @@ import Factory from '~/common/services/Factory.ts';
 
 import guardProviderPlain from '~/container/guards/isProviderPlain.ts';
 import guardProviderClass from '~/container/guards/isProviderClass.ts';
+import isClass from '~/common/guards/isClass.ts';
 
 export class Container {
   public static readonly module: unique symbol = Symbol('MODULE')
@@ -27,7 +28,11 @@ export class Container {
       const provider = Container.providers.get(targetName);
 
       if (guardProviderPlain(provider)) {
-        return provider;
+        if (isClass(provider.value)) {
+          return Factory.construct(provider.value, options)
+        }
+
+        return provider.value;
       }
 
       if (guardProviderClass(provider)) {
