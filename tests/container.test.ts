@@ -71,8 +71,8 @@ describe('container', () => {
   });
 
   it('instantiate from a provider object', () => {
-    Container.set(ManualProviderMock.name, { name: 'ManualProviderMock', value: ManualProviderMock });
-    const provider = Container.construct('ManualProviderMock') as UserProviderMockInterface
-    expect(provider.getUserFirstName()).toEqual('Eduardo')
+    Container.set('ManualProviderMock', 'Eduardo');
+    const provider = Container.construct('ManualProviderMock')
+    expect(provider).toEqual('Eduardo')
   });
 });

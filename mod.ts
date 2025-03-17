@@ -25,7 +25,6 @@ import isMap from '~/common/guards/isMap.ts';
 import isNull from '~/common/guards/isNull.ts';
 import isNumber from '~/common/guards/isNumber.ts';
 import isObject from '~/common/guards/isObject.ts';
-import isProviderObject from '~/container/guards/isProviderObject.ts';
 import isSet from '~/common/guards/isSet.ts';
 import isString from '~/common/guards/isString.ts';
 import isSymbol from '~/common/guards/isSymbol.ts';
@@ -114,7 +113,6 @@ export const Guards = {
   isNull,
   isNumber,
   isObject,
-  isProviderObject,
   isSet,
   isString,
   isSymbol,

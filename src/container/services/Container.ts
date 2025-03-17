@@ -2,8 +2,6 @@ import type { ProviderType } from '~/container/types.ts';
 import type { ConstructorArgType } from '~/common/types.ts';
 
 import Factory from '~/common/services/Factory.ts';
-
-import isProviderObject from '~/container/guards/isProviderObject.ts';
 import isClass from '~/common/guards/isClass.ts';
 
 export class Container {
@@ -18,7 +16,7 @@ export class Container {
     return Container.providers.has(targetName);
   }
 
-  static set(targetName: string | symbol, target: ProviderType,): Map<string | symbol, ProviderType> {
+  static set(targetName: string | symbol, target: ProviderType): Map<string | symbol, ProviderType> {
     return Container.providers.set(targetName, target);
   }
 
@@ -26,19 +24,11 @@ export class Container {
     if (Container.providers.has(targetName)) {
       const provider = Container.providers.get(targetName);
 
-      if (isProviderObject(provider)) {
-        if (isClass(provider.value)) {
-          return Factory.construct(provider.value, options)
-        }
-
-        return provider.value;
-      }
-
       if (isClass(provider)) {
         return Factory.construct(provider, options)
       }
 
-      return;
+      return provider;
     }
   }
 }

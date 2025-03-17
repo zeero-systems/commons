@@ -20,28 +20,11 @@ export type ConsumerObjectParameterType = {
 };
 
 /**
- * Defines a provider class type as the same as a constructor class
- *
- * @type ProviderClassType
- */
-export type ProviderClassType = new (...args: any[]) => any
-
-/**
- * Defines a provider plain type
- *
- * @type ProviderPlainType
- */
-export type ProviderPlainType = {
-  name: string;
-  value: any;
-};
-
-/**
  * Defines a provider type
  *
  * @type ProviderType
  */
-export type ProviderType = ProviderClassType | ProviderPlainType;
+export type ProviderType = (new (...args: any[]) => any) & any;
 
 /**
  * Defines a provider parameters type
