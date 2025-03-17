@@ -8,14 +8,14 @@ import { ConstructorType } from '~/common/types.ts';
 export type ConsumerParameterType =
   | string
   | (new (...args: any[]) => any)
-  | ConsumerObjectParameterType;
+  | ConsumerObjectType;
 
 /**
  * Defines a consumer object type
  *
  * @type ConsumerObjectParameterType
  */
-export type ConsumerObjectParameterType = {
+export type ConsumerObjectType = {
   [key: string | symbol]: { optional?: boolean };
 };
 

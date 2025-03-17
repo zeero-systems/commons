@@ -1,21 +1,17 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { DecorationType, ArtifactType, DecoratorFunctionType } from '~/decorator/types.ts';
-import type { ConsumerObjectParameterType, ConsumerParameterType } from '~/container/types.ts';
+import type { ConsumerObjectType, ConsumerParameterType } from '~/container/types.ts';
 
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
-import Common from '~/common/services/Common.ts';
 import Container from '~/container/services/Container.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
-import Metadata from '~/common/services/Metadata.ts';
 import ProviderException from '~/container/exceptions/ProviderException.ts';
 
 import isString from '~/common/guards/isString.ts';
 import isClass from '~/common/guards/isClass.ts';
-import isConsumerObjectParameter from '~/container/guards/isConsumerObjectParameter.ts';
+import isConsumerObject from '~/container/guards/isConsumerObject.ts';
 import Text from '~/common/services/Text.ts';
-
-import { Singleton } from '~/common/annotations/Singleton.ts';
 
 export class Consumer implements AnnotationInterface {
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & ConsumerParameterType>): any {
@@ -23,15 +19,15 @@ export class Consumer implements AnnotationInterface {
     const targetName = artifact.name;
     const context = decoration.context as any;
 
-    let decoratorProvider: ConsumerObjectParameterType = {};
+    let providers: ConsumerObjectType = {};
     if (isString(decoration.parameters)) {
-      decoratorProvider[decoration.parameters] = { optional: true };
+      providers[decoration.parameters] = { optional: true };
     }
     if (isClass(decoration.parameters)) {
-      decoratorProvider[decoration.parameters.name] = { optional: true };
+      providers[decoration.parameters.name] = { optional: true };
     }
-    if (isConsumerObjectParameter(decoration.parameters)) {
-      decoratorProvider = decoration.parameters;
+    if (isConsumerObject(decoration.parameters)) {
+      providers = decoration.parameters;
     }
 
     if (context.kind == DecoratorKindEnum.CLASS) {
@@ -49,7 +45,7 @@ export class Consumer implements AnnotationInterface {
 
                 if (
                   !Container.exists(providerName) &&
-                  !decoratorProvider[providerName]?.optional
+                  providers[providerName]?.optional === false
                 ) {
                   throw new ProviderException('Provider {name} not found', {
                     key: 'NOT_FOUND',
@@ -89,8 +85,7 @@ export class Consumer implements AnnotationInterface {
 
           if (
             !Container.exists(providerName) &&
-            decoratorProvider[providerName] &&
-            !decoratorProvider[providerName].optional
+            providers[providerName]?.optional === false
           ) {
             throw new ProviderException('Provider {name} not found', {
               key: 'NOT_FOUND',
@@ -115,4 +110,4 @@ export class Consumer implements AnnotationInterface {
   }
 }
 
-export default (parameters?: ConsumerParameterType): DecoratorFunctionType => Decorator.apply(Consumer, parameters);
+export default (parameter?: ConsumerParameterType): DecoratorFunctionType => Decorator.apply(Consumer, parameter);
