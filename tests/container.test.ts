@@ -5,11 +5,18 @@ import Consumer from '~/container/annotations/Consumer.ts';
 import Factory from '~/common/services/Factory.ts';
 import Provider from '~/container/annotations/Provider.ts';
 import ProviderException from '~/container/exceptions/ProviderException.ts';
+import { Container, Text } from '-/mod.ts';
 
 describe('container', () => {
 
   interface UserProviderMockInterface {
     getUserFirstName(): string
+  }
+
+  class ManualProviderMock implements UserProviderMockInterface {
+    public getUserFirstName(): string {
+      return 'Eduardo'
+    }
   }
   
   @Provider()
@@ -61,5 +68,11 @@ describe('container', () => {
   it('inject from field properties', () => {
     expect(consumerAccountMock.getFirstAccessorUserFirstName()).toEqual('Eduardo')
     expect(consumerAccountMock.getSecondAccessorUserFirstName()).toEqual('Eduardo')
+  });
+
+  it('instantiate from a provider object', () => {
+    Container.set(ManualProviderMock.name, { name: 'ManualProviderMock', value: ManualProviderMock });
+    const provider = Container.construct('ManualProviderMock') as UserProviderMockInterface
+    expect(provider.getUserFirstName()).toEqual('Eduardo')
   });
 });

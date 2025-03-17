@@ -3,8 +3,7 @@ import type { ConstructorArgType } from '~/common/types.ts';
 
 import Factory from '~/common/services/Factory.ts';
 
-import guardProviderPlain from '~/container/guards/isProviderPlain.ts';
-import guardProviderClass from '~/container/guards/isProviderClass.ts';
+import isProviderObject from '~/container/guards/isProviderObject.ts';
 import isClass from '~/common/guards/isClass.ts';
 
 export class Container {
@@ -23,11 +22,11 @@ export class Container {
     return Container.providers.set(targetName, target);
   }
 
-  static construct(targetName: string | symbol, options?: { arguments?: ConstructorArgType<any> }): (new (...args: any) => any) | object | undefined {
+  static construct(targetName: string | symbol, options?: { arguments?: ConstructorArgType<any> }): any {
     if (Container.providers.has(targetName)) {
       const provider = Container.providers.get(targetName);
 
-      if (guardProviderPlain(provider)) {
+      if (isProviderObject(provider)) {
         if (isClass(provider.value)) {
           return Factory.construct(provider.value, options)
         }
@@ -35,7 +34,7 @@ export class Container {
         return provider.value;
       }
 
-      if (guardProviderClass(provider)) {
+      if (isClass(provider)) {
         return Factory.construct(provider, options)
       }
 
