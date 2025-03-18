@@ -20,7 +20,9 @@ export class Common {
       }
       
       if (decoration.context.kind == DecoratorKindEnum.CLASS) {
-        decoration.context.metadata[Common.metadata][decoration.property].parameters = artifact.parameters
+        if (!decoration.context.metadata[Common.metadata][decoration.property].parameters) {
+          decoration.context.metadata[Common.metadata][decoration.property].parameters = artifact.parameters
+        }
       }
     }
   }
