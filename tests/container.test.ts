@@ -5,7 +5,7 @@ import Consumer from '~/container/annotations/Consumer.ts';
 import Factory from '~/common/services/Factory.ts';
 import Provider from '~/container/annotations/Provider.ts';
 import ProviderException from '~/container/exceptions/ProviderException.ts';
-import { Container, Text } from '-/mod.ts';
+import Container from '~/container/services/Container.ts';
 
 describe('container', () => {
 
@@ -74,5 +74,11 @@ describe('container', () => {
     Container.set('ManualProviderMock', 'Eduardo');
     const provider = Container.construct('ManualProviderMock')
     expect(provider).toEqual('Eduardo')
+  });
+
+  it('instantiate from a provider object with class value', () => {
+    Container.set('ManualProviderMock', ManualProviderMock);
+    const provider = Container.construct('ManualProviderMock') as ManualProviderMock
+    expect(provider.getUserFirstName()).toEqual('Eduardo')
   });
 });

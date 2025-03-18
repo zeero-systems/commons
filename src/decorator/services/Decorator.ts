@@ -15,6 +15,7 @@ import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
 import Mixin from '~/common/annotations/Mixin.ts';
 import Metadata from '~/common/services/Metadata.ts';
+import Common from '~/common/services/Common.ts';
 
 export class Decorator {
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
@@ -28,10 +29,15 @@ export class Decorator {
       context: DecoratorContextType,
       options?: AnnotationOptionsType,
     ) {
+      
+      const artifactName = target?.name || target?.constructor?.name || ''
+      const artifactParameterName = context.kind != DecoratorKindEnum.CLASS ? context.name : 'constructor';
+      const artifactProperty = context.kind != DecoratorKindEnum.CLASS ? context.name : 'construct';
+
       const artifact: ArtifactType = {
-        name: target?.name || target?.constructor?.name || '',
+        name: artifactName,
         target: target,
-        parameters: target ? Factory.getParameterNames(target, 'constructor') : [],
+        parameters: target ? Factory.getParameterNames(target, String(artifactParameterName)) : [],
       };
 
       const decoration: DecorationType<P> = {
@@ -45,9 +51,23 @@ export class Decorator {
       if (parameters) decoration.parameters = parameters;
       if (context.static) decoration.static = context.static;
       if (context.private) decoration.private = context.private;
-
+      
       if (decoration.context.metadata && decoration.annotation.constructor.name != Mixin.name) {
         Decorator.applyMetadata(decoration);
+      }
+
+      if (artifactProperty) {
+        if (!context.metadata[Common.metadata]) {
+          context.metadata[Common.metadata] = {}
+        }
+  
+        if (!context.metadata[Common.metadata][artifactProperty]) {
+          context.metadata[Common.metadata][artifactProperty] = {}
+        }
+        
+        if (context.kind == DecoratorKindEnum.CLASS) {
+          context.metadata[Common.metadata][artifactProperty].parameters = artifact.parameters
+        }
       }
 
       if (decoration.annotation.onInitialize) {
@@ -63,7 +83,7 @@ export class Decorator {
   public static hasAnnotation<T extends {}>(
     target: T,
     annotation: ConstructorType<AnnotationInterface>,
-    propertyKey: PropertyKey = 'constructor',
+    propertyKey: PropertyKey = 'construct',
   ): boolean {
     const metadata = Metadata.getProperty(target, Decorator.metadata);
 
@@ -75,7 +95,7 @@ export class Decorator {
   public static getDecoration<T extends {}>(
     target: T,
     annotation: ConstructorType<AnnotationInterface>,
-    propertyKey: PropertyKey = 'constructor',
+    propertyKey: PropertyKey = 'construct',
   ): DecorationMetadataType<any> | undefined {
     const metadata = Metadata.getProperty(target, Decorator.metadata);
 
@@ -85,7 +105,7 @@ export class Decorator {
   }
 
   private static applyMetadata<P>(decoration: DecorationType<P>): void {
-    const property = decoration.context.kind != DecoratorKindEnum.CLASS ? decoration.context.name : 'constructor';
+    const property = decoration.context.kind != DecoratorKindEnum.CLASS ? decoration.context.name : 'construct';
 
     if (!decoration.context.metadata[Decorator.metadata]) {
       decoration.context.metadata[Decorator.metadata] = new Map<TargetPropertyType, DecorationMetadataType<P>[]>();

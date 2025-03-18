@@ -12,6 +12,7 @@ import isString from '~/common/guards/isString.ts';
 import isClass from '~/common/guards/isClass.ts';
 import isConsumerObject from '~/container/guards/isConsumerObject.ts';
 import Text from '~/common/services/Text.ts';
+import Common from '~/common/services/Common.ts';
 
 export class Consumer implements AnnotationInterface {
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & ConsumerParameterType>): any {
@@ -39,9 +40,11 @@ export class Consumer implements AnnotationInterface {
               return Reflect.construct(currentTarget, currentArgs, newTarget);
             }
 
-            if (artifact.parameters) {
-              for (let index = 0; index < artifact.parameters.length; index++) {
-                const providerName = Text.toFirstLetterUppercase(String(artifact.parameters[index]));
+            const common = context.metadata[Common.metadata]
+
+            if (common.construct.parameters) {
+              for (let index = 0; index < common.construct.parameters.length; index++) {
+                const providerName = Text.toFirstLetterUppercase(String(common.construct.parameters[index]));
 
                 if (
                   !Container.exists(providerName) &&
@@ -60,8 +63,6 @@ export class Consumer implements AnnotationInterface {
             return Reflect.construct(currentTarget, currentArgs, newTarget);
           },
         });
-
-        artifact.target.toString = Function.prototype.toString.bind(artifact.target)
       }
 
       return artifact.target;
