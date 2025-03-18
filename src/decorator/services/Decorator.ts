@@ -32,7 +32,6 @@ export class Decorator {
       
       const artifactName = target?.name || target?.constructor?.name || ''
       const artifactParameterName = context.kind != DecoratorKindEnum.CLASS ? context.name : 'constructor';
-      const artifactProperty = context.kind != DecoratorKindEnum.CLASS ? context.name : 'construct';
 
       const artifact: ArtifactType = {
         name: artifactName,
@@ -44,6 +43,7 @@ export class Decorator {
         kind: context.kind,
         annotation: Reflect.construct(annotation, []),
         parameters: undefined,
+        property: context.kind != DecoratorKindEnum.CLASS ? context.name : 'construct',
         context,
       };
 
@@ -52,22 +52,12 @@ export class Decorator {
       if (context.static) decoration.static = context.static;
       if (context.private) decoration.private = context.private;
       
-      if (decoration.context.metadata && decoration.annotation.constructor.name != Mixin.name) {
-        Decorator.applyMetadata(decoration);
-      }
+      if (decoration.context.metadata) {
+        if (decoration.annotation.constructor.name != Mixin.name) {
+          Decorator.applyMetadata(decoration);
+        }
 
-      if (artifactProperty) {
-        if (!context.metadata[Common.metadata]) {
-          context.metadata[Common.metadata] = {}
-        }
-  
-        if (!context.metadata[Common.metadata][artifactProperty]) {
-          context.metadata[Common.metadata][artifactProperty] = {}
-        }
-        
-        if (context.kind == DecoratorKindEnum.CLASS) {
-          context.metadata[Common.metadata][artifactProperty].parameters = artifact.parameters
-        }
+        Common.applyMetadata(artifact, decoration)
       }
 
       if (decoration.annotation.onInitialize) {

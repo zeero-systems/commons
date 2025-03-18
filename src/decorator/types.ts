@@ -46,8 +46,9 @@ export type DecoratorContextType = DecoratorContext & {
 export type DecorationMetadataType<P> = Pick<DecoratorContextType, 'static' | 'private'> & {
   kind: 'class' | 'method' | 'getter' | 'setter' | 'field' | 'accessor';
   annotation: AnnotationInterface;
-  options?: AnnotationOptionsType;
+  property: string | symbol;
   parameters: P | undefined;
+  options?: AnnotationOptionsType;
 };
 
 /**
