@@ -1,13 +1,28 @@
+
 /**
- * Defines the decorator artifact type
+ * Defines the common artifact type
  * 
  * @type ArtifactType
  */ 
 export type ArtifactType = {
-  name: string;
+  name: KeyType;
   target: any;
-  parameters: string[];
+  parameters?: string[];
 };
+
+/**
+ * Simple keyable type
+ *
+ * @type KeyType
+ */ 
+export type KeyType = string | symbol;
+
+/**
+ * Simple tag type
+ *
+ * @type TagType<T>
+ */ 
+export type TagType = string | symbol;
 
 /**
  * Defines as a constructable type

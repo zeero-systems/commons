@@ -1,5 +1,6 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
-import type { DecorationType, ArtifactType, DecoratorFunctionType } from '~/decorator/types.ts';
+import type { DecorationType, DecoratorFunctionType } from '~/decorator/types.ts';
+import type { ArtifactType } from '~/common/types.ts';
 
 import Decorator from '~/decorator/services/Decorator.ts';
 

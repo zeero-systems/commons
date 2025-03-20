@@ -1,4 +1,5 @@
-import type { DecorationType, ArtifactType } from '~/decorator/types.ts';
+import type { DecorationType } from '~/decorator/types.ts';
+import type { ArtifactType } from '~/common/types.ts';
 
 /**
  * Annotation intefaces to implements decorators

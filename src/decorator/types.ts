@@ -2,17 +2,6 @@ import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { MetadataType } from '~/common/types.ts';
 
 /**
- * Defines the decorator artifact type
- * 
- * @type ArtifactType
- */ 
-export type ArtifactType = {
-  name: string;
-  target: any;
-  parameters: string[];
-};
-
-/**
  * The returned decorator function
  * 
  * @type DecoratorFunctionType

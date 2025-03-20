@@ -15,6 +15,8 @@ import Objector from '~/common/services/Objector.ts';
 import Mixin from '~/common/annotations/Mixin.ts';
 import Metadata from '~/common/services/Metadata.ts';
 import Common from '~/common/services/Common.ts';
+import Parameter from '~/common/services/Parameter.ts';
+import Tagger from '~/common/services/Tagger.ts';
 
 export class Decorator {
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
@@ -56,7 +58,8 @@ export class Decorator {
           Decorator.applyMetadata(decoration);
         }
 
-        Common.applyMetadata(artifact, decoration)
+        Parameter.applyMetadata(artifact, decoration)
+        Tagger.applyMetadata(decoration)
       }
 
       if (decoration.annotation.onInitialize) {

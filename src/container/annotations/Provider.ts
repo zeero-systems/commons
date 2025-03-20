@@ -1,28 +1,29 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { DecorationType, DecoratorFunctionType } from '~/decorator/types.ts';
-import type { KeyType } from '~/container/types.ts';
+import type { ArtifactType, KeyType } from '~/common/types.ts';
 
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
+import Artifactor from '~/common/services/Artifactor.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import Text from '~/common/services/Text.ts';
-import Registry from '~/container/services/Registry.ts';
-import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 import Scope from '~/container/services/Scope.ts';
-import { ArtifactType } from '~/common/types.ts';
+import ScopeEnum from '~/container/enums/ScopeEnum.ts';
+import Locator from '~/container/services/Locator.ts';
+import Tagger from '~/common/services/Tagger.ts';
 
-export class Register implements AnnotationInterface {
-  onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & { scope: ScopeEnum, tag?: KeyType }>): any {
+export class Provider implements AnnotationInterface {
+  onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & { scope: ScopeEnum }>): any {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
       const targetName = Text.toFirstLetterUppercase(artifact.name)
 
-      if (!Registry.has(targetName)) {
-        Registry.set(targetName, { 
+      if (!Artifactor.has(targetName)) {
+        Artifactor.set(targetName, { 
           name: targetName,
-          target: artifact.target, 
-          parameters: artifact.parameters,
-          tag: decoration.parameters?.tag
+          target: artifact.target,
         })
+
+        Tagger.set(Locator.provider, decoration)
       }
 
       if (!decoration.context.metadata[Scope.metadata]) {
@@ -39,4 +40,4 @@ export class Register implements AnnotationInterface {
   }
 }
 
-export default (scope: ScopeEnum = ScopeEnum.Transient, tag?: KeyType): DecoratorFunctionType => Decorator.apply(Register, { scope, tag });
+export default (scope: ScopeEnum = ScopeEnum.Transient): DecoratorFunctionType => Decorator.apply(Provider, { scope });

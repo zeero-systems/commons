@@ -1,24 +1,31 @@
 // deno-lint-ignore-file no-this-alias
 import type { ContainerInterface } from '~/container/interfaces.ts';
-import type { KeyType, TagType } from '~/container/types.ts';
-import type { ArtifactType } from '~/common/types.ts';
+import type { ArtifactType, KeyType, TagType } from '~/common/types.ts';
 
 import Factory from '~/common/services/Factory.ts';
 import isClass from '~/common/guards/isClass.ts';
-import Registry from '~/container/services/Registry.ts';
+import Artifactor from '~/common/services/Artifactor.ts';
 import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 import Locator from '~/container/services/Locator.ts';
+import Text from '~/common/services/Text.ts';
+import Parameter from '~/common/services/Parameter.ts';
+import Tagger from '~/common/services/Tagger.ts';
 
 export class Container implements ContainerInterface {
-  public artifacts: Map<KeyType, ArtifactType & { tag?: TagType }> = new Map();
-  public artifactsByTag: Map<TagType, Map<KeyType, ArtifactType & { tag?: TagType }>> = new Map();
-
-  public storage: Map<KeyType, any> = new Map();
+  public artifacts: Map<KeyType, ArtifactType> = new Map();
+  public artifactsByTag: Map<TagType, Map<KeyType, ArtifactType>> = new Map();
+  
+  public instances: Map<KeyType, any> = new Map();
 
   constructor() {
+    
+    this.init()
+  }
+
+  private init(): void {
     const self = this;
 
-    for (let [key, artifact] of Registry.artifacts) {
+    for (let [key, artifact] of Artifactor.artifacts) {
       let scopedTarget = artifact.target;
 
       if (isClass(artifact.target)) {
@@ -28,7 +35,9 @@ export class Container implements ContainerInterface {
               return Reflect.construct(currentTarget, currentArgs, newTarget);
             }
 
-            if (artifact.parameters) {
+            const parameters = Parameter.get(currentTarget);
+            
+            if (parameters) {
               let scope = ScopeEnum.Transient;
               if (currentTarget[Symbol.metadata]) {
                 if (currentTarget[Symbol.metadata]?.scope) {
@@ -36,11 +45,11 @@ export class Container implements ContainerInterface {
                 }
               }
 
-              for (let index = 0; index < artifact.parameters.length; index++) {
-                currentArgs[index] = self.construct(artifact.parameters[index], scope);
+              for (let index = 0; index < parameters.length; index++) {
+                currentArgs[index] = Artifactor.artifacts.get(parameters[index])?.target;
 
-                if (!currentArgs[index]) {
-                  currentArgs[index] = Registry.artifacts.get(artifact.parameters[index])?.target;
+                if (!currentArgs[index] || isClass(currentArgs[index])) {
+                  currentArgs[index] = self.construct(Text.toFirstLetterUppercase(parameters[index]), scope);
                 }
               }
             }
@@ -49,44 +58,52 @@ export class Container implements ContainerInterface {
           },
         });
       }
+      
+      console.log('scopedTarget[Symbol.metadata]', scopedTarget[Symbol.metadata])
 
-      this.artifacts.set(key, scopedTarget);
+      this.artifacts.set(key, { ...artifact, target: scopedTarget });
 
-      if (artifact.tag) {
-        if (!this.artifactsByTag.has(artifact.tag)) {
-          this.artifactsByTag.set(artifact.tag, new Map());
+      console.log(artifact.name, Tagger.get(artifact.target))
+
+      for (const tag of Tagger.get(artifact.target)) {
+        if (!this.artifactsByTag.has(tag)) {
+          this.artifactsByTag.set(tag, new Map());
         }
   
         // @ts-ignore we already added the scoped target
-        this.artifactsByTag.get(artifact.tag)?.set(key, this.artifacts.get(key));
-      }
+        this.artifactsByTag.get(tag)?.set(key, this.artifacts.get(key));
+      } 
     }
   }
 
-  public construct(key: KeyType, scope: ScopeEnum): any {
+  public construct<T>(key: KeyType, scope: ScopeEnum = ScopeEnum.Transient): T | undefined {
     if (scope == ScopeEnum.Perpetual) {
       if (Locator.containers.has('Perpetual')) {
         return Locator.containers.get('Perpetual')
-          ?.construct(key, ScopeEnum.Transient);
+          ?.construct(key, ScopeEnum.Transient) as T
       }
     }
 
     const artifact = this.artifacts.get(key);
-
+    
     if (artifact) {
       if (scope == ScopeEnum.Ephemeral) {
         return Factory.construct(artifact.target);
       }
-
+      
       if (scope == ScopeEnum.Transient) {
-        if (this.storage.has(key)) {
-          this.storage.set(key, Factory.construct(artifact.target));
+        if (!this.instances.has(key)) {
+          this.instances.set(key, Factory.construct(artifact.target));
         }
-        return this.storage.get(key);
+        return this.instances.get(key);
       }
     }
 
-    return undefined;
+    return undefined
+  }
+
+  static create(key: KeyType): ContainerInterface {
+    return Locator.containers.set(key, new Container()).get(key) as ContainerInterface;
   }
 }
 
