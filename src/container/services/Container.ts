@@ -2,6 +2,8 @@
 import type { ContainerInterface } from '~/container/interfaces.ts';
 import type { ArtifactType, KeyType, TagType } from '~/common/types.ts';
 
+import { Consume } from '~/container/annotations/Consume.ts';
+
 import Factory from '~/common/services/Factory.ts';
 import isClass from '~/common/guards/isClass.ts';
 import Artifactor from '~/common/services/Artifactor.ts';
@@ -10,85 +12,108 @@ import Locator from '~/container/services/Locator.ts';
 import Text from '~/common/services/Text.ts';
 import Parameter from '~/common/services/Parameter.ts';
 import Tagger from '~/common/services/Tagger.ts';
+import Decorator from '~/decorator/services/Decorator.ts';
 
 export class Container implements ContainerInterface {
-  public artifacts: Map<KeyType, ArtifactType> = new Map();
-  public artifactsByTag: Map<TagType, Map<KeyType, ArtifactType>> = new Map();
+  static artifacts: Map<KeyType, ArtifactType> = new Map();
+  static artifactsByTag: Map<TagType, Map<KeyType, ArtifactType>> = new Map();
   
   public instances: Map<KeyType, any> = new Map();
 
   constructor() {
-    
-    this.init()
+    if (
+      Artifactor.artifacts.size > 0 &&
+      Container.artifacts.size == 0
+    ) {
+      this.wrapperify()
+    }
   }
 
-  private init(): void {
+  private wrapperify(): void {
     const self = this;
 
     for (let [key, artifact] of Artifactor.artifacts) {
-      let scopedTarget = artifact.target;
+      let proxyTarget = artifact.target;
+      const tags = Tagger.get(artifact.target)
+      
+      if (tags.includes(Locator.consumer)) {
+        if (isClass(artifact.target)) {
+          proxyTarget = new Proxy(proxyTarget, {
+            get(currentTarget: any, currentPropertyKey, currentReceiver: any) {
+              const consume = Decorator.getDecoration(currentTarget, Consume, currentPropertyKey)
 
-      if (isClass(artifact.target)) {
-        scopedTarget = new Proxy(scopedTarget, {
-          construct(currentTarget, currentArgs, newTarget) {
-            if (currentTarget.prototype !== newTarget.prototype) {
-              return Reflect.construct(currentTarget, currentArgs, newTarget);
-            }
-
-            const parameters = Parameter.get(currentTarget);
-            
-            if (parameters) {
-              let scope = ScopeEnum.Transient;
-              if (currentTarget[Symbol.metadata]) {
-                if (currentTarget[Symbol.metadata]?.scope) {
-                  scope = currentTarget[Symbol.metadata]?.scope as any;
+              if (consume) {
+                let scope = ScopeEnum.Transient;
+                if (consume.parameters.scope) {
+                  scope = consume.parameters.scope;
                 }
+
+                let providerName = currentPropertyKey
+                if (consume.parameters.providerName) {
+                  providerName = consume.parameters.providerName
+                  if (isClass(consume.parameters.providerName)) {
+                    providerName = consume.parameters.providerName.name
+                  }
+                }
+                
+                return self.construct(Text.toFirstLetterUppercase(providerName), scope);
               }
-
-              for (let index = 0; index < parameters.length; index++) {
-                currentArgs[index] = Artifactor.artifacts.get(parameters[index])?.target;
-
-                if (!currentArgs[index] || isClass(currentArgs[index])) {
+              
+              return Reflect.get(currentTarget, currentPropertyKey, currentReceiver)
+            },
+            construct(currentTarget, currentArgs, newTarget) {
+              if (currentTarget.prototype !== newTarget.prototype) {
+                return Reflect.construct(currentTarget, currentArgs, newTarget);
+              }
+  
+              const parameters = Parameter.get(currentTarget);
+  
+              if (parameters) {
+                let scope = ScopeEnum.Transient;
+                if (currentTarget[Symbol.metadata]) {
+                  if (currentTarget[Symbol.metadata]?.scope) {
+                    scope = currentTarget[Symbol.metadata]?.scope as any;
+                  }
+                }
+  
+                for (let index = 0; index < parameters.length; index++) {
                   currentArgs[index] = self.construct(Text.toFirstLetterUppercase(parameters[index]), scope);
                 }
               }
-            }
-
-            return Reflect.construct(currentTarget, currentArgs, newTarget);
-          },
-        });
+  
+              return Reflect.construct(currentTarget, currentArgs, newTarget);
+            },
+          });
+        }
       }
+
+      Container.artifacts.set(key, { ...artifact, target: proxyTarget });
       
-      console.log('scopedTarget[Symbol.metadata]', scopedTarget[Symbol.metadata])
-
-      this.artifacts.set(key, { ...artifact, target: scopedTarget });
-
-      console.log(artifact.name, Tagger.get(artifact.target))
-
       for (const tag of Tagger.get(artifact.target)) {
-        if (!this.artifactsByTag.has(tag)) {
-          this.artifactsByTag.set(tag, new Map());
+        if (!Container.artifactsByTag.has(tag)) {
+          Container.artifactsByTag.set(tag, new Map());
         }
   
         // @ts-ignore we already added the scoped target
-        this.artifactsByTag.get(tag)?.set(key, this.artifacts.get(key));
+        Container.artifactsByTag.get(tag)?.set(key, Container.artifacts.get(key));
       } 
     }
   }
 
   public construct<T>(key: KeyType, scope: ScopeEnum = ScopeEnum.Transient): T | undefined {
-    if (scope == ScopeEnum.Perpetual) {
-      if (Locator.containers.has('Perpetual')) {
-        return Locator.containers.get('Perpetual')
-          ?.construct(key, ScopeEnum.Transient) as T
-      }
-    }
-
-    const artifact = this.artifacts.get(key);
     
-    if (artifact) {
+    let artifact = Container.artifactsByTag.get(Locator.provider)?.get(key);
+
+    if (artifact && isClass(artifact.target)) {
+      if (scope == ScopeEnum.Perpetual) {
+        if (Locator.containers.has('Perpetual')) {
+          return Locator.containers.get('Perpetual')
+            ?.construct(key, ScopeEnum.Transient) as T
+        }
+      }
+
       if (scope == ScopeEnum.Ephemeral) {
-        return Factory.construct(artifact.target);
+        return Factory.construct(artifact.target as any);
       }
       
       if (scope == ScopeEnum.Transient) {
@@ -99,7 +124,9 @@ export class Container implements ContainerInterface {
       }
     }
 
-    return undefined
+    artifact = Container.artifacts.get(key);
+
+    return artifact?.target as T
   }
 
   static create(key: KeyType): ContainerInterface {

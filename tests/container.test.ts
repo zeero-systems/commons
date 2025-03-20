@@ -6,6 +6,7 @@ import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 import Container from '~/container/services/Container.ts';
 import Artifactor from '~/common/services/Artifactor.ts';
 import Consumer from '~/container/annotations/Consumer.ts';
+import Consume from '~/container/annotations/Consume.ts';
 
 describe('container', () => {
 
@@ -13,29 +14,42 @@ describe('container', () => {
     getUserFirstName(): string
   }
 
-  @Provider(ScopeEnum.Transient)
+  @Provider()
   class UserMock implements UserMockInterface {
     public getUserFirstName(): string {
       return 'Eduardo'
     }
   }
 
-  @Provider(ScopeEnum.Transient)
+  @Provider()
   class UserRepositoryMock {
     public getUser(): any {
       return { name: 'Eduardo' }
     }
   }
 
-  @Consumer()
-  @Provider(ScopeEnum.Transient)
+  @Consumer(ScopeEnum.Transient)
+  @Provider()
   class UserServiceMock {
     constructor(public userRepositoryMock: UserRepositoryMock) {}
   }
 
-  @Provider(ScopeEnum.Transient)
+  @Consumer(ScopeEnum.Transient)
+  @Provider()
   class CustomServiceMock {
     constructor(public CUSTOM: any) {}
+  }
+
+  @Consumer()
+  class AnotherServiceMock {
+    @Consume()
+    userRepositoryMock!: UserRepositoryMock
+
+    @Consume(UserRepositoryMock)
+    differentePropertyName!: UserRepositoryMock
+
+    @Consume('CUSTOM')
+    textPropertyName!: any
   }
 
   const customArtifact = { name: 'Custom', target: { email: 'test@email.com' } }
@@ -43,10 +57,6 @@ describe('container', () => {
   Artifactor.set('CUSTOM', customArtifact)
 
   const containerPerpetual = Container.create('PERPETUAL')
-  const containerRequest = Container.create('REQUEST')
-
-  console.log('perpetual', containerPerpetual.artifacts)
-  console.log('artifacts', Artifactor.artifacts)
 
   it('instantiate from container', () => {
     const user = containerPerpetual.construct('UserMock')
@@ -58,72 +68,29 @@ describe('container', () => {
     expect(user?.userRepositoryMock.getUser()).not.toBeUndefined()
   });
 
+  const containerRequest = Container.create('REQUEST')
+  
   it('inject custom contructor parameters', () => {
     const service = containerRequest.construct<CustomServiceMock>('CustomServiceMock')
     expect(service?.CUSTOM).not.toBeUndefined()
   });
+  
+  it('container isolation', () => {
+    containerRequest.construct<CustomServiceMock>('UserMock')
+    expect(containerPerpetual.instances.size != containerRequest.instances.size).not.toBeFalsy()
+  })
 
-  
-  // @Provider()
-  // class UserProviderMock implements UserProviderMockInterface {
-  //   public getUserFirstName(): string {
-  //     return 'Eduardo'
-  //   }
-  // }
-  
-  // @Consumer()
-  // class ConsumerAccountMock {
-    
-  //   @Consumer('UserProviderMock')
-  //   accessor firstAccessorUserProviderMock!: any;
-  
-  //   @Consumer(UserProviderMock)
-  //   accessor secondAccessorUserProviderMock!: any;
-    
-  //   constructor(public userProviderMock: UserProviderMockInterface) {}
-  
-  //   public getUserFirstName() {
-  //     return this.userProviderMock.getUserFirstName()
-  //   }
-  
-  //   public getFirstAccessorUserFirstName() {
-  //     return (<UserProviderMock>this.firstAccessorUserProviderMock).getUserFirstName()
-  //   }
-  
-  //   public getSecondAccessorUserFirstName() {
-  //     return this.secondAccessorUserProviderMock.getUserFirstName()
-  //   }
-  // }
-  
-  // @Consumer({ NotFoundProvider: { optional: false }})
-  // class ConsumerNotFoundProviderMock {    
-  //   constructor (public notFoundProvider: any) {}
-  // }
-  
-  // it('throws if provider do not exist and is not optional', () => {
-  //   expect(() => Factory.construct(ConsumerNotFoundProviderMock)).toThrow(ProviderException)
-  // });
+  const another = containerRequest.construct<AnotherServiceMock>('AnotherServiceMock')
 
-  // const consumerAccountMock = Factory.construct(ConsumerAccountMock)
+  it('inject from field properties', () => {
+    expect(another?.userRepositoryMock.getUser().name).toEqual('Eduardo')
+  });
 
-  // it('inject from constructor property', () => {
-  //   expect(consumerAccountMock.getUserFirstName()).toEqual('Eduardo')
-  // });
+  it('inject from field properties from class', () => {
+    expect(another?.differentePropertyName.getUser().name).toEqual('Eduardo')
+  });
 
-  // it('inject from field properties', () => {
-  //   expect(consumerAccountMock.getFirstAccessorUserFirstName()).toEqual('Eduardo')
-  //   expect(consumerAccountMock.getSecondAccessorUserFirstName()).toEqual('Eduardo')
-  // });
-
-  // it('instantiate from a provider object', () => {
-  //   Container.set('ManualProviderMock', 'Eduardo');
-  //   const provider = Container.construct('ManualProviderMock')
-  //   expect(provider).toEqual('Eduardo')
-  // });
-
-  // it('instantiate from a provider object with class value', () => {
-  //   Container.set('ManualProviderMock', ManualProviderMock);
-  //   const provider = Container.construct('ManualProviderMock') as ManualProviderMock
-  //   expect(provider.getUserFirstName()).toEqual('Eduardo')
-  // });
+  it('inject from field properties from text', () => {
+    expect(another?.textPropertyName.email).toEqual('test@email.com')
+  });
 });

@@ -7,24 +7,22 @@ import Artifactor from '~/common/services/Artifactor.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import Text from '~/common/services/Text.ts';
-import Scope from '~/container/services/Scope.ts';
-import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 import Locator from '~/container/services/Locator.ts';
 import Tagger from '~/common/services/Tagger.ts';
+import Scope from '~/container/services/Scope.ts';
+import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 
 export class Consumer implements AnnotationInterface {
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & { scope: ScopeEnum }>): any {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
       const targetName = Text.toFirstLetterUppercase(artifact.name)
 
-      if (!Artifactor.has(targetName)) {
-        Artifactor.set(targetName, { 
-          name: targetName,
-          target: artifact.target,
-        })
+      Artifactor.set(targetName, { 
+        name: targetName,
+        target: artifact.target,
+      })
 
-        Tagger.set(Locator.consumer, decoration)
-      }
+      Tagger.set(Locator.consumer, decoration)
 
       if (!decoration.context.metadata[Scope.metadata]) {
         decoration.context.metadata[Scope.metadata] = decoration.parameters?.scope

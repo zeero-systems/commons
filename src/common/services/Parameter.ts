@@ -29,7 +29,7 @@ export class Parameter {
     if (metadata) {
       const properties = metadata[Parameter.metadata]
       if (properties) {
-        parameters = properties[propertyKey]
+        parameters = properties.get(propertyKey)
       }
     }
 

@@ -1,5 +1,5 @@
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
-import Artifact from '~/entity/services/Artifact.ts';
+import Artifactor from '~/common/services/Artifactor.ts';
 import Common from '~/common/services/Common.ts';
 import Container from '~/container/services/Container.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
@@ -10,7 +10,6 @@ import List from '~/common/services/List.ts';
 import Locator from '~/container/services/Locator.ts';
 import Metadata from '~/common/services/Metadata.ts';
 import Objector from '~/common/services/Objector.ts';
-import Registry from '~/container/services/Registry.ts';
 import Scope from '~/container/services/Scope.ts';
 import Text from '~/common/services/Text.ts';
 import Validator from '~/validator/services/Validator.ts';
@@ -41,6 +40,8 @@ import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 import Validations from '~/validator/validations.ts';
 
+import Consume from '~/container/annotations/Consume.ts';
+import Consumer from '~/container/annotations/Consumer.ts';
 import Debug from '~/common/annotations/Debug.ts';
 import Equal from '~/validator/annotations/Equal.ts';
 import GreaterThan from '~/validator/annotations/GreaterThan.ts';
@@ -49,12 +50,12 @@ import Integer from '~/validator/annotations/Integer.ts';
 import LessThanEqual from '~/validator/annotations/LessThanEqual.ts';
 import LessThan from '~/validator/annotations/LessThan.ts';
 import Mixin from '~/common/annotations/Mixin.ts';
-import Register from './src/container/annotations/Register.ts';
+import Provider from '~/container/annotations/Provider.ts';
 import Regex from '~/validator/annotations/Regex.ts';
 import Required from '~/validator/annotations/Required.ts';
 import Singleton from '~/common/annotations/Singleton.ts';
 
-export { Artifact } from '~/entity/services/Artifact.ts';
+export { Artifactor } from '~/common/services/Artifactor.ts';
 export { AnnotationException } from '~/decorator/exceptions/AnnotationException.ts';
 export { Common } from '~/common/services/Common.ts';
 export { Container } from '~/container/services/Container.ts';
@@ -66,7 +67,6 @@ export { List } from '~/common/services/List.ts';
 export { Locator } from '~/container/services/Locator.ts';
 export { Metadata } from '~/common/services/Metadata.ts';
 export { Objector } from '~/common/services/Objector.ts';
-export { Registry } from '~/container/services/Registry.ts';
 export { Scope } from '~/container/services/Scope.ts';
 export { Text } from '~/common/services/Text.ts';
 export { Validator } from '~/validator/services/Validator.ts';
@@ -82,14 +82,18 @@ export { default as Integer } from '~/validator/annotations/Integer.ts';
 export { default as LessThanEqual } from '~/validator/annotations/LessThanEqual.ts';
 export { default as LessThan } from '~/validator/annotations/LessThan.ts';
 export { default as Mixin } from '~/common/annotations/Mixin.ts';
-export { default as Register } from './src/container/annotations/Register.ts';
+export { default as Provider } from './src/container/annotations/Provider.ts';
+export { default as Consumer } from './src/container/annotations/Consumer.ts';
+export { default as Consume } from './src/container/annotations/Consume.ts';
 export { default as Regex } from '~/validator/annotations/Regex.ts';
 export { default as Required } from '~/validator/annotations/Required.ts';
 export { default as Singleton } from '~/common/annotations/Singleton.ts';
 
+import { Consume as ConsumeAnnotation } from '~/container/annotations/Consume.ts';
+import { Consumer as ConsumerAnnotation } from '~/container/annotations/Consumer.ts';
 import { Debug as DebugAnnotation } from '~/common/annotations/Debug.ts';
 import { Mixin as MixinAnnotation } from '~/common/annotations/Mixin.ts';
-import { Register as RegisterAnnotation } from './src/container/annotations/Register.ts';
+import { Provider as ProviderAnnotation } from './src/container/annotations/Provider.ts';
 import { Singleton as SingletonAnnotation } from '~/common/annotations/Singleton.ts';
 
 export * from '~/common/interfaces.ts';
@@ -126,17 +130,21 @@ export const Guards = {
 }
 
 export const Annotations = {
+  Consume: ConsumeAnnotation,
+  Consumer: ConsumerAnnotation,
   Debug: DebugAnnotation,
   Mixin: MixinAnnotation,
-  Register: RegisterAnnotation,
+  Provider: ProviderAnnotation,
   Singleton: SingletonAnnotation,
 }
 
 export default {
   Annotations,
   AnnotationException,
-  Artifact,
+  Artifactor,
   Common,
+  Consumer,
+  Consume,
   Container,
   Debug,
   Decorator,
@@ -156,9 +164,8 @@ export default {
   Mixin,
   Metadata,
   Objector,
-  Register,
+  Provider,
   Regex,
-  Registry,
   Required,
   Singleton,
   Scope,

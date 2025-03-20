@@ -22,7 +22,7 @@ export class Tagger {
     }
   }
 
-  public static get(target: any): string[] {
+  public static get(target: any): Array<TagType> {
     let tags = []
     const metadata = Metadata.get(target)
     if (metadata) {

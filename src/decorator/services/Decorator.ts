@@ -14,7 +14,6 @@ import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
 import Mixin from '~/common/annotations/Mixin.ts';
 import Metadata from '~/common/services/Metadata.ts';
-import Common from '~/common/services/Common.ts';
 import Parameter from '~/common/services/Parameter.ts';
 import Tagger from '~/common/services/Tagger.ts';
 
@@ -58,8 +57,8 @@ export class Decorator {
           Decorator.applyMetadata(decoration);
         }
 
-        Parameter.applyMetadata(artifact, decoration)
         Tagger.applyMetadata(decoration)
+        Parameter.applyMetadata(artifact, decoration)
       }
 
       if (decoration.annotation.onInitialize) {

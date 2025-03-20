@@ -4,36 +4,36 @@ import type { ValidationResultType } from '~/validator/types.ts';
 import type { MappedEntityPropertyType } from '~/entity/types.ts';
 import type { EntityInterface } from '~/entity/interfaces.ts';
 
-import Artifact from '~/entity/services/Artifact.ts';
+import Objector from '~/common/services/Objector.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 export class Entity implements EntityInterface {
   public toEntries(): ReadonlyArray<EntryType<OmitType<this, Function>>> {
-    return Artifact.toEntries(this);
+    return Objector.toEntries(this);
   }
 
   public toPlain(): string {
-    return Artifact.toPlain(this);
+    return Objector.toPlain(this);
   }
 
   public toJson(): OmitType<this, Function> {
-    return Artifact.toJson(this)
+    return Objector.toJson(this)
   }
 
   public getPropertyKeys<K extends keyof OmitType<this, Function>>(): K[] {
-    return Artifact.getPropertyKeys(this)
+    return Objector.getPropertyKeys(this)
   }
 
   public getPropertyType<K extends keyof OmitType<this, Function>>(propertyKey: K): string {
-    return Artifact.getPropertyType(this, propertyKey)
+    return Objector.getPropertyType(this, propertyKey)
   }
 
   public validateProperty<K extends keyof OmitType<this, Function>>(propertyKey: K): ValidationResultType[] {
-    return Artifact.validateProperty(this, propertyKey)
+    return Objector.validateProperty(this, propertyKey)
   }
 
   public validateProperties(onlyResultWithKeys?: Array<ValidationEnum>): Promise<MappedEntityPropertyType<this, ValidationResultType[]> | undefined> {
-    return Artifact.validateProperties(this, onlyResultWithKeys)
+    return Objector.validateProperties(this, onlyResultWithKeys)
   }
 }
 
