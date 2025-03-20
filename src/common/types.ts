@@ -1,4 +1,15 @@
 /**
+ * Defines the decorator artifact type
+ * 
+ * @type ArtifactType
+ */ 
+export type ArtifactType = {
+  name: string;
+  target: any;
+  parameters: string[];
+};
+
+/**
  * Defines as a constructable type
  *
  * @type ConstructorType<T>

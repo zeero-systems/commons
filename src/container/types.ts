@@ -62,5 +62,7 @@ export type ComponentParametersType = {
  */
 export type ModuleType = ModuleClassType
 
+export type KeyType = string | symbol;
+export type TagType = string | symbol;
 
 export default {};

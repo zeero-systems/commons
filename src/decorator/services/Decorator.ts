@@ -1,8 +1,7 @@
-import type { ConstructorType, TargetPropertyType } from '~/common/types.ts';
+import type { ArtifactType, ConstructorType, TargetPropertyType } from '~/common/types.ts';
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type {
   AnnotationOptionsType,
-  ArtifactType,
   DecorationMetadataType,
   DecorationType,
   DecoratorContextType,

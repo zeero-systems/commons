@@ -1,6 +1,7 @@
-import type { ArtifactType, DecorationType } from '~/decorator/types.ts';
+import type { DecorationType } from '~/decorator/types.ts';
 
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
+import { ArtifactType } from '~/common/types.ts';
 
 /**
  * Static Class that holds common symbols

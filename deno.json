@@ -1,6 +1,6 @@
 {
   "name": "@zxxxro/commons",
-  "version": "0.18.13",
+  "version": "0.20.2",
   "license": "GPL-3.0",
   "exports": "./mod.ts",
   "publish": {
