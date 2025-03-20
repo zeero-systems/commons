@@ -1,10 +1,13 @@
-import type { ConstructorArgType } from '~/common/types.ts';
+import type { ArtifactType, ConstructorArgType, KeyType } from '~/common/types.ts';
 
 import { Singleton } from '~/common/annotations/Singleton.ts';
 
 import Decorator from '~/decorator/services/Decorator.ts';
 
 import isNumber from '~/common/guards/isNumber.ts';
+import { DecorationType } from '~/decorator/types.ts';
+import Metadata from '~/common/services/Metadata.ts';
+import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
 
 /**
@@ -14,6 +17,39 @@ import isNumber from '~/common/guards/isNumber.ts';
  * @member {Function} getParameterNames - Return a list with named parameters from a function
  */
 export class Factory {
+  public static readonly metadata: unique symbol = Symbol('Factory.metadata');
+
+  public static applyMetadata<P>(artifact: ArtifactType, decoration: DecorationType<P>): void {
+    if (decoration.property) {
+      if (!decoration.context.metadata[Factory.metadata]) {
+        decoration.context.metadata[Factory.metadata] = new Map();
+      }
+
+      if (!decoration.context.metadata[Factory.metadata].get(decoration.property)) {
+        decoration.context.metadata[Factory.metadata].set(decoration.property, new Map())
+      }
+
+      if (artifact.parameters) {
+        if (decoration.context.kind == DecoratorKindEnum.CLASS) {
+          if (!decoration.context.metadata[Factory.metadata].get(decoration.property).has("parameters")) {
+            decoration.context.metadata[Factory.metadata].get(decoration.property).set("parameters", artifact.parameters)
+          }
+        }
+      }
+    }
+  }
+
+  public static getParameters(target: any, propertyKey: KeyType = 'construct'): Array<string> {
+    let parameters = []
+    const metadata = Metadata.getProperty(target, Factory.metadata)
+    
+    if (metadata && metadata.has(propertyKey)) {
+      parameters = metadata.get(propertyKey).get('parameters')
+    }
+    
+    return parameters
+  }
+  
   public static construct<T>(
     target: new (...args: any) => T,
     options?: {

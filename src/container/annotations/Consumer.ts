@@ -11,22 +11,21 @@ import Locator from '~/container/services/Locator.ts';
 import Tagger from '~/common/services/Tagger.ts';
 import Scope from '~/container/services/Scope.ts';
 import ScopeEnum from '~/container/enums/ScopeEnum.ts';
+import Factory from '~/common/services/Factory.ts';
 
 export class Consumer implements AnnotationInterface {
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & { scope: ScopeEnum }>): any {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
+      const scope = decoration.parameters?.scope || ScopeEnum.Transient
       const targetName = Text.toFirstLetterUppercase(artifact.name)
 
       Artifactor.set(targetName, { 
         name: targetName,
-        target: artifact.target,
+        target: artifact.target
       })
 
+      Scope.set(scope, decoration)
       Tagger.set(Locator.consumer, decoration)
-
-      if (!decoration.context.metadata[Scope.metadata]) {
-        decoration.context.metadata[Scope.metadata] = decoration.parameters?.scope
-      }
 
       return artifact.target;
     }

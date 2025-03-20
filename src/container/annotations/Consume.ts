@@ -23,4 +23,4 @@ export class Consume implements AnnotationInterface {
   }
 }
 
-export default (providerName?: ConstructorType<any> | KeyType, scope: ScopeEnum = ScopeEnum.Transient): DecoratorFunctionType => Decorator.apply(Consume, { scope, providerName });
+export default (provider?: ConstructorType<any> | KeyType, scope: ScopeEnum = ScopeEnum.Transient): DecoratorFunctionType => Decorator.apply(Consume, { scope, provider });

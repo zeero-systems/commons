@@ -10,7 +10,6 @@ import Artifactor from '~/common/services/Artifactor.ts';
 import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 import Locator from '~/container/services/Locator.ts';
 import Text from '~/common/services/Text.ts';
-import Parameter from '~/common/services/Parameter.ts';
 import Tagger from '~/common/services/Tagger.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 
@@ -49,10 +48,10 @@ export class Container implements ContainerInterface {
                 }
 
                 let providerName = currentPropertyKey
-                if (consume.parameters.providerName) {
-                  providerName = consume.parameters.providerName
-                  if (isClass(consume.parameters.providerName)) {
-                    providerName = consume.parameters.providerName.name
+                if (consume.parameters.provider) {
+                  providerName = consume.parameters.provider
+                  if (isClass(consume.parameters.provider)) {
+                    providerName = consume.parameters.provider.name
                   }
                 }
                 
@@ -66,8 +65,8 @@ export class Container implements ContainerInterface {
                 return Reflect.construct(currentTarget, currentArgs, newTarget);
               }
   
-              const parameters = Parameter.get(currentTarget);
-  
+              const parameters = Factory.getParameters(currentTarget);
+
               if (parameters) {
                 let scope = ScopeEnum.Transient;
                 if (currentTarget[Symbol.metadata]) {

@@ -1,4 +1,4 @@
-import type { ArtifactType, KeyType, TagType } from '~/common/types.ts';
+import type { ArtifactType, KeyType } from '~/common/types.ts';
 
 export class Artifactor {
   static artifacts: Map<KeyType, ArtifactType> = new Map();
@@ -7,7 +7,7 @@ export class Artifactor {
     return Artifactor.artifacts.has(key);
   }
 
-  static set(key: KeyType, artifact: ArtifactType): Map<KeyType, ArtifactType & { tag?: TagType }> {
+  static set(key: KeyType, artifact: ArtifactType): Map<KeyType, ArtifactType> {
     return Artifactor.artifacts.set(key, artifact);
   }
 }
