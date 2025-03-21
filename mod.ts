@@ -70,6 +70,7 @@ export { Metadata } from '~/common/services/Metadata.ts';
 export { Objector } from '~/common/services/Objector.ts';
 export { Scope } from '~/container/services/Scope.ts';
 export { Text } from '~/common/services/Text.ts';
+export { Tagger } from '~/common/services/Tagger.ts';
 export { Validator } from '~/validator/services/Validator.ts';
 
 export { DecoratorKindEnum } from '~/decorator/enums/DecoratorKindEnum.ts';
