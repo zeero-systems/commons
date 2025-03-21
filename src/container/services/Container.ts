@@ -33,7 +33,7 @@ export class Container implements ContainerInterface {
 
     for (let [key, artifact] of Artifactor.artifacts) {
       let proxyTarget = artifact.target;
-      const tags = Tagger.get(artifact.target)
+      const tags = Tagger.getMetadata(artifact.target)
       
       if (tags.includes(Locator.consumer)) {
         if (isClass(artifact.target)) {
@@ -88,7 +88,7 @@ export class Container implements ContainerInterface {
 
       Container.artifacts.set(key, { ...artifact, target: proxyTarget });
       
-      for (const tag of Tagger.get(artifact.target)) {
+      for (const tag of tags) {
         if (!Container.artifactsByTag.has(tag)) {
           Container.artifactsByTag.set(tag, new Map());
         }

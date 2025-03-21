@@ -24,8 +24,8 @@ export class Consumer implements AnnotationInterface {
         target: artifact.target
       })
 
-      Scope.set(scope, decoration)
-      Tagger.set(Locator.consumer, decoration)
+      Scope.setDecoration(scope, decoration)
+      Tagger.setDecorarion(Locator.consumer, decoration)
 
       return artifact.target;
     }

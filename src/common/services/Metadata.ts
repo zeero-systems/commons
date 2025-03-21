@@ -11,12 +11,14 @@ import isObject from '~/common/guards/isObject.ts';
  * @member {any} getProperty - Return a metadata property content
  */ 
 export class Metadata {
-  static set(target: any): void {    
+  static set(target: any): object {    
     if (isObject(target) && target.constructor && !target.constructor[Symbol.metadata]) {
       target.constructor[Symbol.metadata] = {}
     } else {
       target[Symbol.metadata] = {}
     }
+
+    return target[Symbol.metadata];
   }
 
   static has(target: any): boolean {

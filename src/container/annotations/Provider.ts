@@ -21,7 +21,7 @@ export class Provider implements AnnotationInterface {
         target: artifact.target
       })
 
-      Tagger.set(Locator.provider, decoration)
+      Tagger.setDecorarion(Locator.provider, decoration)
 
       return artifact.target;
     }

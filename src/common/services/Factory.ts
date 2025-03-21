@@ -19,7 +19,7 @@ import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 export class Factory {
   public static readonly metadata: unique symbol = Symbol('Factory.metadata');
 
-  public static applyMetadata<P>(artifact: ArtifactType, decoration: DecorationType<P>): void {
+  public static applyDecoration<P>(decoration: DecorationType<P>, artifact: ArtifactType): void {
     if (decoration.property) {
       if (!decoration.context.metadata[Factory.metadata]) {
         decoration.context.metadata[Factory.metadata] = new Map();

@@ -57,9 +57,9 @@ export class Decorator {
           Decorator.applyMetadata(decoration);
         }
 
-        Scope.applyMetadata(decoration)
-        Tagger.applyMetadata(decoration)
-        Factory.applyMetadata(artifact, decoration)
+        Scope.applyDecoration(decoration)
+        Tagger.applyDecoration(decoration)
+        Factory.applyDecoration(decoration, artifact, )
       }
 
       if (decoration.annotation.onInitialize) {
