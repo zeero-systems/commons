@@ -72,6 +72,7 @@ export { Text } from '~/common/services/Text.ts';
 export { Validator } from '~/validator/services/Validator.ts';
 
 export { DecoratorKindEnum } from '~/decorator/enums/DecoratorKindEnum.ts';
+export { ScopeEnum } from '~/container/enums/ScopeEnum.ts';
 export { ValidationEnum } from '~/validator/enums/ValidationEnum.ts';
 
 export { default as Debug } from '~/common/annotations/Debug.ts';
@@ -95,6 +96,7 @@ import { Debug as DebugAnnotation } from '~/common/annotations/Debug.ts';
 import { Mixin as MixinAnnotation } from '~/common/annotations/Mixin.ts';
 import { Provider as ProviderAnnotation } from './src/container/annotations/Provider.ts';
 import { Singleton as SingletonAnnotation } from '~/common/annotations/Singleton.ts';
+import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 
 export * from '~/common/interfaces.ts';
 export * from '~/common/types.ts';
@@ -169,6 +171,7 @@ export default {
   Required,
   Singleton,
   Scope,
+  ScopeEnum,
   Text,
   Validator,
   ValidationEnum,
