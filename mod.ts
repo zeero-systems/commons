@@ -36,6 +36,7 @@ import isWeakSet from '~/common/guards/isWeakSet.ts';
 import isValidation from '~/validator/guards/isValidation.ts';
 
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
+import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 import Validations from '~/validator/validations.ts';
@@ -96,11 +97,11 @@ import { Debug as DebugAnnotation } from '~/common/annotations/Debug.ts';
 import { Mixin as MixinAnnotation } from '~/common/annotations/Mixin.ts';
 import { Provider as ProviderAnnotation } from './src/container/annotations/Provider.ts';
 import { Singleton as SingletonAnnotation } from '~/common/annotations/Singleton.ts';
-import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 
 export * from '~/common/interfaces.ts';
 export * from '~/common/types.ts';
 export * from '~/container/types.ts';
+export * from '~/container/interfaces.ts';
 export * from '~/decorator/interfaces.ts';
 export * from '~/decorator/types.ts';
 export * from '~/entity/interfaces.ts';
