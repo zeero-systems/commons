@@ -12,7 +12,6 @@ import Metadata from '~/common/services/Metadata.ts';
 import Objector from '~/common/services/Objector.ts';
 import Scope from '~/container/services/Scope.ts';
 import Text from '~/common/services/Text.ts';
-import Tagger from '~/common/services/Tagger.ts';
 import Validator from '~/validator/services/Validator.ts';
 
 import isClass from '~/common/guards/isClass.ts';
@@ -70,7 +69,6 @@ export { Metadata } from '~/common/services/Metadata.ts';
 export { Objector } from '~/common/services/Objector.ts';
 export { Scope } from '~/container/services/Scope.ts';
 export { Text } from '~/common/services/Text.ts';
-export { Tagger } from '~/common/services/Tagger.ts';
 export { Validator } from '~/validator/services/Validator.ts';
 
 export { DecoratorKindEnum } from '~/decorator/enums/DecoratorKindEnum.ts';
@@ -172,7 +170,6 @@ export default {
   Singleton,
   Scope,
   Text,
-  Tagger,
   Validator,
   ValidationEnum,
   Validations

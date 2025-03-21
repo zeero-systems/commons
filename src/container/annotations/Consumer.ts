@@ -8,10 +8,8 @@ import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import Text from '~/common/services/Text.ts';
 import Locator from '~/container/services/Locator.ts';
-import Tagger from '~/common/services/Tagger.ts';
 import Scope from '~/container/services/Scope.ts';
 import ScopeEnum from '~/container/enums/ScopeEnum.ts';
-import Factory from '~/common/services/Factory.ts';
 
 export class Consumer implements AnnotationInterface {
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & { scope: ScopeEnum }>): any {
@@ -21,11 +19,11 @@ export class Consumer implements AnnotationInterface {
 
       Artifactor.set(targetName, { 
         name: targetName,
-        target: artifact.target
+        target: artifact.target,
+        tags: [Locator.consumer]
       })
 
       Scope.setDecoration(scope, decoration)
-      Tagger.setDecorarion(Locator.consumer, decoration)
 
       return artifact.target;
     }

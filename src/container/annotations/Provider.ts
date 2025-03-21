@@ -6,9 +6,7 @@ import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
 import Artifactor from '~/common/services/Artifactor.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
-import Factory from '~/common/services/Factory.ts';
 import Locator from '~/container/services/Locator.ts';
-import Tagger from '~/common/services/Tagger.ts';
 import Text from '~/common/services/Text.ts';
 
 export class Provider implements AnnotationInterface {
@@ -18,10 +16,9 @@ export class Provider implements AnnotationInterface {
 
       Artifactor.set(targetName, { 
         name: targetName,
-        target: artifact.target
+        target: artifact.target,
+        tags: [Locator.provider]
       })
-
-      Tagger.setDecorarion(Locator.provider, decoration)
 
       return artifact.target;
     }

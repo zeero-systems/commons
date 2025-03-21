@@ -8,7 +8,21 @@ export class Artifactor {
   }
 
   static set(key: KeyType, artifact: ArtifactType): Map<KeyType, ArtifactType> {
-    return Artifactor.artifacts.set(key, artifact);
+    const currentArtifact = Artifactor.artifacts.get(key)
+
+    if (currentArtifact) {
+      if (artifact.tags) {
+        for (const tag of artifact.tags) {
+          if (!currentArtifact.tags?.includes(tag)) {
+            currentArtifact.tags?.push(tag)
+          }
+        }
+      }
+    } else {
+      Artifactor.artifacts.set(key, artifact);
+    }
+        
+    return Artifactor.artifacts
   }
 }
 

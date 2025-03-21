@@ -14,7 +14,6 @@ import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
 import { Mixin } from '~/common/annotations/Mixin.ts';
 import Metadata from '~/common/services/Metadata.ts';
-import Tagger from '~/common/services/Tagger.ts';
 import Scope from '~/container/services/Scope.ts';
 
 export class Decorator {
@@ -58,7 +57,6 @@ export class Decorator {
         }
 
         Scope.applyDecoration(decoration)
-        Tagger.applyDecoration(decoration)
         Factory.applyDecoration(decoration, artifact, )
       }
 
