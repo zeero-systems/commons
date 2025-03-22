@@ -1,13 +1,12 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
-import Provider from '~/container/annotations/Provider.ts';
+import Provider, { Provider as ProviderAnnotation } from '~/container/annotations/Provider.ts';
 import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 import Container from '~/container/services/Container.ts';
 import Artifactor from '~/common/services/Artifactor.ts';
 import Consumer from '~/container/annotations/Consumer.ts';
 import Consume from '~/container/annotations/Consume.ts';
-import Locator from '~/container/services/Locator.ts';
 
 describe('container', () => {
 
@@ -62,7 +61,7 @@ describe('container', () => {
   const customArtifact = { 
     name: 'Custom', 
     target: { email: 'test@email.com' },
-    tags: [Locator.provider]
+    tags: [ProviderAnnotation.tag]
   }
 
   Artifactor.set('CUSTOM', customArtifact)

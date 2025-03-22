@@ -12,6 +12,8 @@ import Text from '~/common/services/Text.ts';
 import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 
 import isClass from '~/common/guards/isClass.ts';
+import { Provider } from '~/container/annotations/Provider.ts';
+import { Consumer } from '~/container/annotations/Consumer.ts';
 
 export class Container implements ContainerInterface {
   public static artifacts: Map<KeyType, ArtifactType> = new Map();
@@ -27,7 +29,7 @@ export class Container implements ContainerInterface {
       const self = this;
 
       for (let [key, artifact] of Artifactor.artifacts) {
-        if (artifact.tags?.includes(Locator.consumer)) {
+        if (artifact.tags?.includes(Consumer.tag)) {
           if (isClass(artifact.target)) {
             artifact.target = new Proxy(artifact.target, {
               construct(currentTarget: any, currentArgs: any, newTarget: any) {
@@ -78,7 +80,7 @@ export class Container implements ContainerInterface {
 
       providerName = Text.toFirstLetterUppercase(providerName);
 
-      if (Container.artifactsByTag.get(Locator.provider)?.has(providerName)) {
+      if (Container.artifactsByTag.get(Provider.tag)?.has(providerName)) {
         return this.construct(providerName, scope);
       }
     }
@@ -103,7 +105,7 @@ export class Container implements ContainerInterface {
 
       for (let index = 0; index < parameters.length; index++) {
         const providerName = Text.toFirstLetterUppercase(parameters[index]);
-        if (Container.artifactsByTag.get(Locator.provider)?.has(providerName)) {
+        if (Container.artifactsByTag.get(Provider.tag)?.has(providerName)) {
           currentArgs[index] = this.construct(providerName, scope);
         }
       }

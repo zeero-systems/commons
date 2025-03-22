@@ -2,9 +2,6 @@ import type { KeyType } from '~/common/types.ts';
 import type { ContainerInterface } from '~/container/interfaces.ts';
 
 export class Locator {
-  static readonly provider: unique symbol = Symbol('Tag.provider')
-  static readonly consumer: unique symbol = Symbol('Tag.consumer')
-
   static containers: Map<KeyType, ContainerInterface> = new Map();
 
   static has(key: KeyType): boolean {

@@ -7,11 +7,12 @@ import Artifactor from '~/common/services/Artifactor.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import Text from '~/common/services/Text.ts';
-import Locator from '~/container/services/Locator.ts';
 import Scope from '~/container/services/Scope.ts';
 import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 
 export class Consumer implements AnnotationInterface {
+  static readonly tag: unique symbol = Symbol('Consumer.tag')
+
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & { scope: ScopeEnum }>): any {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
       const scope = decoration.parameters?.scope || ScopeEnum.Transient
@@ -20,7 +21,7 @@ export class Consumer implements AnnotationInterface {
       Artifactor.set(targetName, { 
         name: targetName,
         target: artifact.target,
-        tags: [Locator.consumer]
+        tags: [Consumer.tag]
       })
 
       Scope.setDecoration(scope, decoration)

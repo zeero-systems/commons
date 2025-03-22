@@ -6,10 +6,11 @@ import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
 import Artifactor from '~/common/services/Artifactor.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
-import Locator from '~/container/services/Locator.ts';
 import Text from '~/common/services/Text.ts';
 
 export class Provider implements AnnotationInterface {
+  static readonly tag: unique symbol = Symbol('Provider.tag')
+
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P>): any {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
       const targetName = Text.toFirstLetterUppercase(artifact.name)
@@ -17,7 +18,7 @@ export class Provider implements AnnotationInterface {
       Artifactor.set(targetName, { 
         name: targetName,
         target: artifact.target,
-        tags: [Locator.provider]
+        tags: [Provider.tag]
       })
 
       return artifact.target;
