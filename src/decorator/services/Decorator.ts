@@ -14,7 +14,7 @@ import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
 import { Mixin } from '~/common/annotations/Mixin.ts';
 import Metadata from '~/common/services/Metadata.ts';
-import Scope from '~/container/services/Scope.ts';
+import Scope from '../../container/services/Scoper.ts';
 
 export class Decorator {
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');

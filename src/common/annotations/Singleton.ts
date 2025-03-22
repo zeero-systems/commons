@@ -8,6 +8,8 @@ import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
 export class Singleton implements AnnotationInterface {
+  public static readonly metadata: unique symbol = Symbol('Singleton.medadata');
+
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P>): any {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
       if (!Decorator.hasAnnotation(artifact.target, Singleton)) {
@@ -17,11 +19,11 @@ export class Singleton implements AnnotationInterface {
               return Reflect.construct(currentTarget, currentArgs, newTarget);
             }
             
-            if (!decoration.context.metadata[Common.singleton]) {
-              decoration.context.metadata[Common.singleton] = Reflect.construct(currentTarget, currentArgs, newTarget);
+            if (!decoration.context.metadata[Singleton.metadata]) {
+              decoration.context.metadata[Singleton.metadata] = Reflect.construct(currentTarget, currentArgs, newTarget);
             }
 
-            return decoration.context.metadata[Common.singleton];
+            return decoration.context.metadata[Singleton.metadata];
           },
         });
       }

@@ -10,7 +10,7 @@ import List from '~/common/services/List.ts';
 import Locator from '~/container/services/Locator.ts';
 import Metadata from '~/common/services/Metadata.ts';
 import Objector from '~/common/services/Objector.ts';
-import Scope from '~/container/services/Scope.ts';
+import Scoper from '~/container/services/Scoper.ts';
 import Text from '~/common/services/Text.ts';
 import Validator from '~/validator/services/Validator.ts';
 
@@ -54,6 +54,7 @@ import Mixin from '~/common/annotations/Mixin.ts';
 import Provider from '~/container/annotations/Provider.ts';
 import Regex from '~/validator/annotations/Regex.ts';
 import Required from '~/validator/annotations/Required.ts';
+import Scope from '~/container/annotations/Scope.ts';
 import Singleton from '~/common/annotations/Singleton.ts';
 
 export { Artifactor } from '~/common/services/Artifactor.ts';
@@ -68,7 +69,7 @@ export { List } from '~/common/services/List.ts';
 export { Locator } from '~/container/services/Locator.ts';
 export { Metadata } from '~/common/services/Metadata.ts';
 export { Objector } from '~/common/services/Objector.ts';
-export { Scope } from '~/container/services/Scope.ts';
+export { Scoper } from './src/container/services/Scoper.ts';
 export { Text } from '~/common/services/Text.ts';
 export { Validator } from '~/validator/services/Validator.ts';
 
@@ -96,6 +97,7 @@ import { Consumer as ConsumerAnnotation } from '~/container/annotations/Consumer
 import { Debug as DebugAnnotation } from '~/common/annotations/Debug.ts';
 import { Mixin as MixinAnnotation } from '~/common/annotations/Mixin.ts';
 import { Provider as ProviderAnnotation } from './src/container/annotations/Provider.ts';
+import { Scope as ScopeAnnotation } from '~/container/annotations/Scope.ts';
 import { Singleton as SingletonAnnotation } from '~/common/annotations/Singleton.ts';
 
 export * from '~/common/interfaces.ts';
@@ -138,6 +140,7 @@ export const Annotations = {
   Debug: DebugAnnotation,
   Mixin: MixinAnnotation,
   Provider: ProviderAnnotation,
+  Scope: ScopeAnnotation,
   Singleton: SingletonAnnotation,
 }
 
@@ -172,6 +175,7 @@ export default {
   Required,
   Singleton,
   Scope,
+  Scoper,
   ScopeEnum,
   Text,
   Validator,

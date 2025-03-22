@@ -8,7 +8,6 @@ import { ArtifactType } from '~/common/types.ts';
  */ 
 export class Common {
   public static readonly metadata: unique symbol = Symbol('Common.metadata')
-  public static readonly singleton: unique symbol = Symbol('Common.singleton')
 
   public static applyMetadata<P>(artifact: ArtifactType, decoration: DecorationType<P>): void {
     if (decoration.property) {

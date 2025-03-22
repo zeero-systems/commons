@@ -3,28 +3,18 @@ import type { DecorationType, DecoratorFunctionType } from '~/decorator/types.ts
 import type { ArtifactType } from '~/common/types.ts';
 
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
-import Artifactor from '~/common/services/Artifactor.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
-import Text from '~/common/services/Text.ts';
-import Scoper from '~/container/services/Scoper.ts';
 import ScopeEnum from '~/container/enums/ScopeEnum.ts';
+import ScopeService from '../services/Scoper.ts';
 
-export class Consumer implements AnnotationInterface {
-  static readonly tag: unique symbol = Symbol('Consumer.tag')
-
+export class Scope implements AnnotationInterface {
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & { scope: ScopeEnum }>): any {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
-      const scope = decoration.parameters?.scope || ScopeEnum.Transient
-      const targetName = Text.toFirstLetterUppercase(artifact.name)
-
-      Artifactor.set(targetName, { 
-        name: targetName,
-        target: artifact.target,
-        tags: [Consumer.tag]
-      })
-
-      Scoper.setDecoration(scope, decoration)
+      
+      if (decoration.parameters?.scope) {
+        ScopeService.setDecoration(decoration.parameters.scope, decoration)
+      }
 
       return artifact.target;
     }
@@ -36,4 +26,4 @@ export class Consumer implements AnnotationInterface {
   }
 }
 
-export default (scope: ScopeEnum = ScopeEnum.Transient): DecoratorFunctionType => Decorator.apply(Consumer, { scope });
+export default (scope: ScopeEnum = ScopeEnum.Transient): DecoratorFunctionType => Decorator.apply(Scope, { scope });

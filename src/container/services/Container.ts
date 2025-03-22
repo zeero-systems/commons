@@ -3,6 +3,8 @@ import type { ContainerInterface } from '~/container/interfaces.ts';
 import type { ArtifactType, KeyType, TagType } from '~/common/types.ts';
 
 import { Consume } from '~/container/annotations/Consume.ts';
+import { Provider } from '~/container/annotations/Provider.ts';
+import { Consumer } from '~/container/annotations/Consumer.ts';
 
 import Artifactor from '~/common/services/Artifactor.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
@@ -12,8 +14,6 @@ import Text from '~/common/services/Text.ts';
 import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 
 import isClass from '~/common/guards/isClass.ts';
-import { Provider } from '~/container/annotations/Provider.ts';
-import { Consumer } from '~/container/annotations/Consumer.ts';
 
 export class Container implements ContainerInterface {
   public static artifacts: Map<KeyType, ArtifactType> = new Map();
@@ -28,7 +28,7 @@ export class Container implements ContainerInterface {
     ) {
       const self = this;
 
-      for (let [key, artifact] of Artifactor.artifacts) {
+      for (const [key, artifact] of Artifactor.artifacts) {
         if (artifact.tags?.includes(Consumer.tag)) {
           if (isClass(artifact.target)) {
             artifact.target = new Proxy(artifact.target, {
