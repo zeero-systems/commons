@@ -69,7 +69,7 @@ export { List } from '~/common/services/List.ts';
 export { Locator } from '~/container/services/Locator.ts';
 export { Metadata } from '~/common/services/Metadata.ts';
 export { Objector } from '~/common/services/Objector.ts';
-export { Scoper } from './src/container/services/Scoper.ts';
+export { Scoper } from '~/container/services/Scoper.ts';
 export { Text } from '~/common/services/Text.ts';
 export { Validator } from '~/validator/services/Validator.ts';
 
@@ -85,18 +85,19 @@ export { default as Integer } from '~/validator/annotations/Integer.ts';
 export { default as LessThanEqual } from '~/validator/annotations/LessThanEqual.ts';
 export { default as LessThan } from '~/validator/annotations/LessThan.ts';
 export { default as Mixin } from '~/common/annotations/Mixin.ts';
-export { default as Provider } from './src/container/annotations/Provider.ts';
-export { default as Consumer } from './src/container/annotations/Consumer.ts';
-export { default as Consume } from './src/container/annotations/Consume.ts';
+export { default as Provider } from '~/container/annotations/Provider.ts';
+export { default as Consumer } from '~/container/annotations/Consumer.ts';
+export { default as Consume } from '~/container/annotations/Consume.ts';
 export { default as Regex } from '~/validator/annotations/Regex.ts';
 export { default as Required } from '~/validator/annotations/Required.ts';
+export { default as Scope } from '~/container/annotations/Scope.ts';
 export { default as Singleton } from '~/common/annotations/Singleton.ts';
 
 import { Consume as ConsumeAnnotation } from '~/container/annotations/Consume.ts';
 import { Consumer as ConsumerAnnotation } from '~/container/annotations/Consumer.ts';
 import { Debug as DebugAnnotation } from '~/common/annotations/Debug.ts';
 import { Mixin as MixinAnnotation } from '~/common/annotations/Mixin.ts';
-import { Provider as ProviderAnnotation } from './src/container/annotations/Provider.ts';
+import { Provider as ProviderAnnotation } from '~/container/annotations/Provider.ts';
 import { Scope as ScopeAnnotation } from '~/container/annotations/Scope.ts';
 import { Singleton as SingletonAnnotation } from '~/common/annotations/Singleton.ts';
 
