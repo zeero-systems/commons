@@ -35,10 +35,10 @@ export type ConstructorType<T> = T extends new (...args: infer A) => infer R ? n
 /**
  * Defines a type without his functions
  *
- * @type ConstructorArgType<T>
+ * @type PropertiesType<T>
  */
 // deno-lint-ignore ban-types
-export type ConstructorArgType<T> = OmitType<T, object | Function> & Partial<PickType<T, object>>;
+export type PropertiesType<T> = OmitType<T, object | Function> & Partial<PickType<T, object>>;
 
 /**
  * Maps a entry type

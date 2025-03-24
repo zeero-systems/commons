@@ -18,7 +18,9 @@ describe('validator', () => {
 
   const userEntity = Factory.construct(UserMock, {
     arguments: {
-      firstName: 'eduardo',
+      properties: {
+        firstName: 'eduardo',
+      }
     },
   });
 

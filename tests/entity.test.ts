@@ -19,9 +19,11 @@ describe('entity', () => {
 
   const entityExtended = Factory.construct(EntityExtended, {
     arguments: {
-      firstName: 'eduardo',
-      lastName: 'segura',
-      email: [{ isMain: true, address: 'test@email.com' }],
+      properties: {
+        firstName: 'eduardo',
+        lastName: 'segura',
+        email: [{ isMain: true, address: 'test@email.com' }],
+      }
     },
   });
 

@@ -6,8 +6,10 @@ import Factory from '~/common/services/Factory.ts';
 
 describe('factory', () => {
   class UserMock {
-    firstName!: string;
-    lastName!: string;
+    public nickName!: string
+    public avatarUrl?: string
+
+    constructor(public firstName?: string, public lastName?: string) {}
   }
 
   class UserEntityMock extends Entity {
@@ -16,16 +18,23 @@ describe('factory', () => {
   }
 
   describe('construct method', () => {
-    it('with a simple class', () => {
-      const userMock = Factory.construct(UserMock, { arguments: { firstName: 'eduardo', lastName: 'segura' } });
+    it('with index parameters', () => {
+      const userMock = Factory.construct(UserMock, { arguments: { construct: [ 'eduardo', 'segura' ]  }});
 
       expect(userMock.firstName).toBe('eduardo');
       expect(userMock.lastName).toBe('segura');
     });
 
+    it('with named parameters', () => {
+      const userMock = Factory.construct(UserMock, { arguments: { properties: { nickName: 'eduardo', avatarUrl: 'url.com.br' } } });
+
+      expect(userMock.nickName).toBe('eduardo');
+      expect(userMock.avatarUrl).toBe('url.com.br');
+    });
+
     it('with a entity class', () => {
       const userEntityMock = Factory.construct(UserEntityMock, {
-        arguments: { nickName: 'jaime', email: 'test@email.com' },
+        arguments: { properties: { nickName: 'jaime', email: 'test@email.com' } },
       });
 
       expect(userEntityMock.nickName).toBe('jaime');

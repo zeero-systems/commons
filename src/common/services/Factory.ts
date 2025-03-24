@@ -1,14 +1,12 @@
-import type { ArtifactType, ConstructorArgType, KeyType } from '~/common/types.ts';
+import type { ArtifactType, KeyType, PropertiesType } from '~/common/types.ts';
+import type { DecorationType } from '~/decorator/types.ts';
 
 import { Singleton } from '~/common/annotations/Singleton.ts';
 
 import Decorator from '~/decorator/services/Decorator.ts';
 
-import isNumber from '~/common/guards/isNumber.ts';
-import { DecorationType } from '~/decorator/types.ts';
 import Metadata from '~/common/services/Metadata.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
-
 
 /**
  * Common operations for classes and functions
@@ -26,47 +24,43 @@ export class Factory {
       }
 
       if (!decoration.context.metadata[Factory.metadata].get(decoration.property)) {
-        decoration.context.metadata[Factory.metadata].set(decoration.property, new Map())
+        decoration.context.metadata[Factory.metadata].set(decoration.property, new Map());
       }
 
       if (artifact.parameters) {
         if (decoration.context.kind == DecoratorKindEnum.CLASS) {
-          if (!decoration.context.metadata[Factory.metadata].get(decoration.property).has("parameters")) {
-            decoration.context.metadata[Factory.metadata].get(decoration.property).set("parameters", artifact.parameters)
+          if (!decoration.context.metadata[Factory.metadata].get(decoration.property).has('parameters')) {
+            decoration.context.metadata[Factory.metadata].get(decoration.property).set(
+              'parameters',
+              artifact.parameters,
+            );
           }
         }
       }
     }
   }
 
-  public static getParameters(target: any, propertyKey: KeyType = 'construct'): Array<string> {
-    let parameters = []
-    const metadata = Metadata.getProperty(target, Factory.metadata)
-    
-    if (metadata && metadata.has(propertyKey)) {
-      parameters = metadata.get(propertyKey).get('parameters')
-    }
-    
-    return parameters
-  }
-  
-  public static construct<T>(
+  public static construct<T, C extends (...args: any) => T>(
     target: new (...args: any) => T,
     options?: {
-      arguments?: ConstructorArgType<T>;
+      arguments?: {
+        construct?: Parameters<C>;
+        properties?: PropertiesType<T>;
+      };
     },
   ): T {
-    const namedArguments: any = {};
-    const indexedArguments: any[] = [];
+    let namedArguments: any = {};
+    let indexedArguments: any[] = [];
 
     if (options?.arguments) {
-      Object.entries(options?.arguments).forEach(([key, value]) => {
-        if (isNumber(key)) {
-          indexedArguments[Number(key)] = value;
-        } else {
+      if (options?.arguments.properties) {
+        Object.entries(options?.arguments.properties).forEach(([key, value]) => {
           namedArguments[key] = value;
-        }
-      });
+        });
+      }
+      if (options?.arguments.construct) {
+        indexedArguments = [...options.arguments.construct];
+      }
     }
 
     const canUpdateProperties = !Decorator.hasAnnotation(target, Singleton);
@@ -82,6 +76,17 @@ export class Factory {
     }
 
     return targetInstance;
+  }
+
+  public static getParameters(target: any, propertyKey: KeyType = 'construct'): Array<string> {
+    let parameters = [];
+    const metadata = Metadata.getProperty(target, Factory.metadata);
+
+    if (metadata && metadata.has(propertyKey)) {
+      parameters = metadata.get(propertyKey).get('parameters');
+    }
+
+    return parameters;
   }
 
   public static getParameterNames(target: any, Name?: string): string[] {

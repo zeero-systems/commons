@@ -16,7 +16,7 @@ describe('mixin annotation', () => {
   }
 
   it('multiple decorators', () => {
-    const userSingletonMockFirst = Factory.construct(UserEntityMock, { arguments: { firstName: 'Eduardo' } });
+    const userSingletonMockFirst = Factory.construct(UserEntityMock, { arguments: { properties: { firstName: 'Eduardo' } } });
 
     const decorators = Metadata.getProperty(userSingletonMockFirst, Decorator.metadata)
     const decoratorNames = decorators.get('firstName').map((decorator: any) => decorator.annotation.constructor.name)
