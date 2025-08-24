@@ -8,16 +8,27 @@ import type { MetadataType } from '~/common/types.ts';
  */ 
 export type DecoratorFunctionType = (
   target: any,
-  context: DecoratorContextType,
+  context: TargetContextType,
   options?: AnnotationOptionsType,
 ) => any;
 
 /**
+ * Settings to control how to apply a decoration
+ * 
+ * @type DecDecoratorSettingsType<P>
+ */ 
+export type DecoratorSettingsType<P> = {
+  persists?: boolean
+  parameters?: P
+  [key: string]: any
+}
+
+/**
  * Extended decorator context with metadata
  * 
- * @type DecoratorContextType
+ * @type TargetContextType
  */ 
-export type DecoratorContextType = DecoratorContext & {
+export type TargetContextType = DecoratorContext & {
   kind: string;
   name: string | symbol | undefined;
   static?: boolean;
@@ -32,11 +43,11 @@ export type DecoratorContextType = DecoratorContext & {
  * 
  * @type DecorationMetadataType
  */ 
-export type DecorationMetadataType<P> = Pick<DecoratorContextType, 'static' | 'private'> & {
+export type DecorationMetadataType<P> = Pick<TargetContextType, 'static' | 'private'> & {
   kind: 'class' | 'method' | 'getter' | 'setter' | 'field' | 'accessor';
   annotation: AnnotationInterface;
   property: string | symbol;
-  parameters: P | undefined;
+  settings: DecoratorSettingsType<P> | undefined;
   options?: AnnotationOptionsType;
 };
 
@@ -46,7 +57,7 @@ export type DecorationMetadataType<P> = Pick<DecoratorContextType, 'static' | 'p
  * @type DecorationType
  */ 
 export type DecorationType<P> = DecorationMetadataType<P> & {
-  context: DecoratorContextType;
+  context: TargetContextType;
 };
 
 /**

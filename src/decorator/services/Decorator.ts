@@ -4,28 +4,28 @@ import type {
   AnnotationOptionsType,
   DecorationMetadataType,
   DecorationType,
-  DecoratorContextType,
+  TargetContextType,
   DecoratorFunctionType,
+  DecoratorSettingsType,
 } from '~/decorator/types.ts';
 
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
 import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
-import { Mixin } from '~/common/annotations/Mixin.ts';
 import Metadata from '~/common/services/Metadata.ts';
-import Scope from '../../container/services/Scoper.ts';
+import Tagger from '~/common/services/Tagger.ts';
 
 export class Decorator {
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
 
   public static apply<T extends AnnotationInterface, P>(
     annotation: ConstructorType<T>,
-    parameters?: P,
+    settings?: DecoratorSettingsType<P>
   ): DecoratorFunctionType {
     return function (
       target: any,
-      context: DecoratorContextType,
+      context: TargetContextType,
       options?: AnnotationOptionsType,
     ) {
       
@@ -41,23 +41,22 @@ export class Decorator {
       const decoration: DecorationType<P> = {
         kind: context.kind,
         annotation: Reflect.construct(annotation, []),
-        parameters: undefined,
         property: context.kind != DecoratorKindEnum.CLASS ? context.name : 'construct',
+        settings,
         context,
       };
 
       if (options) decoration.options = options;
-      if (parameters) decoration.parameters = parameters;
       if (context.static) decoration.static = context.static;
       if (context.private) decoration.private = context.private;
       
       if (decoration.context.metadata) {
-        if (decoration.annotation.constructor.name != Mixin.name) {
+        if (settings?.persists) {
           Decorator.applyMetadata(decoration);
         }
 
-        Scope.applyDecoration(decoration)
-        Factory.applyDecoration(decoration, artifact, )
+        Tagger.applyDecoration(decoration)
+        Factory.applyDecoration(decoration, artifact)
       }
 
       if (decoration.annotation.onInitialize) {
@@ -82,7 +81,7 @@ export class Decorator {
     });
   }
 
-  public static getDecoration<T extends {}>(
+  public static getAnnotation<T extends {}>(
     target: T,
     annotation: ConstructorType<AnnotationInterface>,
     propertyKey: PropertyKey = 'construct',

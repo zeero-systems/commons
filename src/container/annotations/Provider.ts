@@ -3,7 +3,7 @@ import type { DecorationType, DecoratorFunctionType } from '~/decorator/types.ts
 import type { ArtifactType } from '~/common/types.ts';
 
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
-import Artifactor from '~/common/services/Artifactor.ts';
+import Artifactory from '~/common/services/Artifactory.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import Text from '~/common/services/Text.ts';
@@ -15,11 +15,7 @@ export class Provider implements AnnotationInterface {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
       const targetName = Text.toFirstLetterUppercase(artifact.name)
 
-      Artifactor.set(targetName, { 
-        name: targetName,
-        target: artifact.target,
-        tags: [Provider.tag]
-      })
+      Artifactory.set(targetName, Provider.tag, artifact)
 
       return artifact.target;
     }

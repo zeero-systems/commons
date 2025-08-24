@@ -3,7 +3,6 @@ import type { DecorationType, DecoratorFunctionType } from '~/decorator/types.ts
 import type { ArtifactType } from '~/common/types.ts';
 
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
-import Common from '~/common/services/Common.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
