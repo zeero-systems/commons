@@ -10,16 +10,16 @@ describe('regex validation', () => {
     firstName: 'Eduardo',
   };
 
-  const validate = (value: any, parameters: any) => {
+  const validate = async (value: any, parameters: any) => {
     const validation = [{ validation: new Regex(), parameters }];
-    return Validator.validateValue(value, validation)[0].key;
+    return (await Validator.validateValue(value, validation))[0].key;
   };
 
-  it('string', () => {
-    expect(validate(testEntity.firstName, 'Eduardo')).toBe(ValidationEnum.VALID);
+  it('string', async () => {
+    expect(await validate(testEntity.firstName, 'Eduardo')).toBe(ValidationEnum.VALID);
   });
 
-  it('reg exp', () => {
-    expect(validate(testEntity.firstName, /ard/)).toBe(ValidationEnum.VALID);
+  it('reg exp', async () => {
+    expect(await validate(testEntity.firstName, /ard/)).toBe(ValidationEnum.VALID);
   });
 });

@@ -1,35 +1,35 @@
-import type { GuardType } from '~/common/types.ts';
+import type { AcceptType } from '~/common/types.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 
-import Singleton from '~/common/annotations/Singleton.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 import isNull from '~/common/guards/isNull.ts';
 import isUndefined from '~/common/guards/isUndefined.ts';
 import isString from '~/common/guards/isString.ts';
 
-@Singleton()
 export class Regex implements ValidationInterface {
-  guards?: GuardType[] | undefined = [
+  accepts?: AcceptType[] | undefined = [
     isNull,
     isUndefined,
     isString
   ]
   
-  onValidation(record: string, pattern: string | RegExp): ValidationEnum {
+  validations = [
+    (record: string, _expression: RegExp) => isNull(record),
+    (record: string, _expression: RegExp) => isUndefined(record),
+    (record: string, expression: RegExp) => isString(record) && expression.test(record),
+  ]
+
+  onValidation(record: string, pattern: string | RegExp): Promise<ValidationEnum> {
   
     const expression = new RegExp(pattern)
 
-    if ([
-      isNull,
-      isUndefined,
-      isString(record) && expression.test(record),
-    ].some(r => r == true)) { 
-      return ValidationEnum.VALID
+    if (this.validations.some(v => v(record, expression) == true)) { 
+      return Promise.resolve(ValidationEnum.VALID)
     }
       
 
-    return ValidationEnum.INVALID
+    return Promise.resolve(ValidationEnum.INVALID)
   }
 }
 

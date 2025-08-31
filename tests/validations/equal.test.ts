@@ -15,35 +15,35 @@ describe('equal validation', () => {
     nonProperty: undefined,
   };
 
-  const validate = (value: any, parameters: any) => {
+  const validate = async (value: any, parameters: any) => {
     const validation = [{ validation: new Equal(), parameters }];
-    return Validator.validateValue(value, validation)[0].key;
+    return (await Validator.validateValue(value, validation))[0].key;
   };
 
-  it('string', () => {
-    expect(validate(testEntity.firstName, 5)).toBe(ValidationEnum.INVALID);
-    expect(validate(testEntity.lastName, 10)).toBe(ValidationEnum.INVALID);
-    expect(validate(testEntity.lastName, 6)).toBe(ValidationEnum.VALID);
-    expect(validate(testEntity.firstName, 'Eduardo')).toBe(ValidationEnum.VALID);
+  it('string', async () => {
+    expect(await validate(testEntity.firstName, 5)).toBe(ValidationEnum.INVALID);
+    expect(await validate(testEntity.lastName, 10)).toBe(ValidationEnum.INVALID);
+    expect(await validate(testEntity.lastName, 6)).toBe(ValidationEnum.VALID);
+    expect(await validate(testEntity.firstName, 'Eduardo')).toBe(ValidationEnum.VALID);
   });
 
-  it('date', () => {
-    expect(validate(testEntity.openingDate, new Date())).toBe(ValidationEnum.INVALID);
-    expect(validate(testEntity.openingDate, testEntity.openingDate)).toBe(ValidationEnum.VALID);
+  it('date', async () => {
+    expect(await validate(testEntity.openingDate, new Date())).toBe(ValidationEnum.INVALID);
+    expect(await validate(testEntity.openingDate, testEntity.openingDate)).toBe(ValidationEnum.VALID);
   });
 
-  it('array', () => {
-    expect(validate([testEntity], 0)).toBe(ValidationEnum.INVALID);
-    expect(validate([testEntity], 1)).toBe(ValidationEnum.VALID);
-    expect(validate([testEntity], 2)).toBe(ValidationEnum.INVALID);
+  it('array', async () => {
+    expect(await validate([testEntity], 0)).toBe(ValidationEnum.INVALID);
+    expect(await validate([testEntity], 1)).toBe(ValidationEnum.VALID);
+    expect(await validate([testEntity], 2)).toBe(ValidationEnum.INVALID);
   });
 
-  it('number', () => {
-    expect(validate(testEntity.employesNumber, 10)).toBe(ValidationEnum.INVALID);
-    expect(validate(testEntity.employesNumber, 3)).toBe(ValidationEnum.VALID);
+  it('number', async () => {
+    expect(await validate(testEntity.employesNumber, 10)).toBe(ValidationEnum.INVALID);
+    expect(await validate(testEntity.employesNumber, 3)).toBe(ValidationEnum.VALID);
   });
 
-  it('unguarded', () => {
-    expect(validate(testEntity.nonProperty, 10)).toBe(ValidationEnum.VALID);
+  it('unguarded', async () => {
+    expect(await validate(testEntity.nonProperty, 10)).toBe(ValidationEnum.VALID);
   });
 });

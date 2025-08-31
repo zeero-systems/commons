@@ -18,7 +18,7 @@ export type DecoratorFunctionType = (
  * @type DecDecoratorSettingsType<P>
  */ 
 export type DecoratorSettingsType<P> = {
-  persists?: boolean
+  persists: boolean
   parameters?: P
   [key: string]: any
 }
@@ -47,7 +47,7 @@ export type DecorationMetadataType<P> = Pick<TargetContextType, 'static' | 'priv
   kind: 'class' | 'method' | 'getter' | 'setter' | 'field' | 'accessor';
   annotation: AnnotationInterface;
   property: string | symbol;
-  settings: DecoratorSettingsType<P> | undefined;
+  settings: DecoratorSettingsType<P>;
   options?: AnnotationOptionsType;
 };
 

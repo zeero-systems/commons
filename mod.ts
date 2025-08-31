@@ -1,16 +1,13 @@
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
 import Artifactor from '~/common/services/Artifactor.ts';
 import Common from '~/common/services/Common.ts';
-import Container from '~/container/services/Container.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import Entity from '~/entity/services/Entity.ts';
 import Exception from '~/common/services/Exception.ts';
 import Factory from '~/common/services/Factory.ts';
 import List from '~/common/services/List.ts';
-import Locator from '~/container/services/Locator.ts';
 import Metadata from '~/common/services/Metadata.ts';
 import Objector from '~/common/services/Objector.ts';
-import Scoper from '~/container/services/Scoper.ts';
 import Text from '~/common/services/Text.ts';
 import Validator from '~/validator/services/Validator.ts';
 
@@ -36,75 +33,58 @@ import isWeakSet from '~/common/guards/isWeakSet.ts';
 import isValidation from '~/validator/guards/isValidation.ts';
 
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
-import ScopeEnum from '~/container/enums/ScopeEnum.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 import Validations from '~/validator/validations.ts';
 
-import Consume from '~/container/annotations/Consume.ts';
-import Consumer from '~/container/annotations/Consumer.ts';
 import Debug from '~/common/annotations/Debug.ts';
 import Equal from '~/validator/annotations/Equal.ts';
 import GreaterThan from '~/validator/annotations/GreaterThan.ts';
 import GreaterThanEqual from '~/validator/annotations/GreaterThanEqual.ts';
+import Float from '~/validator/annotations/Float.ts';
 import Integer from '~/validator/annotations/Integer.ts';
 import LessThanEqual from '~/validator/annotations/LessThanEqual.ts';
 import LessThan from '~/validator/annotations/LessThan.ts';
 import Mixin from '~/common/annotations/Mixin.ts';
-import Provider from '~/container/annotations/Provider.ts';
 import Regex from '~/validator/annotations/Regex.ts';
 import Required from '~/validator/annotations/Required.ts';
-import Scope from '~/container/annotations/Scope.ts';
 import Singleton from '~/common/annotations/Singleton.ts';
 
 export { Artifactor } from '~/common/services/Artifactor.ts';
 export { AnnotationException } from '~/decorator/exceptions/AnnotationException.ts';
 export { Common } from '~/common/services/Common.ts';
-export { Container } from '~/container/services/Container.ts';
 export { Decorator } from '~/decorator/services/Decorator.ts';
 export { Entity } from '~/entity/services/Entity.ts';
 export { Exception } from '~/common/services/Exception.ts';
 export { Factory } from '~/common/services/Factory.ts';
 export { List } from '~/common/services/List.ts';
-export { Locator } from '~/container/services/Locator.ts';
 export { Metadata } from '~/common/services/Metadata.ts';
 export { Objector } from '~/common/services/Objector.ts';
-export { Scoper } from '~/container/services/Scoper.ts';
 export { Text } from '~/common/services/Text.ts';
 export { Validator } from '~/validator/services/Validator.ts';
 
 export { DecoratorKindEnum } from '~/decorator/enums/DecoratorKindEnum.ts';
-export { ScopeEnum } from '~/container/enums/ScopeEnum.ts';
 export { ValidationEnum } from '~/validator/enums/ValidationEnum.ts';
 
 export { default as Debug } from '~/common/annotations/Debug.ts';
 export { default as Equal } from '~/validator/annotations/Equal.ts';
 export { default as GreaterThan } from '~/validator/annotations/GreaterThan.ts';
 export { default as GreaterThanEqual } from '~/validator/annotations/GreaterThanEqual.ts';
+export { default as Float } from '~/validator/annotations/Float.ts';
 export { default as Integer } from '~/validator/annotations/Integer.ts';
 export { default as LessThanEqual } from '~/validator/annotations/LessThanEqual.ts';
 export { default as LessThan } from '~/validator/annotations/LessThan.ts';
 export { default as Mixin } from '~/common/annotations/Mixin.ts';
-export { default as Provider } from '~/container/annotations/Provider.ts';
-export { default as Consumer } from '~/container/annotations/Consumer.ts';
-export { default as Consume } from '~/container/annotations/Consume.ts';
 export { default as Regex } from '~/validator/annotations/Regex.ts';
 export { default as Required } from '~/validator/annotations/Required.ts';
-export { default as Scope } from '~/container/annotations/Scope.ts';
 export { default as Singleton } from '~/common/annotations/Singleton.ts';
 
-import { Consume as ConsumeAnnotation } from '~/container/annotations/Consume.ts';
-import { Consumer as ConsumerAnnotation } from '~/container/annotations/Consumer.ts';
 import { Debug as DebugAnnotation } from '~/common/annotations/Debug.ts';
 import { Mixin as MixinAnnotation } from '~/common/annotations/Mixin.ts';
-import { Provider as ProviderAnnotation } from '~/container/annotations/Provider.ts';
-import { Scope as ScopeAnnotation } from '~/container/annotations/Scope.ts';
 import { Singleton as SingletonAnnotation } from '~/common/annotations/Singleton.ts';
 
 export * from '~/common/interfaces.ts';
 export * from '~/common/types.ts';
-export * from '~/container/types.ts';
-export * from '~/container/interfaces.ts';
 export * from '~/decorator/interfaces.ts';
 export * from '~/decorator/types.ts';
 export * from '~/entity/interfaces.ts';
@@ -136,12 +116,8 @@ export const Guards = {
 }
 
 export const Annotations = {
-  Consume: ConsumeAnnotation,
-  Consumer: ConsumerAnnotation,
   Debug: DebugAnnotation,
   Mixin: MixinAnnotation,
-  Provider: ProviderAnnotation,
-  Scope: ScopeAnnotation,
   Singleton: SingletonAnnotation,
 }
 
@@ -150,9 +126,6 @@ export default {
   AnnotationException,
   Artifactor,
   Common,
-  Consumer,
-  Consume,
-  Container,
   Debug,
   Decorator,
   DecoratorKindEnum,
@@ -163,21 +136,17 @@ export default {
   Guards,
   GreaterThan,
   GreaterThanEqual,
+  Float,
   Integer,
   LessThan,
   LessThanEqual,
   List,
-  Locator,
   Mixin,
   Metadata,
   Objector,
-  Provider,
   Regex,
   Required,
   Singleton,
-  Scope,
-  Scoper,
-  ScopeEnum,
   Text,
   Validator,
   ValidationEnum,

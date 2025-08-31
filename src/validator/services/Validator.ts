@@ -21,7 +21,11 @@ export class Validator {
       const promises: any = []
       
       for (const [key, _value] of Objector.getEntries(target)) {
-        promises.push({ key, result: Validator.validateValue(key as any, validators[key])})        
+        promises.push(new Promise((resolve) => {
+          Validator.validateValue(key as any, validators[key]).then((result) => {
+            resolve({ key, result })
+          })
+        }))        
       }
 
       Promise.all(promises).then((items) => {
@@ -38,42 +42,45 @@ export class Validator {
   public static validateValue<T>(
     value: T,
     validations?: { validation: ValidationInterface; parameters?: unknown }[],
-  ): ValidationResultType[] {
-    const validationResults: Array<ValidationResultType> = [];
-
+  ): Promise<ValidationResultType[]> {
     if (!validations || validations.length == 0) {
-      return [{ key: ValidationEnum.UNDEFINED }] as ValidationResultType[];
+      return Promise.resolve([{ key: ValidationEnum.UNDEFINED }] as ValidationResultType[]);
     }
+
+    const validationResults: Array<Promise<ValidationResultType>> = [];
 
     for (let index = 0; index < validations.length; index++) {
-      const validation = validations[index];
+      validationResults.push(new Promise((resolve) => {
+        const validation = validations[index];
 
-      const validationResult: ValidationResultType = {
-        key: ValidationEnum.ERROR,
-        name: validation.validation.constructor.name,
-      };
+        const validationResult: ValidationResultType = {
+          key: ValidationEnum.ERROR,
+          name: validation.validation.constructor.name,
+        };
 
-      if (validation.parameters) {
-        validationResult.parameters = validation.parameters;
-      }
-
-      try {
-        if (
-          validation.validation.guards &&
-          !validation.validation.guards.some((guard) => guard(value))
-        ) {
-          validationResult.key = ValidationEnum.UNGUARDED;
-        } else {
-          validationResult.key = validation.validation.onValidation(value, validation.parameters);
+        if (validation.parameters) {
+          validationResult.parameters = validation.parameters;
         }
-      } catch (_error) {
-        validationResult.key = ValidationEnum.ERROR;
-      }
 
-      validationResults.push(validationResult);
+        try {
+          if (
+            validation.validation.accepts &&
+            !validation.validation.accepts.some((accept) => accept(value))
+          ) {
+            resolve({ ...validationResult, key: ValidationEnum.UNGUARDED})
+          } else {
+            validation.validation.onValidation(value, validation.parameters)
+              .then((key) => {
+                resolve({ ...validationResult, key })
+              })
+          }
+        } catch (_error) {
+          resolve({ ...validationResult, key: ValidationEnum.ERROR})
+        }        
+      }))
     }
 
-    return validationResults;
+    return Promise.all(validationResults);
   }
 }
 

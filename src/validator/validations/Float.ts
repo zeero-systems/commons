@@ -8,28 +8,27 @@ import isUndefined from '~/common/guards/isUndefined.ts';
 import isNumber from '~/common/guards/isNumber.ts';
 import isString from '~/common/guards/isString.ts';
 
-export class Integer implements ValidationInterface {
+export class Float implements ValidationInterface {
   accepts?: AcceptType[] | undefined = [
     isNull,
     isUndefined,
     isNumber,
     isString,
-  ]
-  
+  ];
+
   validations = [
     (record: any) => isNull(record),
     (record: any) => isUndefined(record),
-    (record: any) => isString(record) && Number.isInteger(Number(record)),
-    (record: any) => isNumber(record) && Number.isInteger(record),
-  ]
+    (record: any) => isString(record) && !Number.isInteger(Number(record)) && !Number.isNaN(parseFloat(record)),
+    (record: any) => isNumber(record) && !Number.isInteger(record) && !Number.isNaN(record),
+  ];
 
   onValidation(record: any): Promise<ValidationEnum> {
-    if (this.validations.some(v => v(record) == true)) { 
-      return Promise.resolve(ValidationEnum.VALID)
+    if (this.validations.some(v => v(record) === true)) {
+      return Promise.resolve(ValidationEnum.VALID);
     }
-
-    return Promise.resolve(ValidationEnum.INVALID)
+    return Promise.resolve(ValidationEnum.INVALID);
   }
 }
 
-export default Integer
+export default Float;

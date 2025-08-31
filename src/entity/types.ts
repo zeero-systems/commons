@@ -4,8 +4,8 @@ import type { OmitType } from '~/common/types.ts';
 /**
  * Maps all properties ommiting functions
  * 
- * @type MappedEntityPropertyType
+ * @type EntityPropertyType
  */ 
-export type MappedEntityPropertyType<E, V> = { [key in keyof OmitType<E, Function>]: V }
+export type EntityPropertyType<E, V> = { [key in keyof OmitType<E, Function>]: V }
 
 export default {}

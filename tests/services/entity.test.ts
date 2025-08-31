@@ -11,7 +11,7 @@ describe('entity', () => {
     @Required()
     firstName!: string;
     lastName!: string;
-    created!: Date;
+    created?: Date;
     @Required()
     birthDate?: Date;
     email!: Array<{ isMain: boolean; address: string }>;

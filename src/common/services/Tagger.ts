@@ -1,5 +1,5 @@
 import type { DecorationType } from '~/decorator/types.ts';
-import type { TagType } from '~/common/types.ts';
+import type { MetaTagType } from '~/common/types.ts';
 
 export class Tagger {
   public static readonly metadata: unique symbol = Symbol('Tagger.metadata');
@@ -18,7 +18,7 @@ export class Tagger {
     }
   }
 
-  public static getMetadata(target: any): Array<TagType> {
+  public static getMetadata(target: any): Array<MetaTagType> {
     let tags = [];
     
     if (target[Symbol.metadata]) {

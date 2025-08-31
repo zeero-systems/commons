@@ -1,7 +1,6 @@
-import type { GuardType } from '~/common/types.ts';
+import type { AcceptType } from '~/common/types.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 
-import Singleton from '~/common/annotations/Singleton.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 import isNull from '~/common/guards/isNull.ts';
@@ -11,9 +10,8 @@ import isString from '~/common/guards/isString.ts';
 import isNumber from '~/common/guards/isNumber.ts';
 import isDate from '~/common/guards/isDate.ts';
 
-@Singleton()
 export class GreaterThan implements ValidationInterface {
-  guards?: GuardType[] | undefined = [
+  accepts?: AcceptType[] | undefined = [
     isNull,
     isUndefined,
     isArray,
@@ -21,23 +19,24 @@ export class GreaterThan implements ValidationInterface {
     isNumber,
     isDate
   ]
+
+  validations = [
+    (record: any, _comparison: any) => isNull(record),
+    (record: any, _comparison: any) => isUndefined(record),
+    (record: any, comparison: any) => isArray(record) && record.length > Number(comparison),
+    (record: any, comparison: any) => isString(record) && isNumber(comparison) && record.length > Number(comparison),
+    (record: any, comparison: any) => isString(record) && isString(comparison) && record > String(comparison),
+    (record: any, comparison: any) => isNumber(record) && record > Number(comparison),
+    (record: any, comparison: any) => isDate(record) && isDate(comparison) && record > comparison,
+    (record: any, comparison: any) => isDate(record) && record > new Date(comparison),
+  ]
   
-  onValidation(record: any, comparison: any): ValidationEnum {
-  
-    if ([
-      isNull(record),
-      isUndefined(record),
-      isArray(record) && record.length > Number(comparison),
-      isString(record) && isNumber(comparison) && record.length > Number(comparison),
-      isString(record) && isString(comparison) && record > String(comparison),
-      isNumber(record) && record > Number(comparison),
-      isDate(record) && isDate(comparison) && record > comparison,
-      isDate(record) && record > new Date(comparison),
-    ].some(r => r == true)) { 
-      return ValidationEnum.VALID
+  onValidation(record: any, comparison: any): Promise<ValidationEnum> {
+    if (this.validations.some((v) => v(record, comparison) == true)) { 
+      return Promise.resolve(ValidationEnum.VALID)
     }
 
-    return ValidationEnum.INVALID
+    return Promise.resolve(ValidationEnum.INVALID)
   }
 }
 

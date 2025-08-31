@@ -49,8 +49,8 @@ export class Factory {
       };
     },
   ): T {
-    let namedArguments: any = {};
     let indexedArguments: any[] = [];
+    const namedArguments: any = {};
 
     if (options?.arguments) {
       if (options?.arguments.properties) {

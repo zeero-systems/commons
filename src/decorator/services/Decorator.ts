@@ -21,7 +21,7 @@ export class Decorator {
 
   public static apply<T extends AnnotationInterface, P>(
     annotation: ConstructorType<T>,
-    settings?: DecoratorSettingsType<P>
+    settings?: Partial<DecoratorSettingsType<P>>
   ): DecoratorFunctionType {
     return function (
       target: any,
@@ -42,7 +42,11 @@ export class Decorator {
         kind: context.kind,
         annotation: Reflect.construct(annotation, []),
         property: context.kind != DecoratorKindEnum.CLASS ? context.name : 'construct',
-        settings,
+        settings: { 
+          ...settings, 
+          parameters: settings?.parameters,
+          persists: settings?.persists === undefined ? true : settings.persists
+        },
         context,
       };
 
@@ -51,7 +55,7 @@ export class Decorator {
       if (context.private) decoration.private = context.private;
       
       if (decoration.context.metadata) {
-        if (settings?.persists) {
+        if (decoration.settings.persists) {
           Decorator.applyMetadata(decoration);
         }
 
@@ -69,7 +73,7 @@ export class Decorator {
     };
   }
 
-  public static hasAnnotation<T extends {}>(
+  public static hasAnnotation<T extends Record<PropertyKey, any>>(
     target: T,
     annotation: ConstructorType<AnnotationInterface>,
     propertyKey: PropertyKey = 'construct',
@@ -81,7 +85,7 @@ export class Decorator {
     });
   }
 
-  public static getAnnotation<T extends {}>(
+  public static getAnnotation<T extends Record<PropertyKey, any>>(
     target: T,
     annotation: ConstructorType<AnnotationInterface>,
     propertyKey: PropertyKey = 'construct',

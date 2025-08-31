@@ -1,7 +1,6 @@
 import type { ValidationInterface } from '~/validator/interfaces.ts';
-import type { GuardType } from '~/common/types.ts';
+import type { AcceptType } from '~/common/types.ts';
 
-import Singleton from '~/common/annotations/Singleton.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 import isNull from '~/common/guards/isNull.ts';
@@ -9,24 +8,25 @@ import isUndefined from '~/common/guards/isUndefined.ts';
 import isString from '~/common/guards/isString.ts';
 import isDate from '~/common/guards/isDate.ts';
 
-@Singleton()
 export class Required implements ValidationInterface {
-  guards?: GuardType[] | undefined = [
+  accepts?: AcceptType[] | undefined = [
     isNull,
     isUndefined,
     isString,
     isDate,
   ]
 
-  onValidation(record: any): ValidationEnum {
-    if ([
-      !isString(record) && !isNull(record) && !isUndefined(record),
-      isString(record) && !!record
-    ].some(r => r == true)) { 
-      return ValidationEnum.VALID
+  validations = [
+    (record: any) => !isString(record) && !isNull(record) && !isUndefined(record),
+    (record: any) => isString(record) && !!record
+  ]
+
+  onValidation(record: any): Promise<ValidationEnum> {
+    if (this.validations.some(v => v(record) == true)) { 
+      return Promise.resolve(ValidationEnum.VALID);
     }
 
-    return ValidationEnum.INVALID;
+    return Promise.resolve(ValidationEnum.INVALID);
   }
 }
 

@@ -6,11 +6,11 @@ import Decorator from '~/decorator/services/Decorator.ts';
 
 export class Debug implements AnnotationInterface {
   onAttach<P>(artifact: ArtifactType, decoration?: DecorationType<P>): any {
-    console.log('onAttach', { artifact, decoration });
+    console.debug('onAttach', { artifact, decoration });
   }
 
   onInitialize<P>(artifact: ArtifactType, decoration?: DecorationType<P>): any {
-    console.log('onInitialize', { artifact, decoration });
+    console.debug('onInitialize', { artifact, decoration });
   }
 }
 

@@ -1,13 +1,13 @@
-import type { ArtifactType, KeyType, TagType } from '~/common/types.ts';
+import type { ArtifactType, KeyType, MetaTagType } from '~/common/types.ts';
 
 export class Artifactor {
-  public artifacts: Map<TagType, Map<KeyType, ArtifactType>> = new Map();
+  public artifacts: Map<MetaTagType, Map<KeyType, ArtifactType>> = new Map();
 
-  public hasTag(tag: TagType): boolean {
+  public hasTag(tag: MetaTagType): boolean {
     return this.artifacts.has(tag)
   }
 
-  public hasKey(tag: TagType, key: KeyType): boolean {
+  public hasKey(tag: MetaTagType, key: KeyType): boolean {
     return !!this.artifacts.get(tag)?.has(key)
   }
 
@@ -15,7 +15,7 @@ export class Artifactor {
     return this.hasKey(tag, key)
   }
 
-  public set(tags: TagType | Array<TagType>, key: KeyType, artifact: ArtifactType): ArtifactType {
+  public set(tags: MetaTagType | Array<MetaTagType>, key: KeyType, artifact: ArtifactType): ArtifactType {
     if (!Array.isArray(tags)) tags = [tags] 
     
     for (const tag in tags) {
@@ -29,7 +29,7 @@ export class Artifactor {
     return this.artifacts.get(tags[0])?.get(key) || artifact
   }
   
-  public get(tag: TagType, key: KeyType): ArtifactType | undefined {
+  public get(tag: MetaTagType, key: KeyType): ArtifactType | undefined {
     return this.artifacts.get(tag)?.get(key)
   }
 
@@ -37,7 +37,7 @@ export class Artifactor {
     return this.artifacts.values().find((k) => k.has(key))?.get(key)
   }
 
-  public getByTag(tag: TagType): Map<KeyType, ArtifactType> | undefined {
+  public getByTag(tag: MetaTagType): Map<KeyType, ArtifactType> | undefined {
     return this.artifacts.get(tag)
   }
 }

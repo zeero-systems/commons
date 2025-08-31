@@ -6,7 +6,7 @@
 export type ArtifactType = {
   name: KeyType;
   target: any;
-  tags?: Array<TagType>;
+  metaTag?: Array<MetaTagType>;
   parameters?: string[];
 };
 
@@ -20,9 +20,9 @@ export type KeyType = string | symbol;
 /**
  * Simple tag type
  *
- * @type TagType<T>
+ * @type MetaTagType<T>
  */
-export type TagType = string | symbol;
+export type MetaTagType = string | symbol;
 
 /**
  * Defines as a constructable type
@@ -33,20 +33,32 @@ export type ConstructorType<T> = T extends new (...args: infer A) => infer R ? n
   : new (...args: any) => any;
 
 /**
+ * Defines a safe function type
+ *
+ * @type PropertiesType<T>
+ */
+export type FunctionType = (...args: any[]) => any;
+
+/**
  * Defines a type without his functions
  *
  * @type PropertiesType<T>
  */
-// deno-lint-ignore ban-types
-export type PropertiesType<T> = OmitType<T, object | Function> & Partial<PickType<T, object>>;
+export type PropertiesType<T> = OmitType<T, FunctionType> & Partial<PickType<T, object>>;
+
+/**
+ * Map a value to a type without his functions
+ *
+ * @type MappedPropertiesType<T>
+ */
+export type MappedPropertiesType<E, V> = { [key in keyof OmitType<E, FunctionType>]: V }
 
 /**
  * Maps a entry type
  *
  * @type EntryType<T>
  */
-// deno-lint-ignore ban-types
-export type EntryType<T extends {}> = T extends readonly [unknown, ...unknown[]] ? TupleEntryType<T>
+export type EntryType<T extends Record<PropertyKey, any>> = T extends readonly [unknown, ...unknown[]] ? TupleEntryType<T>
   : T extends ReadonlyArray<infer U> ? [`${number}`, U]
   : T extends object
     ? { [K in keyof T]: [K, Required<T>[K]] }[keyof T] extends infer E
@@ -62,6 +74,14 @@ export type EntryType<T extends {}> = T extends readonly [unknown, ...unknown[]]
  * @type GuardType
  */
 export type GuardType = (record: any) => boolean;
+
+/**
+ * Accepts data types function type
+ * Alias for GuardType
+ *
+ * @type GuardType
+ */
+export type AcceptType = GuardType
 
 /**
  * Maps a common json object
