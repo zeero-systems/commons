@@ -17,8 +17,8 @@ export class Required implements ValidationInterface {
   ]
 
   validations = [
-    (record: any) => !isString(record) && !isNull(record) && !isUndefined(record),
-    (record: any) => isString(record) && !!record
+    (record: any): boolean => !isString(record) && !isNull(record) && !isUndefined(record),
+    (record: any): boolean => isString(record) && !!record
   ]
 
   onValidation(record: any): Promise<ValidationEnum> {

@@ -17,10 +17,10 @@ export class Integer implements ValidationInterface {
   ]
   
   validations = [
-    (record: any) => isNull(record),
-    (record: any) => isUndefined(record),
-    (record: any) => isString(record) && Number.isInteger(Number(record)),
-    (record: any) => isNumber(record) && Number.isInteger(record),
+    (record: any): boolean => isNull(record),
+    (record: any): boolean => isUndefined(record),
+    (record: any): boolean => isString(record) && Number.isInteger(Number(record)),
+    (record: any): boolean => isNumber(record) && Number.isInteger(record),
   ]
 
   onValidation(record: any): Promise<ValidationEnum> {

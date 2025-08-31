@@ -21,16 +21,16 @@ export class Equal implements ValidationInterface {
   ]
   
   validations = [
-    (record: any, _comparison: any) => isNull(record),
-    (record: any, _comparison: any) => isUndefined(record),
-    (record: any, comparison: any) => isArray(record) && isNumber(comparison) && record.length === comparison,
-    (record: any, comparison: any) => isArray(record) && isArray(comparison) && record === comparison,
-    (record: any, comparison: any) => isNumber(record) && isNumber(comparison) && record === comparison,
-    (record: any, comparison: any) => isString(record) && isNumber(comparison) && record.length === comparison,
-    (record: any, comparison: any) => isString(record) && isString(comparison) && record === comparison,
-    (record: any, comparison: any) => isNumber(record) && isNumber(comparison) && record === comparison,
-    (record: any, comparison: any) => isDate(record) && isDate(comparison) && record === comparison,
-    (record: any, comparison: any) => isDate(record) && record === new Date(comparison),
+    (record: any, _comparison: any): boolean => isNull(record),
+    (record: any, _comparison: any): boolean => isUndefined(record),
+    (record: any, comparison: any): boolean => isArray(record) && isNumber(comparison) && record.length === comparison,
+    (record: any, comparison: any): boolean => isArray(record) && isArray(comparison) && record === comparison,
+    (record: any, comparison: any): boolean => isNumber(record) && isNumber(comparison) && record === comparison,
+    (record: any, comparison: any): boolean => isString(record) && isNumber(comparison) && record.length === comparison,
+    (record: any, comparison: any): boolean => isString(record) && isString(comparison) && record === comparison,
+    (record: any, comparison: any): boolean => isNumber(record) && isNumber(comparison) && record === comparison,
+    (record: any, comparison: any): boolean => isDate(record) && isDate(comparison) && record === comparison,
+    (record: any, comparison: any): boolean => isDate(record) && record === new Date(comparison),
   ]
 
   onValidation(record: any, comparison: any): Promise<ValidationEnum> {

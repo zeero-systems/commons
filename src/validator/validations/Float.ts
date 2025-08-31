@@ -17,10 +17,10 @@ export class Float implements ValidationInterface {
   ];
 
   validations = [
-    (record: any) => isNull(record),
-    (record: any) => isUndefined(record),
-    (record: any) => isString(record) && !Number.isInteger(Number(record)) && !Number.isNaN(parseFloat(record)),
-    (record: any) => isNumber(record) && !Number.isInteger(record) && !Number.isNaN(record),
+    (record: any): boolean => isNull(record),
+    (record: any): boolean => isUndefined(record),
+    (record: any): boolean => isString(record) && !Number.isInteger(Number(record)) && !Number.isNaN(parseFloat(record)),
+    (record: any): boolean => isNumber(record) && !Number.isInteger(record) && !Number.isNaN(record),
   ];
 
   onValidation(record: any): Promise<ValidationEnum> {

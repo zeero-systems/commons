@@ -15,9 +15,9 @@ export class Regex implements ValidationInterface {
   ]
   
   validations = [
-    (record: string, _expression: RegExp) => isNull(record),
-    (record: string, _expression: RegExp) => isUndefined(record),
-    (record: string, expression: RegExp) => isString(record) && expression.test(record),
+    (record: string, _expression: RegExp): boolean => isNull(record),
+    (record: string, _expression: RegExp): boolean => isUndefined(record),
+    (record: string, expression: RegExp): boolean => isString(record) && expression.test(record),
   ]
 
   onValidation(record: string, pattern: string | RegExp): Promise<ValidationEnum> {
