@@ -63,6 +63,8 @@ export interface ArtifactorInterface {
   get(tag: MetaTagType, key: KeyType): ArtifactType | undefined
   getByKey(key: KeyType): ArtifactType | undefined
   getByTag(tag: MetaTagType): Map<KeyType, ArtifactType> | undefined
+  size(): number
+  sizeByTag(tag: MetaTagType): number
 }
 
 export default {};

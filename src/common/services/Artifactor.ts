@@ -27,7 +27,7 @@ export class Artifactor implements ArtifactorInterface {
       this.artifacts.get(tag)?.set(key, artifact)
     }
 
-    return this.artifacts.get(tags[0])?.get(key) || artifact
+    return artifact
   }
   
   public get(tag: MetaTagType, key: KeyType): ArtifactType | undefined {
@@ -40,6 +40,13 @@ export class Artifactor implements ArtifactorInterface {
 
   public getByTag(tag: MetaTagType): Map<KeyType, ArtifactType> | undefined {
     return this.artifacts.get(tag)
+  }
+
+  public size(): number {
+    return this.artifacts.values().reduce((acc: number, cur: Map<KeyType, ArtifactType>) => acc + cur.size, 0) 
+  }
+  public sizeByTag(tag: MetaTagType): number {
+    return this.getByTag(tag)?.size || 0
   }
 }
 
