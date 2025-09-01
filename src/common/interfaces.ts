@@ -1,4 +1,4 @@
-import type { JsonType } from '~/common/types.ts';
+import type { ArtifactType, JsonType, KeyType, MetaTagType } from '~/common/types.ts';
 
 /**
  * Extended errors with known keys
@@ -33,12 +33,36 @@ export interface ExceptionOptionsInterface extends ErrorOptions {
 /**
  * Extended exceptions options with key
  *
- * @interface ExceptionOptionsInterface
+ * @interface KeyableExceptionOptionsInterface
  *
  * @member {K} key - Custom allowed keys
  */
 export interface KeyableExceptionOptionsInterface<K> extends ExceptionOptionsInterface {
   key?: K;
+}
+
+/**
+ * Container class to holds artifacts and metadata
+ *
+ * @interface ArtifactorInterface
+ *
+ * @member {Map<MetaTagType, Map<KeyType, ArtifactType>>} artifacts - Container for artifacts
+ * @method hasTag - Check if a tag exists
+ * @method hasKey - Check if a key exists within a tag
+ * @method has - Alias for hasKey
+ * @method set - Set an artifact with associated tags and key
+ * @method get - Get an artifact by tag and key
+ * @method getByKey - Get an artifact by key across all tags
+ * @method getByTag - Get all artifacts associated with a tag
+ */
+export interface ArtifactorInterface {
+  hasTag(tag: MetaTagType): boolean
+  hasKey(tag: MetaTagType, key: KeyType): boolean
+  has(tag: KeyType, key: KeyType): boolean
+  set(tags: MetaTagType | Array<MetaTagType>, key: KeyType, artifact: ArtifactType): ArtifactType
+  get(tag: MetaTagType, key: KeyType): ArtifactType | undefined
+  getByKey(key: KeyType): ArtifactType | undefined
+  getByTag(tag: MetaTagType): Map<KeyType, ArtifactType> | undefined
 }
 
 export default {};

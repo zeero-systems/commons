@@ -1,6 +1,7 @@
 import type { ArtifactType, KeyType, MetaTagType } from '~/common/types.ts';
+import type { ArtifactorInterface } from '~/common/interfaces.ts';
 
-export class Artifactor {
+export class Artifactor implements ArtifactorInterface {
   public artifacts: Map<MetaTagType, Map<KeyType, ArtifactType>> = new Map();
 
   public hasTag(tag: MetaTagType): boolean {
