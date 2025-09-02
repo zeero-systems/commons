@@ -19,12 +19,14 @@ export class Artifactor implements ArtifactorInterface {
   public set(tags: MetaTagType | Array<MetaTagType>, key: KeyType, artifact: ArtifactType): ArtifactType {
     const currentTags = Array.isArray(tags) ? tags : [tags]
 
-    for (const tag in currentTags) {
-      if (!this.hasTag(tag)) {
-        this.artifacts.set(tag, new Map())
+    for (let index = 0; index < currentTags.length; index++) {
+      const currentTag = currentTags[index];
+      
+      if (!this.hasTag(currentTag)) {
+        this.artifacts.set(currentTag, new Map())
       }
-  
-      this.artifacts.get(tag)?.set(key, artifact)
+
+      this.artifacts.get(currentTag)?.set(key, artifact)
     }
 
     return artifact
