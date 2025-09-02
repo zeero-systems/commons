@@ -17,9 +17,9 @@ export class Artifactor implements ArtifactorInterface {
   }
 
   public set(tags: MetaTagType | Array<MetaTagType>, key: KeyType, artifact: ArtifactType): ArtifactType {
-    if (!Array.isArray(tags)) tags = [tags] 
-    
-    for (const tag in tags) {
+    const currentTags = Array.isArray(tags) ? tags : [tags]
+
+    for (const tag in currentTags) {
       if (!this.hasTag(tag)) {
         this.artifacts.set(tag, new Map())
       }
