@@ -56,13 +56,14 @@ export interface KeyableExceptionOptionsInterface<K> extends ExceptionOptionsInt
  * @method getByTag - Get all artifacts associated with a tag
  */
 export interface ArtifactorInterface {
+  artifacts: Map<MetaTagType, Map<KeyType, ArtifactType>>
+  get(tag: MetaTagType, key: KeyType): ArtifactType | undefined
+  getByKey(key: KeyType): ArtifactType | undefined
+  getByTag(tag: MetaTagType): Map<KeyType, ArtifactType> | undefined
   hasTag(tag: MetaTagType): boolean
   hasKey(key: KeyType): boolean
   has(tag: KeyType, key: KeyType): boolean
   set(tags: MetaTagType | Array<MetaTagType>, key: KeyType, artifact: ArtifactType): ArtifactType
-  get(tag: MetaTagType, key: KeyType): ArtifactType | undefined
-  getByKey(key: KeyType): ArtifactType | undefined
-  getByTag(tag: MetaTagType): Map<KeyType, ArtifactType> | undefined
   size(): number
   sizeByTag(tag: MetaTagType): number
 }
