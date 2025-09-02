@@ -9,7 +9,8 @@ import type { ArtifactType } from '~/common/types.ts';
  * @member {Function} onAttach - Called when the decorator is attached
  * @member {Function} onInitialize - Called when the decorator is initialized
  */
-export interface AnnotationInterface {  
+export interface AnnotationInterface {
+  [x: string | symbol]: any;
   onAttach?<P>(artifact: ArtifactType, decoration: DecorationType<P>): any;
   onInitialize?<P>(artifact: ArtifactType, decoration: DecorationType<P>): any;
 }

@@ -7,6 +7,7 @@ import type {
   TargetContextType,
   DecoratorFunctionType,
   DecoratorSettingsType,
+  MetadataApplierType,
 } from '~/decorator/types.ts';
 
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
@@ -14,10 +15,13 @@ import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
 import Metadata from '~/common/services/Metadata.ts';
-import Tagger from '~/common/services/Tagger.ts';
 
 export class Decorator {
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
+  public static onMetadata: Array<MetadataApplierType> = [
+    Decorator.applyMetadata,
+    Factory.applyMetadata,
+  ];
 
   public static apply<T extends AnnotationInterface, P>(
     annotation: ConstructorType<T>,
@@ -42,9 +46,8 @@ export class Decorator {
         kind: context.kind,
         annotation: Reflect.construct(annotation, []),
         property: context.kind != DecoratorKindEnum.CLASS ? context.name : 'construct',
-        settings: { 
-          ...settings, 
-          persists: settings?.persists === undefined ? true : settings.persists
+        settings: {
+          parameters: (settings && settings.parameters) ? settings.parameters : undefined,
         },
         context,
       };
@@ -54,12 +57,9 @@ export class Decorator {
       if (context.private) decoration.private = context.private;
       
       if (decoration.context.metadata) {
-        if (decoration.settings.persists) {
-          Decorator.applyMetadata(decoration);
+        for (let index = 0; index < Decorator.onMetadata.length; index++) {
+          Decorator.onMetadata[index]<P>(decoration, artifact)
         }
-
-        Tagger.applyDecoration(decoration)
-        Factory.applyDecoration(decoration, artifact)
       }
 
       if (decoration.annotation.onInitialize) {
@@ -97,6 +97,8 @@ export class Decorator {
   }
 
   private static applyMetadata<P>(decoration: DecorationType<P>): void {
+    if (decoration.settings?.persists === false) return
+
     const property = decoration.context.kind != DecoratorKindEnum.CLASS ? decoration.context.name : 'construct';
 
     if (!decoration.context.metadata[Decorator.metadata]) {

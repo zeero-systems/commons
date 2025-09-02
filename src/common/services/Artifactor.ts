@@ -1,10 +1,10 @@
-import type { ArtifactType, KeyType, MetaTagType } from '~/common/types.ts';
+import type { ArtifactType, KeyType, TagType } from '~/common/types.ts';
 import type { ArtifactorInterface } from '~/common/interfaces.ts';
 
 export class Artifactor implements ArtifactorInterface {
-  public artifacts: Map<MetaTagType, Map<KeyType, ArtifactType>> = new Map();
+  public artifacts: Map<TagType, Map<KeyType, ArtifactType>> = new Map();
 
-  public hasTag(tag: MetaTagType): boolean {
+  public hasTag(tag: TagType): boolean {
     return this.artifacts.has(tag)
   }
 
@@ -12,11 +12,11 @@ export class Artifactor implements ArtifactorInterface {
     return !!this.artifacts.values().find((k) => k.has(key))
   }
 
-  public has(tag: MetaTagType, key: KeyType): boolean {
+  public has(tag: TagType, key: KeyType): boolean {
     return !!this.artifacts.get(tag)?.has(key)
   }
 
-  public set(tags: MetaTagType | Array<MetaTagType>, key: KeyType, artifact: ArtifactType): ArtifactType {
+  public set(tags: TagType | Array<TagType>, key: KeyType, artifact: ArtifactType): ArtifactType {
     const currentTags = Array.isArray(tags) ? tags : [tags]
 
     for (let index = 0; index < currentTags.length; index++) {
@@ -32,7 +32,7 @@ export class Artifactor implements ArtifactorInterface {
     return artifact
   }
   
-  public get(tag: MetaTagType, key: KeyType): ArtifactType | undefined {
+  public get(tag: TagType, key: KeyType): ArtifactType | undefined {
     return this.artifacts.get(tag)?.get(key)
   }
 
@@ -40,14 +40,14 @@ export class Artifactor implements ArtifactorInterface {
     return this.artifacts.values().find((k) => k.has(key))?.get(key)
   }
 
-  public getByTag(tag: MetaTagType): Map<KeyType, ArtifactType> | undefined {
+  public getByTag(tag: TagType): Map<KeyType, ArtifactType> | undefined {
     return this.artifacts.get(tag)
   }
 
   public size(): number {
     return this.artifacts.values().reduce((acc: number, cur: Map<KeyType, ArtifactType>) => acc + cur.size, 0) 
   }
-  public sizeByTag(tag: MetaTagType): number {
+  public sizeByTag(tag: TagType): number {
     return this.getByTag(tag)?.size || 0
   }
 }

@@ -17,17 +17,17 @@ import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 export class Factory {
   public static readonly metadata: unique symbol = Symbol('Factory.metadata');
 
-  public static applyDecoration<P>(decoration: DecorationType<P>, artifact: ArtifactType): void {
+  public static applyMetadata<P>(decoration: DecorationType<P>, artifact: ArtifactType): void {
     if (decoration.property) {
-      if (!decoration.context.metadata[Factory.metadata]) {
-        decoration.context.metadata[Factory.metadata] = new Map();
-      }
+      if (artifact.parameters && artifact.parameters.length > 0) {
+        if (!decoration.context.metadata[Factory.metadata]) {
+          decoration.context.metadata[Factory.metadata] = new Map();
+        }
+        
+        if (!decoration.context.metadata[Factory.metadata].get(decoration.property)) {
+          decoration.context.metadata[Factory.metadata].set(decoration.property, new Map());
+        }
 
-      if (!decoration.context.metadata[Factory.metadata].get(decoration.property)) {
-        decoration.context.metadata[Factory.metadata].set(decoration.property, new Map());
-      }
-
-      if (artifact.parameters) {
         if (decoration.context.kind == DecoratorKindEnum.CLASS) {
           if (!decoration.context.metadata[Factory.metadata].get(decoration.property).has('parameters')) {
             decoration.context.metadata[Factory.metadata].get(decoration.property).set(

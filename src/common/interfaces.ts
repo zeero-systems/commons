@@ -1,4 +1,4 @@
-import type { ArtifactType, JsonType, KeyType, MetaTagType } from '~/common/types.ts';
+import type { ArtifactType, JsonType, KeyType, TagType } from '~/common/types.ts';
 
 /**
  * Extended errors with known keys
@@ -46,7 +46,7 @@ export interface KeyableExceptionOptionsInterface<K> extends ExceptionOptionsInt
  *
  * @interface ArtifactorInterface
  *
- * @member {Map<MetaTagType, Map<KeyType, ArtifactType>>} artifacts - Container for artifacts
+ * @member {Map<TagType, Map<KeyType, ArtifactType>>} artifacts - Container for artifacts
  * @method hasTag - Check if a tag exists
  * @method hasKey - Check if a key exists
  * @method has - Alias for hasKey
@@ -56,16 +56,16 @@ export interface KeyableExceptionOptionsInterface<K> extends ExceptionOptionsInt
  * @method getByTag - Get all artifacts associated with a tag
  */
 export interface ArtifactorInterface {
-  artifacts: Map<MetaTagType, Map<KeyType, ArtifactType>>
-  get(tag: MetaTagType, key: KeyType): ArtifactType | undefined
+  artifacts: Map<TagType, Map<KeyType, ArtifactType>>
+  get(tag: TagType, key: KeyType): ArtifactType | undefined
   getByKey(key: KeyType): ArtifactType | undefined
-  getByTag(tag: MetaTagType): Map<KeyType, ArtifactType> | undefined
-  hasTag(tag: MetaTagType): boolean
+  getByTag(tag: TagType): Map<KeyType, ArtifactType> | undefined
+  hasTag(tag: TagType): boolean
   hasKey(key: KeyType): boolean
   has(tag: KeyType, key: KeyType): boolean
-  set(tags: MetaTagType | Array<MetaTagType>, key: KeyType, artifact: ArtifactType): ArtifactType
+  set(tags: TagType | Array<TagType>, key: KeyType, artifact: ArtifactType): ArtifactType
   size(): number
-  sizeByTag(tag: MetaTagType): number
+  sizeByTag(tag: TagType): number
 }
 
 export default {};

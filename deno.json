@@ -1,6 +1,6 @@
 {
   "name": "@zeero-systems/commons",
-  "version": "0.9.3",
+  "version": "0.9.7",
   "license": "GPL-3.0",
   "exports": "./mod.ts",
   "publish": {

@@ -6,7 +6,7 @@
 export type ArtifactType = {
   name: KeyType;
   target: any;
-  metaTag?: Array<MetaTagType>;
+  metaTag?: Array<TagType>;
   parameters?: string[];
 };
 
@@ -20,9 +20,9 @@ export type KeyType = string | symbol;
 /**
  * Simple tag type
  *
- * @type MetaTagType<T>
+ * @type TagType<T>
  */
-export type MetaTagType = string | symbol;
+export type TagType = string | symbol;
 
 /**
  * Defines as a constructable type
