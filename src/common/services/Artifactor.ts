@@ -8,12 +8,12 @@ export class Artifactor implements ArtifactorInterface {
     return this.artifacts.has(tag)
   }
 
-  public hasKey(tag: MetaTagType, key: KeyType): boolean {
-    return !!this.artifacts.get(tag)?.has(key)
+  public hasKey(key: KeyType): boolean {
+    return !!this.artifacts.values().find((k) => k.has(key))
   }
 
-  public has(tag: KeyType, key: KeyType): boolean {
-    return this.hasKey(tag, key)
+  public has(tag: MetaTagType, key: KeyType): boolean {
+    return !!this.artifacts.get(tag)?.has(key)
   }
 
   public set(tags: MetaTagType | Array<MetaTagType>, key: KeyType, artifact: ArtifactType): ArtifactType {

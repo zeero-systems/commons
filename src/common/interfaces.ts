@@ -48,7 +48,7 @@ export interface KeyableExceptionOptionsInterface<K> extends ExceptionOptionsInt
  *
  * @member {Map<MetaTagType, Map<KeyType, ArtifactType>>} artifacts - Container for artifacts
  * @method hasTag - Check if a tag exists
- * @method hasKey - Check if a key exists within a tag
+ * @method hasKey - Check if a key exists
  * @method has - Alias for hasKey
  * @method set - Set an artifact with associated tags and key
  * @method get - Get an artifact by tag and key
@@ -57,7 +57,7 @@ export interface KeyableExceptionOptionsInterface<K> extends ExceptionOptionsInt
  */
 export interface ArtifactorInterface {
   hasTag(tag: MetaTagType): boolean
-  hasKey(tag: MetaTagType, key: KeyType): boolean
+  hasKey(key: KeyType): boolean
   has(tag: KeyType, key: KeyType): boolean
   set(tags: MetaTagType | Array<MetaTagType>, key: KeyType, artifact: ArtifactType): ArtifactType
   get(tag: MetaTagType, key: KeyType): ArtifactType | undefined

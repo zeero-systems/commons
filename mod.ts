@@ -11,13 +11,14 @@ import Objector from '~/common/services/Objector.ts';
 import Text from '~/common/services/Text.ts';
 import Validator from '~/validator/services/Validator.ts';
 
-import isClass from '~/common/guards/isClass.ts';
-import isDate from '~/common/guards/isDate.ts';
+import isArtifact from '~/common/guards/isArtifact.ts';
 import isArray from '~/common/guards/isArray.ts';
 import isBigInt from '~/common/guards/isBigInt.ts';
 import isBoolean from '~/common/guards/isBoolean.ts';
+import isClass from '~/common/guards/isClass.ts';
 import isClassDecoratorContext from '~/decorator/guards/isClassDecoratorContext.ts';
 import isClassMemberDecoratorContext from '~/decorator/guards/isClassMemberDecoratorContext.ts';
+import isDate from '~/common/guards/isDate.ts';
 import isDecoratorMetadata from '~/decorator/guards/isDecoratorMetadata.ts';
 import isFunction from '~/common/guards/isFunction.ts';
 import isMap from '~/common/guards/isMap.ts';
@@ -93,6 +94,7 @@ export * from '~/validator/interfaces.ts';
 export * from '~/validator/types.ts';
 
 export const Guards = {
+  isArtifact,
   isArray,
   isBigInt,
   isBoolean,

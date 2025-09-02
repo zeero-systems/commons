@@ -44,7 +44,6 @@ export class Decorator {
         property: context.kind != DecoratorKindEnum.CLASS ? context.name : 'construct',
         settings: { 
           ...settings, 
-          parameters: settings?.parameters,
           persists: settings?.persists === undefined ? true : settings.persists
         },
         context,
