@@ -9,7 +9,7 @@ import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
  */ 
 export type ValidationType = {
   target: ValidationInterface;
-  parameters?: unknown[];
+  parameters?: any[];
 };
 
 /**
@@ -20,7 +20,7 @@ export type ValidationType = {
 export type ValidationResultType = {
   key: ValidationEnum;
   name: string;
-  parameters?: unknown;
+  parameters?: any;
 };
 
 export default {};

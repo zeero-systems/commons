@@ -38,10 +38,10 @@ export class Decoration {
     target: T,
     annotation: string,
     propertyKey: PropertyKey = 'construct',
-  ): DecorationMetadataType<Record<KeyType, unknown>> | undefined {
+  ): DecorationMetadataType<Record<KeyType, any>> | undefined {
     const metadata = Metadata.getByKey<DecorationMetadataMapType>(target, Decorator.metadata);
 
-    return metadata && metadata.get(propertyKey)?.find((decorator: DecorationMetadataType<Record<KeyType, unknown>>) => {
+    return metadata && metadata.get(propertyKey)?.find((decorator: DecorationMetadataType<Record<KeyType, any>>) => {
       return decorator.annotation.constructor.name == annotation;
     });
   }

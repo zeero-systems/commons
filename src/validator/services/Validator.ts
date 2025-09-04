@@ -12,7 +12,7 @@ export class Validator {
   public static validateObject<T extends {}>(
     target: T,
     validators: {
-      [key: string | symbol]: Array<{ validation: ValidationInterface; parameters?: unknown }>;
+      [key: string | symbol]: Array<{ validation: ValidationInterface; parameters?: any }>;
     },
   ): Promise<MappedType<OmitType<T, Function>, Array<ValidationResultType>>> {
     
@@ -41,7 +41,7 @@ export class Validator {
 
   public static validateValue<T>(
     value: T,
-    validations?: { validation: ValidationInterface; parameters?: unknown }[],
+    validations?: { validation: ValidationInterface; parameters?: any }[],
   ): Promise<ValidationResultType[]> {
     if (!validations || validations.length == 0) {
       return Promise.resolve([{ key: ValidationEnum.UNDEFINED }] as ValidationResultType[]);
