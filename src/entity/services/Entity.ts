@@ -1,9 +1,11 @@
 import type { EntryType, FunctionType, MappedPropertiesType, OmitType } from '~/common/types.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
+import type { DecorationMetadataType } from '~/decorator/types.ts';
 import type { EntityInterface } from '~/entity/interfaces.ts';
 
 import Objector from '~/common/services/Objector.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
+import Decoration from '~/decorator/services/Decoration.ts';
 
 export class Entity implements EntityInterface {
   public toEntries(): ReadonlyArray<EntryType<OmitType<this, FunctionType>>> {

@@ -3,15 +3,16 @@ import type { DecorationType, DecoratorFunctionType } from '~/decorator/types.ts
 import type { ArtifactType } from '~/common/types.ts';
 
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
-import Decorator from '~/decorator/services/Decorator.ts';
+import Decoration from '~/decorator/services/Decoration.ts';
 import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
+import Decorator from '~/decorator/services/Decorator.ts';
 
 export class Singleton implements AnnotationInterface {
   public static readonly metadata: unique symbol = Symbol('Singleton.medadata');
 
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P>): any {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
-      if (!Decorator.hasAnnotation(artifact.target, Singleton)) {
+      if (!Decoration.has(artifact.target, 'Singleton')) {
         artifact.target = new Proxy(artifact.target as any, {
           construct(currentTarget, currentArgs, newTarget) {
             if (currentTarget.prototype !== newTarget.prototype) {

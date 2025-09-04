@@ -7,7 +7,7 @@ export type ArtifactType = {
   name: KeyType;
   target: any;
   metaTag?: Array<TagType>;
-  parameters?: string[];
+  parameterNames?: string[];
 };
 
 /**
@@ -118,7 +118,7 @@ export type MappedType<T, V> = { [K in keyof T]: V };
  *
  * @type MetadaType
  */
-export type MetadataType = { [key: string | symbol]: any };
+export type MetadataType<T> = { [key: string | symbol]: T };
 
 /**
  * Omit and maps the key types of the object

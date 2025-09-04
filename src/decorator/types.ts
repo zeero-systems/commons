@@ -1,5 +1,5 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
-import type { ArtifactType, MetadataType } from '~/common/types.ts';
+import type { ArtifactType, MetadataType, TargetPropertyType } from '~/common/types.ts';
 
 /**
  * The returned decorator function
@@ -35,7 +35,7 @@ export type TargetContextType = DecoratorContext & {
   private?: boolean;
   access?: { get?: (object: any) => any, set?: (object: any, value: any) => void };
   addInitializer(initializer: () => void): void;
-  metadata: MetadataType;
+  metadata: MetadataType<any>;
 };
 
 /**
@@ -50,6 +50,8 @@ export type DecorationMetadataType<P> = Pick<TargetContextType, 'static' | 'priv
   settings?: DecoratorSettingsType<P> | undefined;
   options?: AnnotationOptionsType;
 };
+
+export type DecorationMetadataMapType = Map<TargetPropertyType, DecorationMetadataType<Record<KeyType, unknown>>[]>;
 
 /**
  * Decoration type with metadata context

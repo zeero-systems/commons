@@ -1,6 +1,5 @@
 import AnnotationException from '~/decorator/exceptions/AnnotationException.ts';
 import Artifactor from '~/common/services/Artifactor.ts';
-import Common from '~/common/services/Common.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 import Entity from '~/entity/services/Entity.ts';
 import Exception from '~/common/services/Exception.ts';
@@ -53,7 +52,6 @@ import Singleton from '~/common/annotations/Singleton.ts';
 
 export { Artifactor } from '~/common/services/Artifactor.ts';
 export { AnnotationException } from '~/decorator/exceptions/AnnotationException.ts';
-export { Common } from '~/common/services/Common.ts';
 export { Decorator } from '~/decorator/services/Decorator.ts';
 export { Entity } from '~/entity/services/Entity.ts';
 export { Exception } from '~/common/services/Exception.ts';
@@ -127,7 +125,6 @@ export default {
   Annotations,
   AnnotationException,
   Artifactor,
-  Common,
   Debug,
   Decorator,
   DecoratorKindEnum,

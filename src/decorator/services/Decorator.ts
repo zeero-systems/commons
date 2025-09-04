@@ -14,13 +14,11 @@ import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
 import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
-import Metadata from '~/common/services/Metadata.ts';
 
 export class Decorator {
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
   public static onMetadata: Array<MetadataApplierType> = [
     Decorator.applyMetadata,
-    Factory.applyMetadata,
   ];
 
   public static apply<T extends AnnotationInterface, P>(
@@ -39,7 +37,7 @@ export class Decorator {
       const artifact: ArtifactType = {
         name: artifactName,
         target: target,
-        parameters: target ? Factory.getParameterNames(target, String(artifactParameterName)) : [],
+        parameterNames: target ? Factory.getParameterNames(target, String(artifactParameterName)) : [],
       };
 
       const decoration: DecorationType<P> = {
@@ -70,30 +68,6 @@ export class Decorator {
         return decoration.annotation.onAttach<P>(artifact, decoration) ?? undefined;
       }
     };
-  }
-
-  public static hasAnnotation<T extends Record<PropertyKey, any>>(
-    target: T,
-    annotation: ConstructorType<AnnotationInterface>,
-    propertyKey: PropertyKey = 'construct',
-  ): boolean {
-    const metadata = Metadata.getProperty(target, Decorator.metadata);
-
-    return metadata && metadata.get(propertyKey)?.some((decorator: DecorationMetadataType<any>) => {
-      return decorator.annotation.constructor.name == annotation.name;
-    });
-  }
-
-  public static getAnnotation<T extends Record<PropertyKey, any>>(
-    target: T,
-    annotation: ConstructorType<AnnotationInterface>,
-    propertyKey: PropertyKey = 'construct',
-  ): DecorationMetadataType<any> | undefined {
-    const metadata = Metadata.getProperty(target, Decorator.metadata);
-
-    return metadata && metadata.get(propertyKey)?.find((decorator: DecorationMetadataType<any>) => {
-      return decorator.annotation.constructor.name == annotation.name;
-    });
   }
 
   private static applyMetadata<P>(decoration: DecorationType<P>): void {

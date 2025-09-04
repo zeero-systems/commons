@@ -7,6 +7,7 @@ import Factory from '~/common/services/Factory.ts';
 import Entity from '~/entity/services/Entity.ts';
 import Metadata from '~/common/services/Metadata.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
+import { DecorationMetadataMapType } from '~/decorator/types.ts';
 
 describe('mixin annotation', () => {
   
@@ -18,8 +19,8 @@ describe('mixin annotation', () => {
   it('multiple decorators', () => {
     const userSingletonMockFirst = Factory.construct(UserEntityMock, { arguments: { properties: { firstName: 'Eduardo' } } });
 
-    const decorators = Metadata.getProperty(userSingletonMockFirst, Decorator.metadata)
-    const decoratorNames = decorators.get('firstName').map((decorator: any) => decorator.annotation.constructor.name)
+    const decorators = Metadata.getByKey<DecorationMetadataMapType>(userSingletonMockFirst, Decorator.metadata)
+    const decoratorNames = decorators?.get('firstName')?.map((decorator: any) => decorator.annotation.constructor.name)
 
     expect(decoratorNames).toContain("Required");
     expect(decoratorNames).toContain("Equal");

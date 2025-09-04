@@ -1,37 +1,61 @@
-import type { MetadataType } from '~/common/types.ts';
+import type { KeyType, MetadataType } from '~/common/types.ts';
 
 import isObject from '~/common/guards/isObject.ts';
 
 /**
- * Common operations for the metadata
+ * Common operations for metadata management
  * 
- * @member {void} set - Set a metadata symbol to a target
- * @member {boolean} has - Checks if the target has the metadata symbol
- * @member {MetadataType | undefined} get - Returns the content of the metadata
- * @member {any} getProperty - Return a metadata property content
- */ 
+ * @class
+ * @static
+ * @member {MetadataType} set - Sets metadata symbol to a target
+ * @member {void} add - Adds a key-value pair to target's metadata
+ * @member {boolean} has - Checks if target has metadata
+ * @member {MetadataType | undefined} get - Returns metadata content
+ * @member {V | undefined} getByKey - Returns specific metadata value by key
+ */
 export class Metadata {
-  static set(target: any): object {    
-    if (isObject(target) && target.constructor && !target.constructor[Symbol.metadata]) {
-      target.constructor[Symbol.metadata] = {}
-    } else {
-      target[Symbol.metadata] = {}
+  public static set(target: any): void {    
+    if (isObject(target)) {
+      if (target.constructor) {
+        if (!target.constructor[Symbol.metadata]) {
+          target.constructor[Symbol.metadata] = {}
+        }
+      } else {
+        if (!target[Symbol.metadata]) {
+          target[Symbol.metadata] = {}
+        }
+      }      
     }
-
-    return target[Symbol.metadata];
   }
 
-  static has(target: any): boolean {
+  public static add<V>(target: any, key: KeyType, value: V): void {
+    if (!Metadata.has(target)) {
+      Metadata.set(target);
+    }
+    
+    const metadata = Metadata.get(target)
+
+    if (metadata) {
+      metadata[key] = value;
+    }
+  }
+
+  public static has(target: any): boolean {
     return !!Metadata.get(target)
   }
 
-  static get(target: any): MetadataType | undefined {
+  public static get(target: any): MetadataType<any> | undefined {
     return target[Symbol.metadata] || target.constructor[Symbol.metadata]
   }
 
-  static getProperty(target: any, property: string | symbol): any {
+  public static getByKey<V>(target: any, key: KeyType): V | undefined {
     const metadata = Metadata.get(target)
-    return metadata ? metadata[property] : undefined
+
+    if (metadata) {
+      return metadata[key] as V
+    }
+
+    return undefined
   }
 }
 

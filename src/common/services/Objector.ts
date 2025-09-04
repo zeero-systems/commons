@@ -1,5 +1,6 @@
 import type { EntryType, FunctionType, MappedPropertiesType, OmitType } from '~/common/types.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
+import type { DecorationMetadataMapType } from '~/decorator/types.ts';
 
 import Decorator from '~/decorator/services/Decorator.ts';
 import Metadata from '~/common/services/Metadata.ts';
@@ -7,7 +8,6 @@ import Validator from '~/validator/services/Validator.ts';
 import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
 
 import isDate from '~/common/guards/isDate.ts';
-import isDecoratorMetadata from '~/decorator/guards/isDecoratorMetadata.ts';
 import isValidation from '~/validator/guards/isValidation.ts';
 
 /**
@@ -71,9 +71,9 @@ export class Objector {
     propertyKey: K,
   ): Promise<ValidationResultType[]> {
     let validations: any[] = [];
-    const metadata = Metadata.getProperty(target, Decorator.metadata);
+    const metadata = Metadata.getByKey<DecorationMetadataMapType>(target, Decorator.metadata);
 
-    if (isDecoratorMetadata(metadata)) {
+    if (metadata) {
       validations = metadata.get(propertyKey)?.reduce((previous: any, current) => {
         if (isValidation(current.annotation)) {
           previous.push({

@@ -6,8 +6,8 @@ import { assertSpyCalls, spy } from "@std/mock";
 import Debug from '~/common/annotations/Debug.ts';
 import { Debug as DebugAnnotation } from '~/common/annotations/Debug.ts';
 
-import { Decorator } from '@zxxxro/commons';
 import Entity from '~/entity/services/Entity.ts';
+import Decoration from '~/decorator/services/Decoration.ts';
 
 describe('annotation', () => {
   describe('debug', () => {
@@ -24,7 +24,7 @@ describe('annotation', () => {
     });
     
     it('should be registered in class metadata', () => {
-      const metadata = Decorator.getAnnotation(UserEntityMock, DebugAnnotation);
+      const metadata = Decoration.get(UserEntityMock, 'Debug');
       expect(metadata).toBeDefined();
       expect(metadata?.annotation instanceof DebugAnnotation).toBeTruthy();
     });

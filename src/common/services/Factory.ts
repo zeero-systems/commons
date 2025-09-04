@@ -1,44 +1,33 @@
-import type { ArtifactType, KeyType, PropertiesType } from '~/common/types.ts';
-import type { DecorationType } from '~/decorator/types.ts';
+import type { PropertiesType } from '~/common/types.ts';
 
-import { Singleton } from '~/common/annotations/Singleton.ts';
-
-import Decorator from '~/decorator/services/Decorator.ts';
-
-import Metadata from '~/common/services/Metadata.ts';
-import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
+import Decoration from '~/decorator/services/Decoration.ts';
 
 /**
- * Common operations for classes and functions
- *
- * @member {Function} construct - Instantiate a class with arguments
- * @member {Function} getParameterNames - Return a list with named parameters from a function
+ * Utility class providing common operations for class instantiation and function parameter inspection
+ * 
+ * @class Factory
+ * 
+ * @property {symbol} metadata - Unique symbol used for storing factory metadata
+ * 
+ * @method construct<T, C>
+ * Creates an instance of a class with optional constructor arguments and property initialization
+ * @template T - The type of the class instance to be created
+ * @template C - Constructor function type
+ * @param {new (...args: any) => T} target - The class constructor to instantiate
+ * @param {Object} [options] - Configuration options for instantiation
+ * @param {Object} [options.arguments] - Arguments to pass to constructor and properties
+ * @param {Parameters<C>} [options.arguments.construct] - Constructor arguments as array
+ * @param {PropertiesType<T>} [options.arguments.properties] - Object with named properties to set
+ * @returns {T} The instantiated class instance
+ * 
+ * @method getParameterNames
+ * Extracts parameter names from a function's definition
+ * @param {*} target - The function or class to inspect
+ * @param {string} [Name] - Optional name to match in the function definition
+ * @returns {string[]} Array of parameter names
  */
 export class Factory {
   public static readonly metadata: unique symbol = Symbol('Factory.metadata');
-
-  public static applyMetadata<P>(decoration: DecorationType<P>, artifact: ArtifactType): void {
-    if (decoration.property) {
-      if (artifact.parameters && artifact.parameters.length > 0) {
-        if (!decoration.context.metadata[Factory.metadata]) {
-          decoration.context.metadata[Factory.metadata] = new Map();
-        }
-        
-        if (!decoration.context.metadata[Factory.metadata].get(decoration.property)) {
-          decoration.context.metadata[Factory.metadata].set(decoration.property, new Map());
-        }
-
-        if (decoration.context.kind == DecoratorKindEnum.CLASS) {
-          if (!decoration.context.metadata[Factory.metadata].get(decoration.property).has('parameters')) {
-            decoration.context.metadata[Factory.metadata].get(decoration.property).set(
-              'parameters',
-              artifact.parameters,
-            );
-          }
-        }
-      }
-    }
-  }
 
   public static construct<T, C extends (...args: any) => T>(
     target: new (...args: any) => T,
@@ -63,7 +52,7 @@ export class Factory {
       }
     }
 
-    const canUpdateProperties = !Decorator.hasAnnotation(target, Singleton);
+    const canUpdateProperties = !Decoration.has(target, 'Singleton');
     const targetInstance = Reflect.construct(target, indexedArguments);
 
     if (canUpdateProperties) {
@@ -76,17 +65,6 @@ export class Factory {
     }
 
     return targetInstance;
-  }
-
-  public static getParameters(target: any, propertyKey: KeyType = 'construct'): Array<string> {
-    let parameters = [];
-    const metadata = Metadata.getProperty(target, Factory.metadata);
-
-    if (metadata && metadata.has(propertyKey)) {
-      parameters = metadata.get(propertyKey).get('parameters');
-    }
-
-    return parameters;
   }
 
   public static getParameterNames(target: any, Name?: string): string[] {
