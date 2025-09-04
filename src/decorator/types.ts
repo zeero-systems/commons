@@ -51,7 +51,7 @@ export type DecorationMetadataType<P> = Pick<TargetContextType, 'static' | 'priv
   options?: AnnotationOptionsType;
 };
 
-export type DecorationMetadataMapType = Map<TargetPropertyType, DecorationMetadataType<Record<KeyType, unknown>>[]>;
+export type DecorationMetadataMapType = Map<TargetPropertyType, DecorationMetadataType<Record<KeyType, any>>[]>;
 
 /**
  * Decoration type with metadata context

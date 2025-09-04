@@ -44,9 +44,10 @@ export class Artifactor implements ArtifactorInterface {
     return this.artifacts.get(tag)
   }
 
-  public size(): number {
+  public get size(): number {
     return this.artifacts.values().reduce((acc: number, cur: Map<KeyType, ArtifactType>) => acc + cur.size, 0) 
   }
+
   public sizeByTag(tag: TagType): number {
     return this.getByTag(tag)?.size || 0
   }
