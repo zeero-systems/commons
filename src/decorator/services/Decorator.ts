@@ -14,7 +14,6 @@ import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
 import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
-import Text from '~/common/services/Text.ts';
 
 export class Decorator {
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
@@ -23,7 +22,7 @@ export class Decorator {
   ];
 
   public static apply<T extends AnnotationInterface, P>(
-    annotation: ConstructorType<T>,
+    annotation: T,
     parameters: P | undefined = undefined,
     settings: DecoratorSettingsType = { persists: true }
   ): DecoratorFunctionType {
@@ -39,12 +38,13 @@ export class Decorator {
       const artifact: ArtifactType = {
         name: artifactName,
         target: target,
+        metaTags: annotation.metaTags,
         parameterNames: Factory.getParameterNames(target, String(artifactParameterName)),
       };
 
       const decoration: DecorationType<P> = {
         kind: context.kind,
-        annotation: Reflect.construct(annotation, []),
+        annotation: Reflect.construct(annotation as unknown as ConstructorType<T>, []),
         property: context.kind != DecoratorKindEnum.CLASS ? context.name : 'construct',
         parameters,
         context,
