@@ -58,14 +58,14 @@ export interface KeyableExceptionOptionsInterface<K> extends ExceptionOptionsInt
 export interface ArtifactorInterface {
   artifacts: Map<TagType, Map<KeyType, ArtifactType>>
   size: number
+  sizeByTag: { [key: string]: number }
   get(tag: TagType, key: KeyType): ArtifactType | undefined
   getByKey(key: KeyType): ArtifactType | undefined
   getByTag(tag: TagType): Map<KeyType, ArtifactType> | undefined
   hasTag(tag: TagType): boolean
   hasKey(key: KeyType): boolean
-  has(tag: KeyType, key: KeyType): boolean
-  set(tags: TagType | Array<TagType>, key: KeyType, artifact: ArtifactType): ArtifactType
-  sizeByTag(tag: TagType): number
+  has(key: KeyType, tag: KeyType): boolean
+  set(key: KeyType, artifact: ArtifactType): ArtifactType
 }
 
 export default {};

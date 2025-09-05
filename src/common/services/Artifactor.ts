@@ -12,12 +12,12 @@ export class Artifactor implements ArtifactorInterface {
     return !!this.artifacts.values().find((k) => k.has(key))
   }
 
-  public has(tag: TagType, key: KeyType): boolean {
+  public has(key: KeyType, tag: TagType): boolean {
     return !!this.artifacts.get(tag)?.has(key)
   }
 
-  public set(tags: TagType | Array<TagType>, key: KeyType, artifact: ArtifactType): ArtifactType {
-    const currentTags = Array.isArray(tags) ? tags : [tags]
+  public set(key: KeyType, artifact: ArtifactType): ArtifactType {
+    const currentTags = Array.isArray(artifact.metaTags) ? artifact.metaTags : []
 
     for (let index = 0; index < currentTags.length; index++) {
       const currentTag = currentTags[index];
@@ -48,8 +48,12 @@ export class Artifactor implements ArtifactorInterface {
     return this.artifacts.values().reduce((acc: number, cur: Map<KeyType, ArtifactType>) => acc + cur.size, 0) 
   }
 
-  public sizeByTag(tag: TagType): number {
-    return this.getByTag(tag)?.size || 0
+  public get sizeByTag(): { [key: string | symbol]: number } {
+    return this.artifacts.entries().reduce((result, [tag, artifacts]) => {
+      result[tag] = artifacts.size
+      
+      return result
+    }, {} as { [key: string | symbol]: number })
   }
 }
 
