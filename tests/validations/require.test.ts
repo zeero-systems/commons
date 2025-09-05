@@ -13,7 +13,7 @@ describe('require validation', () => {
     address: '',
   };
 
-  const validate = async (value: any, parameters?: any) => {
+  const validate = async (value: any, ...parameters: any[]) => {
     const validation = [{ validation: new Required(), parameters }];
     return (await Validator.validateValue(value, validation))[0].key;
   };

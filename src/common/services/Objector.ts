@@ -71,14 +71,14 @@ export class Objector {
     propertyKey: K,
   ): Promise<ValidationResultType[]> {
     let validations: any[] = [];
-    const metadata = Metadata.getByKey<DecorationMetadataMapType>(target, Decorator.metadata);
+    const metadata = Metadata.getByKey<DecorationMetadataMapType<any>>(target, Decorator.metadata);
 
     if (metadata) {
       validations = metadata.get(propertyKey)?.reduce((previous: any, current) => {
         if (isValidation(current.annotation)) {
           previous.push({
             validation: current.annotation,
-            parameters: current.settings?.parameters,
+            parameters: current.parameters,
           });
         }
         return previous;

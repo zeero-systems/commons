@@ -68,11 +68,13 @@ export class Factory {
   }
 
   public static getParameterNames(target: any, Name?: string): string[] {
-    const regex = `${Name != undefined ? Name : target.prototype ? target.name : ''}\\((.+)\\)`;
-    const match = target.toString().match(regex);
-
-    if (match && match[1]) {
-      return match[1].split(',').map((m: any) => String(m).trim());
+    if (target) {
+      const regex = `${Name != undefined ? Name : target.prototype ? target.name : ''}\\((.+)\\)`;
+      const match = target.toString().match(regex);
+  
+      if (match && match[1]) {
+        return match[1].split(',').map((m: any) => String(m).trim());
+      }
     }
 
     return [];

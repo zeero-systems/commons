@@ -5,11 +5,11 @@ import type { ArtifactType } from '~/common/types.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 
 export class Mixin implements AnnotationInterface {
-  onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & DecoratorFunctionType[]>): any {
+  onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P & { annotations: DecoratorFunctionType[] }>): any {
     
-    if (decoration.settings?.parameters) {
-      for (let index = 0; index < decoration.settings.parameters.length; index++) {
-        artifact.target = decoration.settings.parameters[index](artifact.target, decoration.context)
+    if (decoration.parameters) {
+      for (let index = 0; index < decoration.parameters.annotations.length; index++) {
+        artifact.target = decoration.parameters.annotations[index](artifact.target, decoration.context)
       }
     }
 
@@ -17,4 +17,4 @@ export class Mixin implements AnnotationInterface {
   }
 }
 
-export default (annotations: DecoratorFunctionType[]): DecoratorFunctionType => Decorator.apply(Mixin, {  parameters: annotations });
+export default (annotations: DecoratorFunctionType[]): DecoratorFunctionType => Decorator.apply(Mixin, { annotations }, { persists: false });

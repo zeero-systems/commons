@@ -22,7 +22,7 @@ export class Validator {
       
       for (const [key, _value] of Objector.getEntries(target)) {
         promises.push(new Promise((resolve) => {
-          Validator.validateValue(key as any, validators[key]).then((result) => {
+          Validator.validateValue(key as any, validators[key] || []).then((result) => {
             resolve({ key, result })
           })
         }))        
@@ -41,7 +41,7 @@ export class Validator {
 
   public static validateValue<T>(
     value: T,
-    validations?: { validation: ValidationInterface; parameters?: any }[],
+    validations: Array<{ validation: ValidationInterface; parameters?: any[] }> = [],
   ): Promise<ValidationResultType[]> {
     if (!validations || validations.length == 0) {
       return Promise.resolve([{ key: ValidationEnum.UNDEFINED }] as ValidationResultType[]);
@@ -69,7 +69,7 @@ export class Validator {
           ) {
             resolve({ ...validationResult, key: ValidationEnum.UNGUARDED})
           } else {
-            validation.validation.onValidation(value, validation.parameters)
+            validation.validation.onValidation(value, ...(validation.parameters || []))
               .then((key) => {
                 resolve({ ...validationResult, key })
               })

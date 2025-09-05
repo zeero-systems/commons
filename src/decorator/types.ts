@@ -1,5 +1,5 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
-import type { ArtifactType, KeyType, MetadataType, TargetPropertyType } from '~/common/types.ts';
+import type { ArtifactType, MetadataType, TargetPropertyType } from '~/common/types.ts';
 
 /**
  * The returned decorator function
@@ -17,10 +17,9 @@ export type DecoratorFunctionType = (
  * 
  * @type DecDecoratorSettingsType<P>
  */ 
-export type DecoratorSettingsType<P> = {
-  persists?: boolean
-  parameters?: P
+export type DecoratorSettingsType = {
   [key: string]: any
+  persists?: boolean
 }
 
 /**
@@ -47,11 +46,11 @@ export type DecorationMetadataType<P> = Pick<TargetContextType, 'static' | 'priv
   kind: 'class' | 'method' | 'getter' | 'setter' | 'field' | 'accessor';
   annotation: AnnotationInterface;
   property: string | symbol;
-  settings?: DecoratorSettingsType<P> | undefined;
+  parameters: P | undefined;
   options?: AnnotationOptionsType;
 };
 
-export type DecorationMetadataMapType = Map<TargetPropertyType, DecorationMetadataType<Record<KeyType, any>>[]>;
+export type DecorationMetadataMapType<P> = Map<TargetPropertyType, DecorationMetadataType<P>[]>;
 
 /**
  * Decoration type with metadata context
@@ -67,7 +66,7 @@ export type DecorationType<P> = DecorationMetadataType<P> & {
  * 
  * @type MetadataApplierType
  */ 
-export type MetadataApplierType = <P>(decoration: DecorationType<P>, artifact: ArtifactType) => void | any;
+export type MetadataApplierType = <P>(artifact: ArtifactType, decoration: DecorationType<P>, settings: Partial<DecoratorSettingsType>) => void | any;
 
 /**
  * Annotation options type

@@ -14,4 +14,4 @@ export class Debug implements AnnotationInterface {
   }
 }
 
-export default (): DecoratorFunctionType => Decorator.apply(Debug, { persists: true });
+export default (): DecoratorFunctionType => Decorator.apply(Debug);

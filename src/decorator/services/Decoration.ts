@@ -29,13 +29,13 @@ export class Decoration {
     }
 
     const name = Text.toFirstLetterUppercase(annotation)
-    const metadata = Metadata.getByKey<DecorationMetadataMapType>(target, Decorator.metadata);
+    const metadata = Metadata.getByKey<DecorationMetadataMapType<any>>(target, Decorator.metadata);
 
     if (metadata) {
       const decorations = metadata.get(propertyKey);
       if (decorations) {
         return decorations.some((decorator: DecorationMetadataType<any>) => {
-          return decorator.annotation.constructor.name == name;
+          return Text.toFirstLetterUppercase(decorator.annotation.constructor.name) == name;
         })
       }
     }
@@ -54,16 +54,29 @@ export class Decoration {
     }
 
     const name = Text.toFirstLetterUppercase(annotation)
-    const metadata = Metadata.getByKey<DecorationMetadataMapType>(target, Decorator.metadata);
+    const metadata = Metadata.getByKey<DecorationMetadataMapType<any>>(target, Decorator.metadata);
 
     if (metadata) {
       const decorations = metadata.get(propertyKey);
       if (decorations) {
         return decorations.find((decorator: DecorationMetadataType<any>) => {
-          return decorator.annotation.constructor.name == name;
+          return Text.toFirstLetterUppercase(decorator.annotation.constructor.name) == name;
         })
       }
     }
+  }
+
+  public static list<T extends Record<PropertyKey, any>>(
+    target: T,
+    propertyKey: PropertyKey
+  ): DecorationMetadataType<Record<KeyType, any>>[] {
+    const metadata = Metadata.getByKey<DecorationMetadataMapType<any>>(target, Decorator.metadata);
+    
+    if (metadata) {
+      return metadata.get(propertyKey) || [];
+    }
+    
+    return [];
   }
 }
 

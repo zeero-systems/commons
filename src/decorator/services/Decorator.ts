@@ -14,6 +14,7 @@ import DecoratorKindEnum from '~/decorator/enums/DecoratorKindEnum.ts';
 
 import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
+import Text from '~/common/services/Text.ts';
 
 export class Decorator {
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
@@ -23,7 +24,8 @@ export class Decorator {
 
   public static apply<T extends AnnotationInterface, P>(
     annotation: ConstructorType<T>,
-    settings?: Partial<DecoratorSettingsType<P>>
+    parameters: P | undefined = undefined,
+    settings: DecoratorSettingsType = { persists: true }
   ): DecoratorFunctionType {
     return function (
       target: any,
@@ -37,16 +39,14 @@ export class Decorator {
       const artifact: ArtifactType = {
         name: artifactName,
         target: target,
-        parameterNames: target ? Factory.getParameterNames(target, String(artifactParameterName)) : [],
+        parameterNames: Factory.getParameterNames(target, String(artifactParameterName)),
       };
 
       const decoration: DecorationType<P> = {
         kind: context.kind,
         annotation: Reflect.construct(annotation, []),
         property: context.kind != DecoratorKindEnum.CLASS ? context.name : 'construct',
-        settings: {
-          parameters: (settings && settings.parameters) ? settings.parameters : undefined,
-        },
+        parameters,
         context,
       };
 
@@ -56,7 +56,7 @@ export class Decorator {
       
       if (decoration.context.metadata) {
         for (let index = 0; index < Decorator.onMetadata.length; index++) {
-          Decorator.onMetadata[index]<P>(decoration, artifact)
+          Decorator.onMetadata[index]<P>(artifact, decoration, settings)
         }
       }
 
@@ -70,8 +70,8 @@ export class Decorator {
     };
   }
 
-  private static applyMetadata<P>(decoration: DecorationType<P>): void {
-    if (decoration.settings?.persists === false) return
+  private static applyMetadata<P>(_artifact: ArtifactType, decoration: DecorationType<P>, settings: Partial<DecoratorSettingsType>): void {
+    if (settings?.persists === false) return
 
     const property = decoration.context.kind != DecoratorKindEnum.CLASS ? decoration.context.name : 'construct';
 

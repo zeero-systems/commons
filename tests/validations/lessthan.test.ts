@@ -15,7 +15,7 @@ describe('less than validation', () => {
     nonProperty: undefined,
   };
 
-  const validate = async (value: any, parameters: any) => {
+  const validate = async (value: any, ...parameters: any[]) => {
     const validation = [{ validation: new LessThan(), parameters }];
     return (await Validator.validateValue(value, validation))[0].key;
   };

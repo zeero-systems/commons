@@ -14,7 +14,7 @@ describe('float validation', () => {
     dollar: 7.23,
   };
 
-  const validate = async (value: any, parameters?: any) => {
+  const validate = async (value: any, ...parameters: any[]) => {
     const validation = [{ validation: new Float(), parameters: parameters }];
     return (await Validator.validateValue(value, validation))[0].key;
   };

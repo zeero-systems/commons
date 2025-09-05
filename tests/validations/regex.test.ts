@@ -10,7 +10,7 @@ describe('regex validation', () => {
     firstName: 'Eduardo',
   };
 
-  const validate = async (value: any, parameters: any) => {
+  const validate = async (value: any, ...parameters: any[]) => {
     const validation = [{ validation: new Regex(), parameters }];
     return (await Validator.validateValue(value, validation))[0].key;
   };
