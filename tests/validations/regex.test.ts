@@ -1,9 +1,10 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
-import Regex from '~/validator/validations/Regex.ts';
-import Validator from '~/validator/services/Validator.ts';
-import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
+import Validator from '~/validator/services/validator.service.ts';
+import ValidationEnum from '~/validator/enums/validation.enum.ts';
+
+import Regex from '~/validator/validations/regex.validation.ts';
 
 describe('regex validation', () => {
   const testEntity = {

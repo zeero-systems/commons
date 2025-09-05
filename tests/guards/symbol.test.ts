@@ -1,6 +1,6 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import isSymbol from '~/common/guards/isSymbol.ts';
+import isSymbol from '~/common/guards/is-symbol.guard.ts';
 
 describe('guard', () => {
   describe('isSymbol', () => {

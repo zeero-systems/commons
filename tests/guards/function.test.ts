@@ -1,6 +1,6 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import isFunction from '~/common/guards/isFunction.ts';
+import isFunction from '~/common/guards/is-function.guard.ts';
 
 describe('guard', () => {
   describe('isFunction', () => {

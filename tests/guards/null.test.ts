@@ -1,6 +1,6 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import isNull from '~/common/guards/isNull.ts';
+import isNull from '~/common/guards/is-null.guard.ts';
 
 describe('guard', () => {
   describe('isNull', () => {

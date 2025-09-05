@@ -3,12 +3,12 @@ import { expect } from '@std/expect';
 import { assertSpyCalls, spy } from "@std/mock";
 
 
-import Debug from '~/common/annotations/Debug.ts';
-import { Debug as DebugAnnotation } from '~/common/annotations/Debug.ts';
+import Debug from '~/common/annotations/debug.annotation.ts';
+import { Debug as DebugAnnotation } from '~/common/annotations/debug.annotation.ts';
 
-import Entity from '~/entity/services/Entity.ts';
-import Decoration from '~/decorator/services/Decoration.ts';
-import Singleton from '~/common/annotations/Singleton.ts';
+import Entity from '~/entity/services/entity.service.ts';
+import Decoration from '~/decorator/services/decoration.service.ts';
+import Singleton from '~/common/annotations/singleton.annotation.ts';
 
 describe('annotation', () => {
   describe('debug', () => {

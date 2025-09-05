@@ -1,11 +1,13 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import Mixin from '~/common/annotations/Mixin.ts';
-import Required from '~/validator/annotations/Required.ts';
-import Equal from '~/validator/annotations/Equal.ts';
-import Factory from '~/common/services/Factory.ts';
-import Entity from '~/entity/services/Entity.ts';
-import Decoration from '~/decorator/services/Decoration.ts';
+
+import Mixin from '~/common/annotations/mixin.annotation.ts';
+import Required from '~/validator/annotations/required.annotation.ts';
+import Equal from '~/validator/annotations/equal.annotation.ts';
+
+import Factory from '~/common/services/factory.service.ts';
+import Entity from '~/entity/services/entity.service.ts';
+import Decoration from '~/decorator/services/decoration.service.ts';
 
 describe('mixin annotation', () => {
   

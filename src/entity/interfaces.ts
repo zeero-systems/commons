@@ -1,6 +1,6 @@
 import type { EntryType, FunctionType, MappedKeyType, MappedPropertiesType, OmitType } from '~/common/types.ts';
 import { ValidationResultType } from '~/validator/types.ts';
-import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
+import ValidationEnum from '~/validator/enums/validation.enum.ts';
 
 /**
  * Shared common methods

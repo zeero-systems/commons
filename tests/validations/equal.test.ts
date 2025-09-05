@@ -1,10 +1,10 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
-import Validator from '~/validator/services/Validator.ts';
-import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
+import Validator from '~/validator/services/validator.service.ts';
+import ValidationEnum from '~/validator/enums/validation.enum.ts';
 
-import Equal from '~/validator/validations/Equal.ts';
+import Equal from '~/validator/validations/equal.validation.ts';
 
 describe('equal validation', () => {
   const testEntity = {

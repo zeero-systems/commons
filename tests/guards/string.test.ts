@@ -1,6 +1,6 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import isString from '~/common/guards/isString.ts';
+import isString from '~/common/guards/is-string.guard.ts';
 
 describe('guard', () => {
   describe('isString', () => {

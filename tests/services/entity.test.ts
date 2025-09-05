@@ -1,10 +1,10 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
-import Entity from '~/entity/services/Entity.ts';
-import Factory from '~/common/services/Factory.ts';
-import Required from '~/validator/annotations/Required.ts';
-import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
+import Entity from '~/entity/services/entity.service.ts';
+import Factory from '~/common/services/factory.service.ts';
+import Required from '~/validator/annotations/required.annotation.ts';
+import ValidationEnum from '~/validator/enums/validation.enum.ts';
 
 describe('entity', () => {
   class EntityExtended extends Entity {

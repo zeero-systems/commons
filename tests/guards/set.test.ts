@@ -1,6 +1,6 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import isSet from '~/common/guards/isSet.ts';
+import isSet from '~/common/guards/is-set.guard.ts';
 
 describe('guard', () => {
   describe('isSet', () => {

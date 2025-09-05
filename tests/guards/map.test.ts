@@ -1,6 +1,6 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import isMap from '~/common/guards/isMap.ts';
+import isMap from '~/common/guards/is-map.guard.ts';
 
 describe('guard', () => {
   describe('isMap', () => {

@@ -1,22 +1,22 @@
-import Equal from '~/validator/validations/Equal.ts';
-import Float from '~/validator/validations/Float.ts';
-import GreaterThan from '~/validator/validations/GreaterThan.ts';
-import GreaterThanEqual from '~/validator/validations/GreaterThanEqual.ts';
-import Integer from '~/validator/validations/Integer.ts';
-import LessThan from '~/validator/validations/LessThan.ts';
-import LessThanEqual from '~/validator/validations/LessThanEqual.ts';
-import Regex from '~/validator/validations/Regex.ts';
-import Required from '~/validator/validations/Required.ts';
+import Equal from './validations/equal.validation.ts';
+import Float from './validations/float.validation.ts';
+import GreaterThan from './validations/greater-than.validation.ts';
+import GreaterThanEqual from './validations/greater-than-equal.validation.ts';
+import Integer from './validations/integer.validation.ts';
+import LessThan from './validations/less-than.validation.ts';
+import LessThanEqual from './validations/less-than-equal.validation.ts';
+import Regex from './validations/regex.validation.ts';
+import Required from './validations/required.validation.ts';
 
-export { Equal } from '~/validator/validations/Equal.ts';
-export { Float } from '~/validator/validations/Float.ts';
-export { GreaterThan } from '~/validator/validations/GreaterThan.ts';
-export { GreaterThanEqual } from '~/validator/validations/GreaterThanEqual.ts';
-export { Integer } from '~/validator/validations/Integer.ts';
-export { LessThan } from '~/validator/validations/LessThan.ts';
-export { LessThanEqual } from '~/validator/validations/LessThanEqual.ts';
-export { Regex } from '~/validator/validations/Regex.ts';
-export { Required } from '~/validator/validations/Required.ts';
+export { Equal } from './validations/equal.validation.ts';
+export { Float } from './validations/float.validation.ts';
+export { GreaterThan } from './validations/greater-than.validation.ts';
+export { GreaterThanEqual } from './validations/greater-than-equal.validation.ts';
+export { Integer } from './validations/integer.validation.ts';
+export { LessThan } from './validations/less-than.validation.ts';
+export { LessThanEqual } from './validations/less-than-equal.validation.ts';
+export { Regex } from './validations/regex.validation.ts';
+export { Required } from './validations/required.validation.ts';
 
 export default {
   Equal,

@@ -1,8 +1,8 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
-import Entity from '~/entity/services/Entity.ts';
-import Factory from '~/common/services/Factory.ts';
+import Entity from '~/entity/services/entity.service.ts';
+import Factory from '~/common/services/factory.service.ts';
 
 describe('factory', () => {
   class UserMock {

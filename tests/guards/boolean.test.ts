@@ -1,6 +1,6 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import isBoolean from '~/common/guards/isBoolean.ts';
+import isBoolean from '~/common/guards/is-boolean.guard.ts';
 
 describe('guard', () => {
   describe('isBoolean', () => {

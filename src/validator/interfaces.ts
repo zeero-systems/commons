@@ -1,7 +1,7 @@
 import type { AcceptType } from '~/common/types.ts';
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 
-import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
+import ValidationEnum from '~/validator/enums/validation.enum.ts';
 
 /**
  * Validate a value and type

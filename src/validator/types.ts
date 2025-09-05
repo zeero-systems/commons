@@ -1,6 +1,6 @@
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 
-import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
+import ValidationEnum from '~/validator/enums/validation.enum.ts';
 
 /**
  * Validation that binds the validation logic with parameters

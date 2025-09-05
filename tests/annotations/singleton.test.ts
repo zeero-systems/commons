@@ -1,7 +1,7 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
-import Singleton from '~/common/annotations/Singleton.ts';
+import Singleton from '~/common/annotations/singleton.annotation.ts';
 
 describe('singleton annotation', () => {
   @Singleton()

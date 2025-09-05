@@ -1,6 +1,6 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
-import isDate from '~/common/guards/isDate.ts';
+import isDate from '~/common/guards/is-date.guard.ts';
 
 describe('guard', () => {
   describe('isDate', () => {

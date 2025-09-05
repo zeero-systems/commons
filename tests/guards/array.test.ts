@@ -1,7 +1,7 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
-import isArray from '~/common/guards/isArray.ts';
+import isArray from '~/common/guards/is-array.guard.ts';
 
 describe('guard', () => {
   describe('isArray', () => {

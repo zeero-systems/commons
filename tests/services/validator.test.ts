@@ -1,11 +1,11 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
-import Validator from '~/validator/services/Validator.ts';
-import ValidationEnum from '~/validator/enums/ValidationEnum.ts';
-import Required from '~/validator/annotations/Required.ts';
-import RequiredValidation from '~/validator/validations/Required.ts';
-import Factory from '~/common/services/Factory.ts';
+import Validator from '~/validator/services/validator.service.ts';
+import ValidationEnum from '~/validator/enums/validation.enum.ts';
+import Required from '~/validator/annotations/required.annotation.ts';
+import RequiredValidation from '~/validator/validations/required.validation.ts';
+import Factory from '~/common/services/factory.service.ts';
 
 
 describe('validator', () => {
