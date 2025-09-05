@@ -17,16 +17,16 @@ export class Artifactor implements ArtifactorInterface {
   }
 
   public set(key: KeyType, artifact: ArtifactType): ArtifactType {
-    const currentTags = Array.isArray(artifact.metaTags) ? artifact.metaTags : []
+    const metadataKeys = Array.isArray(artifact.metadataKeys) ? artifact.metadataKeys : []
 
-    for (let index = 0; index < currentTags.length; index++) {
-      const currentTag = currentTags[index];
+    for (let index = 0; index < metadataKeys.length; index++) {
+      const metadataKey = metadataKeys[index];
       
-      if (!this.hasTag(currentTag)) {
-        this.artifacts.set(currentTag, new Map())
+      if (!this.hasTag(metadataKey)) {
+        this.artifacts.set(metadataKey, new Map())
       }
 
-      this.artifacts.get(currentTag)?.set(key, artifact)
+      this.artifacts.get(metadataKey)?.set(key, artifact)
     }
 
     return artifact

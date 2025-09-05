@@ -6,7 +6,7 @@
 export type ArtifactType = {
   name: KeyType;
   target: any;
-  metaTags?: Array<TagType>;
+  metadataKeys?: Array<symbol>;
   parameterNames?: string[];
 };
 

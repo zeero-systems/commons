@@ -8,12 +8,14 @@ import { Debug as DebugAnnotation } from '~/common/annotations/Debug.ts';
 
 import Entity from '~/entity/services/Entity.ts';
 import Decoration from '~/decorator/services/Decoration.ts';
+import Singleton from '~/common/annotations/Singleton.ts';
 
 describe('annotation', () => {
   describe('debug', () => {
     const logSpy = spy(console, "debug");
 
     @Debug()
+    @Singleton()
     class UserEntityMock extends Entity {
       firstName!: string;
     }

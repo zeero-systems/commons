@@ -44,7 +44,7 @@ export type TargetContextType = DecoratorContext & {
  */ 
 export type DecorationMetadataType<P> = Pick<TargetContextType, 'static' | 'private'> & {
   kind: 'class' | 'method' | 'getter' | 'setter' | 'field' | 'accessor';
-  annotation: AnnotationInterface;
+  annotation: AnnotationInterface & { constructor: { name: string, metadata?: symbol } };
   property: string | symbol;
   parameters: P | undefined;
   options?: AnnotationOptionsType;

@@ -5,7 +5,7 @@ import type { ArtifactType, TagType } from '~/common/types.ts';
 import Decorator from '~/decorator/services/Decorator.ts';
 
 export class Debug implements AnnotationInterface {
-  public static readonly metaTags: Array<symbol> = [Symbol('Debug.tag')];
+  public static readonly metadata: unique symbol = Symbol('Debug.metadata');
 
   onAttach<P>(artifact: ArtifactType, decoration?: DecorationType<P>): any {
     console.debug('onAttach', { artifact, decoration });

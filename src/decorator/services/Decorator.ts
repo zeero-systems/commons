@@ -16,7 +16,9 @@ import Factory from '~/common/services/Factory.ts';
 import Objector from '~/common/services/Objector.ts';
 
 export class Decorator {
+  public static readonly keys: unique symbol = Symbol('Decorator.keys');
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
+
   public static onMetadata: Array<MetadataApplierType> = [
     Decorator.applyMetadata,
   ];
@@ -37,8 +39,8 @@ export class Decorator {
 
       const artifact: ArtifactType = {
         name: artifactName,
-        target: target,
-        metaTags: annotation.metaTags,
+        target: target, 
+        metadataKeys: [],
         parameterNames: Factory.getParameterNames(target, String(artifactParameterName)),
       };
 
@@ -49,7 +51,7 @@ export class Decorator {
         parameters,
         context,
       };
-
+      
       if (options) decoration.options = options;
       if (context.static) decoration.static = context.static;
       if (context.private) decoration.private = context.private;
@@ -70,10 +72,22 @@ export class Decorator {
     };
   }
 
-  private static applyMetadata<P>(_artifact: ArtifactType, decoration: DecorationType<P>, settings: Partial<DecoratorSettingsType>): void {
+  private static applyMetadata<P>(artifact: ArtifactType, decoration: DecorationType<P>, settings: Partial<DecoratorSettingsType>): void {
     if (settings?.persists === false) return
 
+    const metadata = decoration.annotation.constructor.metadata
     const property = decoration.context.kind != DecoratorKindEnum.CLASS ? decoration.context.name : 'construct';
+    
+    if (!decoration.context.metadata[Decorator.keys]) {
+      decoration.context.metadata[Decorator.keys] = [];
+    }
+
+    if (!decoration.context.metadata[Decorator.keys].includes(metadata)) {
+      decoration.context.metadata[Decorator.keys].push(metadata)
+    }
+
+
+    artifact.metadataKeys = decoration.context.metadata[Decorator.keys]
 
     if (!decoration.context.metadata[Decorator.metadata]) {
       decoration.context.metadata[Decorator.metadata] = new Map<TargetPropertyType, DecorationMetadataType<P>[]>();
