@@ -1,5 +1,5 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
-import type { ArtifactType, MetadataType, TargetPropertyType } from '~/common/types.ts';
+import type { ArtifactType, KeyType, MetadataType, TargetPropertyType } from '~/common/types.ts';
 
 /**
  * The returned decorator function

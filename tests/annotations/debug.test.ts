@@ -24,7 +24,7 @@ describe('annotation', () => {
     });
     
     it('should be registered in class metadata', () => {
-      const metadata = Decoration.get(UserEntityMock, 'Debug');
+      const metadata = Decoration.get(UserEntityMock, 'construct.debug');
       expect(metadata).toBeDefined();
       expect(metadata?.annotation instanceof DebugAnnotation).toBeTruthy();
     });

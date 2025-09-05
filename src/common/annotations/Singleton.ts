@@ -12,7 +12,7 @@ export class Singleton implements AnnotationInterface {
 
   onAttach<P>(artifact: ArtifactType, decoration: DecorationType<P>): any {
     if (decoration.kind == DecoratorKindEnum.CLASS) {
-      if (!Decoration.has(artifact.target, 'Singleton')) {
+      if (!Decoration.has(artifact.target, 'construct.singleton')) {
         artifact.target = new Proxy(artifact.target as any, {
           construct(currentTarget, currentArgs, newTarget) {
             if (currentTarget.prototype !== newTarget.prototype) {
