@@ -82,10 +82,11 @@ export class Decorator {
       decoration.context.metadata[Decorator.keys] = [];
     }
 
-    if (!decoration.context.metadata[Decorator.keys].includes(metadata)) {
-      decoration.context.metadata[Decorator.keys].push(metadata)
+    if (metadata) {
+      if (!decoration.context.metadata[Decorator.keys].includes(metadata)) {
+        decoration.context.metadata[Decorator.keys].push(metadata)
+      }
     }
-
 
     artifact.metadataKeys = decoration.context.metadata[Decorator.keys]
 
