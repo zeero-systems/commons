@@ -23,7 +23,7 @@ import Decoration from '~/decorator/services/decoration.service.ts';
  * @method getParameterNames
  * Extracts parameter names from a function's definition
  * @param {*} target - The function or class to inspect
- * @param {string} [Name] - Optional name to match in the function definition
+ * @param {string} [name] - Optional name to match in the function definition
  * @returns {string[]} Array of parameter names
  */
 export class Factory {
@@ -67,9 +67,9 @@ export class Factory {
     return targetInstance;
   }
 
-  public static getParameterNames(target: any, Name?: string): string[] {
+  public static getParameterNames(target: any, name?: string): string[] {
     if (target) {
-      const regex = `${Name != undefined ? Name : target.prototype ? target.name : ''}\\((.+)\\)`;
+      const regex = `${name != undefined ? name : target.prototype ? target.name : ''}\\((.+)\\)`;
       const match = target.toString().match(regex);
   
       if (match && match[1]) {

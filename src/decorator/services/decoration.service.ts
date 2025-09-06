@@ -75,14 +75,18 @@ export class Decoration {
     
     if (metadata) {
       if (isArray(propertyKey)) {
-        for (const [key, decorations] of metadata) {
-          return decorations.filter((decorator: DecorationMetadataType<any>) => {
-            return propertyKey.some((annotation) => {
-              const name = Text.toFirstLetterUppercase(annotation)
-              return Text.toFirstLetterUppercase(decorator.annotation.constructor.name) == name;
+        const list = []
+        for (const [_key, decorations] of metadata) {
+            list.push(...decorations.filter((decorator: DecorationMetadataType<any>) => {
+              return propertyKey.some((annotation) => {
+                const name = Text.toFirstLetterUppercase(annotation)
+                return Text.toFirstLetterUppercase(decorator.annotation.constructor.name) == name;
+              })
             })
-          })
+          )
         }
+
+        return list
       } else {
         return metadata.get(propertyKey) || [];
       }
