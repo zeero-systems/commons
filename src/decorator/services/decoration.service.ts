@@ -5,6 +5,7 @@ import Decorator from '~/decorator/services/decorator.service.ts';
 import Metadata from '~/common/services/metadata.service.ts';
 import Text from '~/common/services/text.service.ts';
 import isString from '~/common/guards/is-string.guard.ts';
+import isArray from '../../common/guards/is-array.guard.ts';
 
 /**
  * Class providing common operations for metadata management related to decorations
@@ -65,15 +66,26 @@ export class Decoration {
       }
     }
   }
-
+  
   public static list<T extends Record<PropertyKey, any>>(
     target: T,
-    propertyKey: PropertyKey
-  ): DecorationMetadataType<Record<KeyType, any>>[] {
+    propertyKey: PropertyKey | Array<string>
+  ): Array<DecorationMetadataType<Record<KeyType, any>>> {
     const metadata = Metadata.getByKey<DecorationMetadataMapType<any>>(target, Decorator.metadata);
     
     if (metadata) {
-      return metadata.get(propertyKey) || [];
+      if (isArray(propertyKey)) {
+        for (const [key, decorations] of metadata) {
+          return decorations.filter((decorator: DecorationMetadataType<any>) => {
+            return propertyKey.some((annotation) => {
+              const name = Text.toFirstLetterUppercase(annotation)
+              return Text.toFirstLetterUppercase(decorator.annotation.constructor.name) == name;
+            })
+          })
+        }
+      } else {
+        return metadata.get(propertyKey) || [];
+      }
     }
     
     return [];
