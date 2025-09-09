@@ -1,5 +1,7 @@
-import type { AcceptType } from '~/common/types.ts';
+import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';
+import type { AcceptType, ArtifactType } from '~/common/types.ts';
+import type { DecoratorType } from '~/decorator/types.ts';
 
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
 
@@ -10,7 +12,7 @@ import isString from '~/common/guards/is-string.guard.ts';
 import isNumber from '~/common/guards/is-number.guard.ts';
 import isDate from '~/common/guards/is-date.guard.ts';
 
-export class LessThan implements ValidationInterface {
+export class LessThan implements AnnotationInterface, ValidationInterface {
   accepts?: AcceptType[] | undefined = [
     isNull,
     isUndefined,
@@ -20,7 +22,7 @@ export class LessThan implements ValidationInterface {
     isDate
   ]
   
-  validations = [
+  validations? = [
     (record: any, _comparison: any): boolean => isNull(record),
     (record: any, _comparison: any): boolean => isUndefined(record),
     (record: any, comparison: any): boolean => isArray(record) && record.length < Number(comparison),
@@ -30,10 +32,16 @@ export class LessThan implements ValidationInterface {
     (record: any, comparison: any): boolean => isDate(record) && isDate(comparison) && record < comparison,
     (record: any, comparison: any): boolean => isDate(record) && record < new Date(comparison),
   ]
-
-  onValidation(record: any, comparison: any): Promise<ValidationEnum> {
   
-    if (this.validations.some(v => v(record, comparison) == true)) { 
+  constructor(public comparison: number | string | Date | any[]) {}
+
+  onAttach(_artifact: ArtifactType, _decorator: DecoratorType) { }
+  
+  onInitialize(_artifact: ArtifactType, _decorator: DecoratorType) { }
+
+  onValidation(record: any): Promise<ValidationEnum> {
+  
+    if (this.validations?.some(v => v(record, this.comparison) == true)) { 
       return Promise.resolve(ValidationEnum.VALID)
     }
 

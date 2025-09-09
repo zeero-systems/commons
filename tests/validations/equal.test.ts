@@ -16,7 +16,7 @@ describe('equal validation', () => {
   };
 
   const validate = async (value: any, ...parameters: any[]) => {
-    const validation = [{ validation: new Equal(), parameters }];
+    const validation = [new Equal(parameters[0])];
     return (await Validator.validateValue(value, validation))[0].key;
   };
 

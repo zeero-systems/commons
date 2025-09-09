@@ -1,13 +1,16 @@
 import type { ArtifactType, ConstructorType, TargetPropertyType } from '~/common/types.ts';
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type {
-  AnnotationOptionsType,
-  DecorationMetadataType,
+  DecorationSettingsType,
   DecorationType,
   TargetContextType,
   DecoratorFunctionType,
-  DecoratorSettingsType,
-  MetadataApplierType,
+  AnnotationSettingsType,
+  AnnotationType,
+  DecoratorType,
+  OnEvaluationType,
+  OnDecorationType,
+  DecoratorEventType,
 } from '~/decorator/types.ts';
 
 import DecoratorKindEnum from '~/decorator/enums/decorator-kind.enum.ts';
@@ -18,64 +21,81 @@ import Objector from '~/common/services/objector.service.ts';
 export class Decorator {
   public static readonly keys: unique symbol = Symbol('Decorator.keys');
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
+  
+  public static onEvents: DecoratorEventType = {
+    onEvaluation: new Array<OnEvaluationType>,
+    onDecoration: new Array<OnDecorationType>(Decorator.attachToMetadata)
+  }
 
-  public static onMetadata: Array<MetadataApplierType> = [
-    Decorator.applyMetadata,
-  ];
-
-  public static apply<T extends AnnotationInterface, P>(
-    annotation: T,
-    parameters: P | undefined = undefined,
-    settings: DecoratorSettingsType = { persists: true }
+  public static use<T extends AnnotationInterface>(
+    annotationTarget: ConstructorType<T>,
+    annotationParameters?: any,
+    annotationSettings?: AnnotationSettingsType
   ): DecoratorFunctionType {
+
+    for (let index = 0; index < Decorator.onEvents.onEvaluation.length; index++) {
+      Decorator.onEvents.onEvaluation[index](annotationTarget, annotationParameters)
+    }
+
     return function (
-      target: any,
-      context: TargetContextType,
-      options?: AnnotationOptionsType,
+      decorationTarget: any,
+      decorationContext: TargetContextType,
+      decorationSettings?: DecorationSettingsType,
     ) {
+      const artifactName = decorationTarget?.name || decorationTarget?.constructor?.name || ''
+      const artifactParameterName = decorationContext.kind != DecoratorKindEnum.CLASS ? decorationContext.name : 'constructor';
+
+      const annotationInstance = Factory.construct(annotationTarget, { arguments: annotationParameters })
       
-      const artifactName = target?.name || target?.constructor?.name || ''
-      const artifactParameterName = context.kind != DecoratorKindEnum.CLASS ? context.name : 'constructor';
+      const annotation: AnnotationType = {
+        name: annotationTarget.name,
+        target: annotationInstance,
+        parameterNames: Factory.getParameterNames(annotationTarget, 'constructor'),
+        settings: annotationSettings
+      } 
 
       const artifact: ArtifactType = {
-        name: artifactName,
-        target: target, 
         metadataKeys: [],
-        parameterNames: Factory.getParameterNames(target, String(artifactParameterName)),
+        name: artifactName,
+        parameterNames: Factory.getParameterNames(decorationTarget, String(artifactParameterName)),
+        target: decorationTarget, 
       };
 
-      const decoration: DecorationType<P> = {
-        kind: context.kind,
-        annotation: Reflect.construct(annotation as unknown as ConstructorType<T>, []),
-        property: context.kind != DecoratorKindEnum.CLASS ? context.name : 'construct',
-        parameters,
-        context,
-      };
-      
-      if (options) decoration.options = options;
-      if (context.static) decoration.static = context.static;
-      if (context.private) decoration.private = context.private;
-      
+      const decoration: DecorationType = {
+        context: decorationContext,
+        kind: decorationContext.kind,
+        private: decorationContext.private,
+        property: decorationContext.kind != DecoratorKindEnum.CLASS ? decorationContext.name : 'construct',
+        settings: decorationSettings,
+        static: decorationContext.static,
+      };  
+
       if (decoration.context.metadata) {
-        for (let index = 0; index < Decorator.onMetadata.length; index++) {
-          Decorator.onMetadata[index]<P>(artifact, decoration, settings)
+        for (let index = 0; index < Decorator.onEvents.onDecoration.length; index++) {
+          Decorator.onEvents.onDecoration[index](artifact, annotation, decoration)
         }
       }
 
-      if (decoration.annotation.onInitialize) {
-        Decorator.applyInitializer(artifact, decoration);
+      if (annotation.target.onInitialize) {
+        decoration.context.addInitializer(function () {
+          if (annotation.target.onInitialize) {
+            return annotation.target.onInitialize({ ...artifact, target: this }, { annotation, decoration });
+          }
+
+          return undefined;
+        });
       }
 
-      if (decoration.annotation.onAttach) {
-        return decoration.annotation.onAttach<P>(artifact, decoration) ?? undefined;
+      if (annotation.target.onAttach) {
+        return annotation.target.onAttach(artifact, { annotation, decoration }) ?? undefined;
       }
     };
   }
 
-  private static applyMetadata<P>(artifact: ArtifactType, decoration: DecorationType<P>, settings: Partial<DecoratorSettingsType>): void {
-    if (settings?.persists === false) return
+  private static attachToMetadata(artifact: ArtifactType, annotation: AnnotationType, decoration: DecorationType): any {
+    if (annotation.settings?.persists === false) return
 
-    const metadata = decoration.annotation.constructor.metadata
+    const metadata = annotation.target.constructor.metadata
     const property = decoration.context.kind != DecoratorKindEnum.CLASS ? decoration.context.name : 'construct';
     
     if (!decoration.context.metadata[Decorator.keys]) {
@@ -91,34 +111,31 @@ export class Decorator {
     artifact.metadataKeys = decoration.context.metadata[Decorator.keys]
 
     if (!decoration.context.metadata[Decorator.metadata]) {
-      decoration.context.metadata[Decorator.metadata] = new Map<TargetPropertyType, DecorationMetadataType<P>[]>();
+      decoration.context.metadata[Decorator.metadata] = new Map<TargetPropertyType, DecoratorType[]>();
     }
 
     if (!decoration.context.metadata[Decorator.metadata].has(property)) {
-      decoration.context.metadata[Decorator.metadata].set(property, new Array<DecorationMetadataType<P>>());
+      decoration.context.metadata[Decorator.metadata].set(property, new Array<DecoratorType>());
     }
 
-    const stackable = decoration.options?.stackable === undefined ? true : decoration.options?.stackable;
-    const decorations = decoration.context.metadata[Decorator.metadata].get(property);
-    const alreadyExists = !decorations.some((d: DecorationMetadataType<P>) => {
-      // @ts-ignore annotation always have a name
-      return d.annotation.name === decoration.annotation.name;
+    const stackable = decoration.settings?.stackable === undefined ? true : decoration.settings?.stackable;
+    const decorations = decoration.context.metadata[Decorator.metadata].get(property) as Array<DecoratorType>;
+    const alreadyExists = !decorations.some((decorator: DecoratorType) => {
+      return decorator.annotation.target.constructor.name === annotation.target.constructor.name;
     });
 
     if (stackable || !alreadyExists) {
-      decorations.push(Objector.deleteProperties(decoration, ['context']));
+      decorations.push({ annotation, decoration: Objector.deleteProperties(decoration, ['context']) });
     }
   }
 
-  private static applyInitializer<P>(artifact: ArtifactType, decoration: DecorationType<P>): void {
-    decoration.context.addInitializer(function () {
-      if (decoration.annotation.onInitialize) {
-        return decoration.annotation.onInitialize<P>({ ...artifact, target: this }, decoration);
-      }
-
-      return undefined;
-    });
+  public static onEvaluation(callback: OnEvaluationType) {
+    Decorator.onEvents.onEvaluation.push(callback)
   }
+
+  public static onDecoration(callback: OnDecorationType) {
+    Decorator.onEvents.onDecoration.push(callback)
+  }  
 }
 
 export default Decorator;

@@ -1,6 +1,7 @@
 import type { PropertiesType } from '~/common/types.ts';
-
-import Decoration from '~/decorator/services/decoration.service.ts';
+import DecoratorMetadata from '../../decorator/services/decorator-metadata.service.ts';
+import isArray from '../guards/is-array.guard.ts';
+import isObject from '../guards/is-object.guard.ts';
 
 /**
  * Utility class providing common operations for class instantiation and function parameter inspection
@@ -32,29 +33,27 @@ export class Factory {
   public static construct<T, C extends (...args: any) => T>(
     target: new (...args: any) => T,
     options?: {
-      arguments?: {
-        construct?: Parameters<C>;
-        properties?: PropertiesType<T>;
-      };
+      arguments?: Parameters<C> | PropertiesType<T>;
     },
   ): T {
     let indexedArguments: any[] = [];
     const namedArguments: any = {};
 
     if (options?.arguments) {
-      if (options?.arguments.properties) {
-        Object.entries(options?.arguments.properties).forEach(([key, value]) => {
+      if (isArray(options?.arguments)) {
+        indexedArguments = [...options.arguments];
+      }
+
+      if (isObject(options?.arguments)) {
+        Object.entries(options?.arguments).forEach(([key, value]) => {
           namedArguments[key] = value;
         });
       }
-      if (options?.arguments.construct) {
-        indexedArguments = [...options.arguments.construct];
-      }
     }
 
-    const canUpdateProperties = !Decoration.has(target, 'Singleton');
+    const canUpdateProperties = !DecoratorMetadata.has(target, ['construct'], ['singleton']);
     const targetInstance = Reflect.construct(target, indexedArguments);
-
+    
     if (canUpdateProperties) {
       Object.entries(namedArguments).reduce((t: any, [key]: any) => {
         if (Object.hasOwnProperty.call(t, key)) {

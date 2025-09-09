@@ -1,5 +1,4 @@
 import type { AcceptType } from '~/common/types.ts';
-import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
 
@@ -12,8 +11,9 @@ import ValidationEnum from '~/validator/enums/validation.enum.ts';
  * @member {Array<AcceptType>} accepts - A list of accepted validation types
  * @member {Function} onValidation - Called when validation occurs
  */
-export interface ValidationInterface extends AnnotationInterface {
+export interface ValidationInterface {
   accepts?: Array<AcceptType>;
+  validations?: Array<(...args: any[]) => boolean>
   onValidation(record: any, ...parameters: any[]): Promise<ValidationEnum>;
 }
 

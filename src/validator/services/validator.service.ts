@@ -1,7 +1,6 @@
-// deno-lint-ignore-file ban-types
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
-import type { MappedType, OmitType } from '~/common/types.ts';
+import type { FunctionType, MappedType, OmitType } from '~/common/types.ts';
 
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
 import Objector from '~/common/services/objector.service.ts';
@@ -12,9 +11,9 @@ export class Validator {
   public static validateObject<T extends {}>(
     target: T,
     validators: {
-      [key: string | symbol]: Array<{ validation: ValidationInterface; parameters?: any }>;
+      [key: PropertyKey]: Array<ValidationInterface>;
     },
-  ): Promise<MappedType<OmitType<T, Function>, Array<ValidationResultType>>> {
+  ): Promise<MappedType<OmitType<T, FunctionType>, Array<ValidationResultType>>> {
     
     return new Promise((resolve) => {
 
@@ -22,7 +21,7 @@ export class Validator {
       
       for (const [key, _value] of Objector.getEntries(target)) {
         promises.push(new Promise((resolve) => {
-          Validator.validateValue(key as any, validators[key] || []).then((result) => {
+          Validator.validateValue(key as any, validators[key]).then((result) => {
             resolve({ key, result })
           })
         }))        
@@ -41,7 +40,7 @@ export class Validator {
 
   public static validateValue<T>(
     value: T,
-    validations: Array<{ validation: ValidationInterface; parameters?: any[] }> = [],
+    validations: Array<ValidationInterface> = [],
   ): Promise<ValidationResultType[]> {
     if (!validations || validations.length == 0) {
       return Promise.resolve([{ key: ValidationEnum.UNDEFINED }] as ValidationResultType[]);
@@ -55,21 +54,17 @@ export class Validator {
 
         const validationResult: ValidationResultType = {
           key: ValidationEnum.ERROR,
-          name: validation.validation.constructor.name,
+          name: validation.constructor.name,
         };
-
-        if (validation.parameters) {
-          validationResult.parameters = validation.parameters;
-        }
 
         try {
           if (
-            validation.validation.accepts &&
-            !validation.validation.accepts.some((accept) => accept(value))
+            validation.accepts &&
+            !validation.accepts.some((accept) => accept(value))
           ) {
             resolve({ ...validationResult, key: ValidationEnum.UNGUARDED})
           } else {
-            validation.validation.onValidation(value, ...(validation.parameters || []))
+            validation.onValidation(value)
               .then((key) => {
                 resolve({ ...validationResult, key })
               })

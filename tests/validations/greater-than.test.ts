@@ -16,7 +16,7 @@ describe('greater than validation', () => {
   };
 
   const validate = async (value: any, ...parameters: any[]) => {
-    const validation = [{ validation: new GreaterThan(), parameters }];
+    const validation = [new GreaterThan(parameters[0])];
     return (await Validator.validateValue(value, validation))[0].key;
   };
 

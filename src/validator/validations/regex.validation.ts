@@ -1,5 +1,7 @@
-import type { AcceptType } from '~/common/types.ts';
+import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';
+import type { AcceptType, ArtifactType } from '~/common/types.ts';
+import type { DecoratorType } from '~/decorator/types.ts';
 
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
 
@@ -7,24 +9,30 @@ import isNull from '~/common/guards/is-null.guard.ts';
 import isUndefined from '~/common/guards/is-undefined.guard.ts';
 import isString from '~/common/guards/is-string.guard.ts';
 
-export class Regex implements ValidationInterface {
+export class Regex implements AnnotationInterface, ValidationInterface {
   accepts?: AcceptType[] | undefined = [
     isNull,
     isUndefined,
     isString
   ]
   
-  validations = [
+  validations? = [
     (record: string, _expression: RegExp): boolean => isNull(record),
     (record: string, _expression: RegExp): boolean => isUndefined(record),
     (record: string, expression: RegExp): boolean => isString(record) && expression.test(record),
   ]
-
-  onValidation(record: string, pattern: string | RegExp): Promise<ValidationEnum> {
   
-    const expression = new RegExp(pattern)
+  constructor(public pattern: string | RegExp) {}
+  
+  onAttach(_artifact: ArtifactType, _decorator: DecoratorType) { }
+  
+  onInitialize(_artifact: ArtifactType, _decorator: DecoratorType) { }
 
-    if (this.validations.some(v => v(record, expression) == true)) { 
+  onValidation(record: string): Promise<ValidationEnum> {
+    
+    const expression = new RegExp(this.pattern)
+
+    if (this.validations?.some(v => v(record, expression) == true)) { 
       return Promise.resolve(ValidationEnum.VALID)
     }
       

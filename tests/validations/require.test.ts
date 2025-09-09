@@ -14,8 +14,8 @@ describe('require validation', () => {
     address: '',
   };
 
-  const validate = async (value: any, ...parameters: any[]) => {
-    const validation = [{ validation: new Required(), parameters }];
+  const validate = async (value: any) => {
+    const validation = [new Required()];
     return (await Validator.validateValue(value, validation))[0].key;
   };
 

@@ -1,5 +1,5 @@
-import type { DecorationType } from '~/decorator/types.ts';
-import type { ArtifactType } from '~/common/types.ts';
+import type { DecoratorType } from '~/decorator/types.ts';
+import type { ArtifactType,  KeyType } from '~/common/types.ts';
 
 /**
  * Annotation intefaces to implements decorators
@@ -10,7 +10,6 @@ import type { ArtifactType } from '~/common/types.ts';
  * @member {Function} onInitialize - Called when the decorator is initialized
  */
 export interface AnnotationInterface {
-  [x: string | symbol]: any;
-  onAttach?<P>(artifact: ArtifactType, decoration: DecorationType<P>): any;
-  onInitialize?<P>(artifact: ArtifactType, decoration: DecorationType<P>): any;
+  onAttach(artifact: ArtifactType, decorator: DecoratorType): any;
+  onInitialize(artifact: ArtifactType, decorator: DecoratorType): any;
 }

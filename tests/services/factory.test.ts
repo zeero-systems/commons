@@ -19,22 +19,22 @@ describe('factory', () => {
 
   describe('construct method', () => {
     it('with index parameters', () => {
-      const userMock = Factory.construct(UserMock, { arguments: { construct: [ 'eduardo', 'segura' ]  }});
+      const userMock = Factory.construct(UserMock, { arguments: [ 'eduardo', 'segura' ] });
 
       expect(userMock.firstName).toBe('eduardo');
       expect(userMock.lastName).toBe('segura');
     });
 
     it('with named parameters', () => {
-      const userMock = Factory.construct(UserMock, { arguments: { properties: { nickName: 'eduardo', avatarUrl: 'url.com.br' } } });
+      const userMock = Factory.construct(UserMock, { arguments: { nickName: 'eduardo' } } );
 
       expect(userMock.nickName).toBe('eduardo');
-      expect(userMock.avatarUrl).toBe('url.com.br');
+      expect(userMock.avatarUrl).toBe(undefined);
     });
 
     it('with a entity class', () => {
       const userEntityMock = Factory.construct(UserEntityMock, {
-        arguments: { properties: { nickName: 'jaime', email: 'test@email.com' } },
+        arguments: { nickName: 'jaime', email: 'test@email.com' },
       });
 
       expect(userEntityMock.nickName).toBe('jaime');

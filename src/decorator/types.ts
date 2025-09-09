@@ -1,5 +1,5 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
-import type { ArtifactType, MetadataType, TargetPropertyType } from '~/common/types.ts';
+import type { ArtifactType, ConstructorType, MetadataType, PropertiesType } from '~/common/types.ts';
 
 /**
  * The returned decorator function
@@ -9,15 +9,15 @@ import type { ArtifactType, MetadataType, TargetPropertyType } from '~/common/ty
 export type DecoratorFunctionType = (
   target: any,
   context: TargetContextType,
-  options?: AnnotationOptionsType,
+  options?: DecorationSettingsType,
 ) => any;
 
 /**
  * Settings to control how to apply a decoration
  * 
- * @type DecDecoratorSettingsType<P>
+ * @type DecAnnotationSettingsType<P>
  */ 
-export type DecoratorSettingsType = {
+export type AnnotationSettingsType = {
   [key: string]: any
   persists?: boolean
 }
@@ -37,44 +37,51 @@ export type TargetContextType = DecoratorContext & {
   metadata: MetadataType<any>;
 };
 
-/**
- * Decoration metadata type
- * 
- * @type DecorationMetadataType
- */ 
-export type DecorationMetadataType<P> = Pick<TargetContextType, 'static' | 'private'> & {
-  kind: 'class' | 'method' | 'getter' | 'setter' | 'field' | 'accessor';
-  annotation: AnnotationInterface & { constructor: { name: string, metadata?: symbol } };
-  property: string | symbol;
-  parameters: P | undefined;
-  options?: AnnotationOptionsType;
-};
-
-export type DecorationMetadataMapType<P> = Map<TargetPropertyType, DecorationMetadataType<P>[]>;
+export type AnnotationType = {
+  name: string;
+  target: AnnotationInterface & { constructor: { name: string, metadata?: symbol } };
+  parameterNames?: Array<string>;
+  settings?: AnnotationSettingsType;
+}
 
 /**
  * Decoration type with metadata context
  * 
  * @type DecorationType
  */ 
-export type DecorationType<P> = DecorationMetadataType<P> & {
+export type DecorationType = {
+  kind: 'class' | 'method' | 'getter' | 'setter' | 'field' | 'accessor';
+  property: string | symbol;
+  settings?: DecorationSettingsType;
+  static?: boolean;
+  private?: boolean;
   context: TargetContextType;
 };
 
 /**
- * Metadata applier function type
- * 
- * @type MetadataApplierType
- */ 
-export type MetadataApplierType = <P>(artifact: ArtifactType, decoration: DecorationType<P>, settings: Partial<DecoratorSettingsType>) => void | any;
-
-/**
  * Annotation options type
  * 
- * @type AnnotationOptionsType
+ * @type DecorationSettingsType
  */ 
-export type AnnotationOptionsType = {
+export type DecorationSettingsType = {
   stackable?: boolean;
 };
+
+
+export type DecoratorType = {
+  annotation: AnnotationType;
+  decoration: DecorationType;
+}
+
+export type OnEvaluationType = <T>(target: T, parameters?: any ) => void
+export type OnDecorationType = (artifact: ArtifactType, annotation: AnnotationType, decoration: DecorationType) => any
+
+export type DecoratorEventType = { onEvaluation: Array<OnEvaluationType>, onDecoration: Array<OnDecorationType> }
+
+export type UseType<T> = {
+   annotation: ConstructorType<T>, 
+   parameters?: PropertiesType<T> | Parameters<T extends (...args: any) => T ? T : never>
+}
+
 
 export default {};

@@ -16,7 +16,7 @@ describe('less than equal validation', () => {
   };
 
   const validate = async (value: any, ...parameters: any[]) => {
-    const validation = [{ validation: new LessThanEqual(), parameters }];
+    const validation = [new LessThanEqual(parameters[0])];
     return (await Validator.validateValue(value, validation))[0].key;
   };
 

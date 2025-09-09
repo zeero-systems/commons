@@ -14,8 +14,8 @@ describe('integer validation', () => {
     dollar: 7.23,
   };
 
-  const validate = async (value: any, ...parameters: any[]) => {
-    const validation = [{ validation: new Integer(), parameters: parameters }];
+  const validate = async (value: any) => {
+    const validation = [new Integer()];
     return (await Validator.validateValue(value, validation))[0].key;
   };
 

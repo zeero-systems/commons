@@ -1,8 +1,15 @@
 {
   "name": "@zeero-systems/commons",
-  "version": "0.12.2",
+  "version": "0.22.0",
   "license": "GPL-3.0",
-  "exports": "./mod.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./guards": "./guards.ts",
+    "./annotations": "./annotations.ts",
+    "./validations": "./validations.ts",
+    "./services": "./services.ts",
+    "./enums": "./enums.ts"
+  },
   "publish": {
     "include": [
       "LICENSE", 

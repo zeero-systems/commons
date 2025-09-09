@@ -29,8 +29,7 @@ export type TagType = string | symbol;
  *
  * @type ConstructorType<T>
  */
-export type ConstructorType<T> = T extends new (...args: infer A) => infer R ? new (...args: A) => R
-  : new (...args: any) => any;
+export type ConstructorType<T> = T extends new (...args: infer A) => infer R ? new (...args: A) => R : new (...args: any) => any;
 
 /**
  * Defines a safe function type
@@ -44,7 +43,14 @@ export type FunctionType = (...args: any[]) => any;
  *
  * @type PropertiesType<T>
  */
-export type PropertiesType<T> = OmitType<T, FunctionType> & Partial<PickType<T, object>>;
+export type PropertiesType<T> = { [P in keyof T as T[P] extends FunctionType ? never : P]: T[P]; }
+
+/**
+ * Defines a type for only the constructor args
+ *
+ * @type PropertiesType<T>
+ */
+export type ConstructorPropertiesType<T extends (...args: any[]) => any, A = Parameters<T>> = { [P in keyof A]: A[P]; }
 
 /**
  * Map a value to a type without his functions

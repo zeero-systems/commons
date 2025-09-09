@@ -1,6 +1,5 @@
-import type { EntryType, FunctionType, MappedPropertiesType, OmitType } from '~/common/types.ts';
+import type { EntryType, FunctionType, MappedPropertiesType, OmitType, TargetPropertyType } from '~/common/types.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
-import type { DecorationMetadataMapType } from '~/decorator/types.ts';
 
 import Decorator from '~/decorator/services/decorator.service.ts';
 import Metadata from './metadata.service.ts';
@@ -9,6 +8,7 @@ import ValidationEnum from '~/validator/enums/validation.enum.ts';
 
 import isDate from '~/common/guards/is-date.guard.ts';
 import isValidation from '~/validator/guards/is-validation.guard.ts';
+import { DecoratorType } from '../../decorator/types.ts';
 
 /**
  * Common operations to a object
@@ -64,59 +64,6 @@ export class Objector {
     }
 
     return `${typeof target[propertyKey]}`;
-  }
-
-  public static validateProperty<T extends Record<PropertyKey, any>, K extends keyof OmitType<T, FunctionType>>(
-    target: T,
-    propertyKey: K,
-  ): Promise<ValidationResultType[]> {
-    let validations: any[] = [];
-    const metadata = Metadata.getByKey<DecorationMetadataMapType<any>>(target, Decorator.metadata);
-
-    if (metadata) {
-      validations = metadata.get(propertyKey)?.reduce((previous: any, current) => {
-        if (isValidation(current.annotation)) {
-          previous.push({
-            validation: current.annotation,
-            parameters: current.parameters,
-          });
-        }
-        return previous;
-      }, []);
-    }
-
-    return Validator.validateValue(target[propertyKey], validations);
-  }
-
-  public static validateProperties<T extends Record<PropertyKey, any>>(
-    target: T,
-    onlyResultWithKeys?: Array<ValidationEnum>,
-  ): Promise<MappedPropertiesType<T, ValidationResultType[]> | undefined> {
-    const promises = [];
-
-    for (const key of Objector.getKeys(target)) {
-      promises.push(
-        Objector.validateProperty(target, key as any)
-          .then((validations) => {
-            if (onlyResultWithKeys) {
-              validations = validations.filter((v) => onlyResultWithKeys!.includes(v.key));
-            }
-
-            return { key, validations };
-          }),
-      );
-    }
-
-    return Promise.all(promises).then((results) => {
-      let targetValidations: { [key: string | symbol]: ValidationResultType[] } | undefined;
-      for (const { key, validations } of results) {
-        if (validations.length > 0) {
-          if (!targetValidations) targetValidations = {};
-          targetValidations[key] = validations;
-        }
-      }
-      return targetValidations as MappedPropertiesType<T, ValidationResultType[]> | undefined;
-    });
   }
 }
 

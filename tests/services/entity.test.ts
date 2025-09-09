@@ -3,27 +3,26 @@ import { expect } from '@std/expect';
 
 import Entity from '~/entity/services/entity.service.ts';
 import Factory from '~/common/services/factory.service.ts';
-import Required from '~/validator/annotations/required.annotation.ts';
+import Required from '~/validator/validations/required.validation.ts';
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
+import Use from '~/decorator/services/decorator-use.service.ts';
 
 describe('entity', () => {
   class EntityExtended extends Entity {
-    @Required()
+    @Use(Required)
     firstName!: string;
     lastName!: string;
     created?: Date;
-    @Required()
+    @Use(Required)
     birthDate?: Date;
     email!: Array<{ isMain: boolean; address: string }>;
   }
 
   const entityExtended = Factory.construct(EntityExtended, {
     arguments: {
-      properties: {
-        firstName: 'eduardo',
-        lastName: 'segura',
-        email: [{ isMain: true, address: 'test@email.com' }],
-      }
+      firstName: 'eduardo',
+      lastName: 'segura',
+      email: [{ isMain: true, address: 'test@email.com' }],
     },
   });
 

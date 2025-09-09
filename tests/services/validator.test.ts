@@ -3,14 +3,15 @@ import { expect } from '@std/expect';
 
 import Validator from '~/validator/services/validator.service.ts';
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
-import Required from '~/validator/annotations/required.annotation.ts';
+import Required from '~/validator/validations/required.validation.ts';
 import RequiredValidation from '~/validator/validations/required.validation.ts';
 import Factory from '~/common/services/factory.service.ts';
+import Use from '~/decorator/services/decorator-use.service.ts';
 
 
 describe('validator', () => {
   class UserMock {
-    @Required()
+    @Use(Required)
     firstName!: string
     lastName?: string
     birthDate?: Date
@@ -18,16 +19,14 @@ describe('validator', () => {
 
   const userEntity = Factory.construct(UserMock, {
     arguments: {
-      properties: {
-        firstName: 'eduardo',
-      }
+      firstName: 'eduardo',
     },
   });
 
 
   it('validateValue method', async () => {
     
-    const validations = [{ validation: new RequiredValidation() }];
+    const validations = [new RequiredValidation()];
 
     const result = await Validator.validateValue(userEntity.lastName, validations);
 
@@ -40,8 +39,8 @@ describe('validator', () => {
     userEntity.birthDate = new Date();
 
     const validations = {
-      firstName: [{ validation: new RequiredValidation() }],
-      birthDate: [{ validation: new RequiredValidation() }],
+      firstName: [new RequiredValidation()],
+      birthDate: [new RequiredValidation()],
     };
 
     const result = await Validator.validateObject(userEntity, validations);
