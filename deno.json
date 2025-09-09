@@ -1,19 +1,24 @@
 {
   "name": "@zeero-systems/commons",
-  "version": "0.22.0",
+  "version": "0.22.1",
   "license": "GPL-3.0",
   "exports": {
     ".": "./index.ts",
-    "./guards": "./guards.ts",
     "./annotations": "./annotations.ts",
-    "./validations": "./validations.ts",
+    "./enums": "./enums.ts",
+    "./guards": "./guards.ts",
     "./services": "./services.ts",
-    "./enums": "./enums.ts"
+    "./validations": "./validations.ts"
   },
   "publish": {
     "include": [
       "LICENSE", 
-      "mod.ts",
+      "index.ts",
+      "annotations.ts",
+      "enums.ts",
+      "guards.ts",
+      "services.ts",
+      "validations.ts",
       "README.md", 
       "src/**/*.ts"
     ],
@@ -33,7 +38,12 @@
   "fmt": {
     "files": {
       "include": [
-        "mod.ts",
+        "index.ts",
+        "annotations.ts",
+        "enums.ts",
+        "guards.ts",
+        "services.ts",
+        "validations.ts",
         "src/",
         "test/"
       ]
@@ -48,7 +58,16 @@
   },
   "lint": {
     "files": {
-      "include": ["mod.ts", "src/**/*.ts", "test/**/*.ts"]
+      "include": [
+        "index.ts",
+        "annotations.ts",
+        "enums.ts",
+        "guards.ts",
+        "services.ts",
+        "validations.ts",
+        "src/**/*.ts", 
+        "test/**/*.ts"
+      ]
     },
     "rules": {
       "tags": ["recommended"],
