@@ -3,15 +3,14 @@ import { expect } from '@std/expect';
 
 import Validator from '~/validator/services/validator.service.ts';
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
-import Required from '~/validator/validations/required.validation.ts';
+import Required from '~/validator/decorations/required.decoration.ts';
 import RequiredValidation from '~/validator/validations/required.validation.ts';
 import Factory from '~/common/services/factory.service.ts';
-import Use from '~/decorator/services/decorator-use.service.ts';
 
 
 describe('validator', () => {
   class UserMock {
-    @Use(Required)
+    @Required()
     firstName!: string
     lastName?: string
     birthDate?: Date

@@ -1,6 +1,6 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { DecoratorType } from '~/decorator/types.ts';
-import type { ArtifactType, KeyType } from '~/common/types.ts';
+import type { ArtifactType } from '~/common/types.ts';
 
 export class DebugAnnotation implements AnnotationInterface {
   public static readonly metadata: unique symbol = Symbol('Debug.metadata');

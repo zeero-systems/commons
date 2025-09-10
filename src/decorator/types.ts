@@ -9,18 +9,8 @@ import type { ArtifactType, ConstructorType, MetadataType, PropertiesType } from
 export type DecoratorFunctionType = (
   target: any,
   context: TargetContextType,
-  options?: DecorationSettingsType,
 ) => any;
 
-/**
- * Settings to control how to apply a decoration
- * 
- * @type DecAnnotationSettingsType<P>
- */ 
-export type AnnotationSettingsType = {
-  [key: string]: any
-  persists?: boolean
-}
 
 /**
  * Extended decorator context with metadata
@@ -41,7 +31,6 @@ export type AnnotationType = {
   name: string;
   target: AnnotationInterface & { constructor: { name: string, metadata?: symbol } };
   parameterNames?: Array<string>;
-  settings?: AnnotationSettingsType;
 }
 
 /**
@@ -52,21 +41,10 @@ export type AnnotationType = {
 export type DecorationType = {
   kind: 'class' | 'method' | 'getter' | 'setter' | 'field' | 'accessor';
   property: string | symbol;
-  settings?: DecorationSettingsType;
   static?: boolean;
   private?: boolean;
   context: TargetContextType;
 };
-
-/**
- * Annotation options type
- * 
- * @type DecorationSettingsType
- */ 
-export type DecorationSettingsType = {
-  stackable?: boolean;
-};
-
 
 export type DecoratorType = {
   annotation: AnnotationType;

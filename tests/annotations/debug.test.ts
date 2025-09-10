@@ -3,20 +3,19 @@ import { expect } from '@std/expect';
 import { assertSpyCalls, spy } from "@std/mock";
 
 
-import Debug from '~/common/annotations/debug.annotation.ts';
-import { Debug as DebugAnnotation } from '~/common/annotations/debug.annotation.ts';
+import Debug from '~/common/decorations/debug.decoration.ts';
+import Singleton from '~/common/decorations/singleton.decoration.ts';
+import DebugAnnotation from '~/common/annotations/debug.annotation.ts';
 
 import Entity from '~/entity/services/entity.service.ts';
 import Metadata from '~/decorator/services/decorator-metadata.service.ts';
-import Singleton from '~/common/annotations/singleton.annotation.ts';
-import Use from '~/decorator/services/decorator-use.service.ts';
 
 describe('annotation', () => {
   describe('debug', () => {
     const logSpy = spy(console, "debug");
 
-    @Use(Debug)
-    @Use(Singleton)
+    @Debug()
+    @Singleton()
     class UserEntityMock extends Entity {
       firstName!: string;
     }
@@ -27,7 +26,7 @@ describe('annotation', () => {
     });
     
     it('should be registered in class metadata', () => {
-      const metadata = Metadata.filterDecorations(UserEntityMock, ['construct'], ['debug']);
+      const metadata = Metadata.filterDecorations(UserEntityMock, ['construct'], ['DebugAnnotation']);
       expect(metadata).toBeDefined();
       expect(metadata[0]?.annotation.target instanceof DebugAnnotation).toBeTruthy();
     });

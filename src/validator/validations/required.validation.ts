@@ -1,4 +1,3 @@
-import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 import type { AcceptType, ArtifactType } from '~/common/types.ts';
 import type { DecoratorType } from '~/decorator/types.ts';
@@ -9,7 +8,9 @@ import isUndefined from '~/common/guards/is-undefined.guard.ts';
 import isString from '~/common/guards/is-string.guard.ts';
 import isDate from '~/common/guards/is-date.guard.ts';
 
-export class Required implements AnnotationInterface, ValidationInterface {
+export class RequiredValidation implements ValidationInterface {
+  name?: string | undefined = 'Required'
+
   accepts?: AcceptType[] | undefined = [
     isNull,
     isUndefined,
@@ -35,4 +36,4 @@ export class Required implements AnnotationInterface, ValidationInterface {
   }
 }
 
-export default Required
+export default RequiredValidation

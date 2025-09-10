@@ -1,7 +1,7 @@
-import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 import type { AcceptType, ArtifactType } from '~/common/types.ts';
 import type { DecoratorType } from '~/decorator/types.ts';
+
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
 
 import isNull from '~/common/guards/is-null.guard.ts';
@@ -11,7 +11,9 @@ import isString from '~/common/guards/is-string.guard.ts';
 import isNumber from '~/common/guards/is-number.guard.ts';
 import isDate from '~/common/guards/is-date.guard.ts';
 
-export class LessThanEqual implements AnnotationInterface, ValidationInterface {
+export class LessThanEqualValidation implements ValidationInterface {
+  name?: string | undefined = 'LessThanEqual'
+
   accepts?: AcceptType[] | undefined = [
     isNull,
     isUndefined,
@@ -47,4 +49,4 @@ export class LessThanEqual implements AnnotationInterface, ValidationInterface {
   }
 }
 
-export default LessThanEqual
+export default LessThanEqualValidation

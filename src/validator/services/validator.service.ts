@@ -54,7 +54,7 @@ export class Validator {
 
         const validationResult: ValidationResultType = {
           key: ValidationEnum.ERROR,
-          name: validation.constructor.name,
+          name: validation.name || validation.constructor.name,
         };
 
         try {

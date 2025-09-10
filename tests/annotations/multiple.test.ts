@@ -3,19 +3,18 @@ import { expect } from '@std/expect';
 
 import type { DecoratorType } from '~/decorator/types.ts';
 
-import Required from '~/validator/validations/required.validation.ts';
-import Equal from '~/validator/validations/equal.validation.ts';
+import Required from '~/validator/decorations/required.decoration.ts';
+import Equal from '~/validator/decorations/equal.decoration.ts';
 
 import Factory from '~/common/services/factory.service.ts';
 import Entity from '~/entity/services/entity.service.ts';
 import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.ts';
-import Use from '~/decorator/services/decorator-use.service.ts';
 
 describe('multiple annotation', () => {
   
   class UserEntityMock extends Entity {
-    @Use(Required)
-    @Use(Equal, { comparison: 'Eduardo' })
+    @Required()
+    @Equal('Eduardo')
     firstName!: string;
   }
 
@@ -23,9 +22,9 @@ describe('multiple annotation', () => {
     const userSingletonMockFirst = Factory.construct(UserEntityMock, { arguments: { firstName: 'Eduardo' } });
 
     const decorations = DecoratorMetadata.filterDecorationsByPropertyKeys(userSingletonMockFirst, ['firstName'])
-    const decoratorNames = decorations.map((decorator: DecoratorType) => decorator.annotation.target.constructor.name)
+    const decoratorNames = decorations.map((decorator: DecoratorType) => decorator.annotation.target.constructor .name)
 
-    expect(decoratorNames).toContain("Required");
-    expect(decoratorNames).toContain("Equal");
+    expect(decoratorNames).toContain("RequiredValidation");
+    expect(decoratorNames).toContain("EqualValidation");
   });
 });

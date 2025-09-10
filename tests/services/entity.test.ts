@@ -3,17 +3,16 @@ import { expect } from '@std/expect';
 
 import Entity from '~/entity/services/entity.service.ts';
 import Factory from '~/common/services/factory.service.ts';
-import Required from '~/validator/validations/required.validation.ts';
+import Required from '~/validator/decorations/required.decoration.ts';
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
-import Use from '~/decorator/services/decorator-use.service.ts';
 
 describe('entity', () => {
   class EntityExtended extends Entity {
-    @Use(Required)
+    @Required()
     firstName!: string;
     lastName!: string;
     created?: Date;
-    @Use(Required)
+    @Required()
     birthDate?: Date;
     email!: Array<{ isMain: boolean; address: string }>;
   }

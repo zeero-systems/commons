@@ -12,19 +12,20 @@ import Required from '~/validator/validations/required.validation.ts';
 
 describe('decorator', () => {
 
-  class Test implements AnnotationInterface {
-    
-  onAttach(_artifact: ArtifactType, _decorator: DecoratorType) { }
+  class TestAnnotation implements AnnotationInterface {
+    name?: string | undefined = 'DifferentName'
 
-  onInitialize(_artifact: ArtifactType, _decorator: DecoratorType) { }
+    onAttach(_artifact: ArtifactType, _decorator: DecoratorType) { }
+
+    onInitialize(_artifact: ArtifactType, _decorator: DecoratorType) { }
   }
 
-  const RequiredAnnotation = (): DecoratorFunctionType => Decorator.use(Required);
-  const TestAnnotation = (): DecoratorFunctionType => Decorator.use(Test);
+  const RequiredDecoration = (): DecoratorFunctionType => Decorator.use(Required);
+  const TestDecoration = (): DecoratorFunctionType => Decorator.use(TestAnnotation);
 
   class User {
-    @RequiredAnnotation()
-    @TestAnnotation()
+    @RequiredDecoration()
+    @TestDecoration()
     firstName!: string;
     lastName!: string;
   }
@@ -37,7 +38,7 @@ describe('decorator', () => {
   });
 
   it('decoration with both property and name', () => {
-    const decoration = DecoratorMetadata.filter(user, ['firstName'], ['required']);
+    const decoration = DecoratorMetadata.filter(user, ['firstName'], ['RequiredValidation']);
 
     expect(decoration).toBeDefined();
     expect(decoration.get('firstName')).not.toBeUndefined();
@@ -51,9 +52,15 @@ describe('decorator', () => {
   });
 
   it('decoration filter by type', () => {
-    const decoration = DecoratorMetadata.filterDecorationsByAnnotationNames(user, ['required']);
+    const decoration = DecoratorMetadata.filterDecorationsByAnnotationNames(user, ['RequiredValidation']);
 
     expect(decoration).toBeDefined();
     expect(decoration.length).toEqual(1);
   });
+
+  it('decoration with different name', () => {
+    const decoration = DecoratorMetadata.filterDecorationsByAnnotationNames(user, ['TestAnnotation']);
+
+    expect(decoration[0].annotation.target.name).toEqual('DifferentName');
+  })
 });

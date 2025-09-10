@@ -1,11 +1,9 @@
-import type { ArtifactType, ConstructorType, PropertiesType, TargetPropertyType } from '~/common/types.ts';
+import type { ArtifactType, PropertiesType, TargetPropertyType } from '~/common/types.ts';
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type {
-  DecorationSettingsType,
   DecorationType,
   TargetContextType,
   DecoratorFunctionType,
-  AnnotationSettingsType,
   AnnotationType,
   DecoratorType,
   OnEvaluationType,
@@ -35,8 +33,7 @@ export class Decorator {
 
   public static use<T extends AnnotationInterface, C extends (...args: unknown[]) => T>(
     annotationTarget: new (...args: any[]) => T, 
-    annotationParameters?: PropertiesType<T> | Parameters<C>, 
-    annotationSettings?: AnnotationSettingsType
+    annotationParameters?: PropertiesType<T> | Parameters<C>,
   ): DecoratorFunctionType {
 
     for (let index = 0; index < Decorator.onEvents.onEvaluation.length; index++) {
@@ -46,7 +43,6 @@ export class Decorator {
     return function (
       decorationTarget: any,
       decorationContext: TargetContextType,
-      decorationSettings?: DecorationSettingsType,
     ) {
       const artifactName = decorationTarget?.name || decorationTarget?.constructor?.name || decorationContext.name || ''
       const artifactParameterName = decorationContext.kind != DecoratorKindEnum.CLASS ? decorationContext.name : 'constructor';
@@ -57,7 +53,6 @@ export class Decorator {
         name: annotationTarget.name,
         target: annotationInstance,
         parameterNames: Factory.getParameterNames(annotationTarget, 'constructor'),
-        settings: annotationSettings
       } 
 
       const artifact: ArtifactType = {
@@ -72,7 +67,6 @@ export class Decorator {
         kind: decorationContext.kind,
         private: decorationContext.private,
         property: decorationContext.kind != DecoratorKindEnum.CLASS ? decorationContext.name : 'construct',
-        settings: decorationSettings,
         static: decorationContext.static,
       };  
 
@@ -99,7 +93,7 @@ export class Decorator {
   }
 
   private static attachToMetadata(artifact: ArtifactType, annotation: AnnotationType, decoration: DecorationType): any {
-    if (annotation.settings?.persists === false) return
+    if (annotation.target.persists === false) return
 
     const metadata = annotation.target.constructor.metadata
     const property = decoration.context.kind != DecoratorKindEnum.CLASS ? decoration.context.name : 'construct';
@@ -124,7 +118,7 @@ export class Decorator {
       decoration.context.metadata[Decorator.metadata].set(property, new Array<DecoratorType>());
     }
 
-    const stackable = decoration.settings?.stackable === undefined ? true : decoration.settings?.stackable;
+    const stackable = annotation.target.stackable === undefined ? true : annotation.target.stackable;
     const decorations = decoration.context.metadata[Decorator.metadata].get(property) as Array<DecoratorType>;
     const alreadyExists = !decorations.some((decorator: DecoratorType) => {
       return decorator.annotation.target.constructor.name === annotation.target.constructor.name;
