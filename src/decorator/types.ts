@@ -11,6 +11,7 @@ export type DecoratorFunctionType = (
   context: TargetContextType,
 ) => any;
 
+export type DecorationFunctionType<C extends abstract new (...args: any) => any> = (...parameters: ConstructorParameters<C>) => DecoratorFunctionType
 
 /**
  * Extended decorator context with metadata

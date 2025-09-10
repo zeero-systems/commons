@@ -9,6 +9,7 @@ import type {
   OnEvaluationType,
   OnDecorationType,
   DecoratorEventType,
+  DecorationFunctionType,
 } from '~/decorator/types.ts';
 
 import DecoratorKindEnum from '~/decorator/enums/decorator-kind.enum.ts';
@@ -25,10 +26,10 @@ export class Decorator {
     onDecoration: new Array<OnDecorationType>(Decorator.attachToMetadata)
   }
   
-  public static create = <T extends AnnotationInterface, C extends new (...args: any[]) => T>(annotationTarget: C) => {
-    return (...parameters: ConstructorParameters<C>): DecoratorFunctionType => {
-      return Decorator.use(annotationTarget, parameters)
-    }  
+  public static create<C extends abstract new (...args: any) => any>(annotation: C): DecorationFunctionType<C> {
+    return (...parameters: ConstructorParameters<C>) => {
+      return Decorator.use(annotation as any, parameters)
+    }
   }
 
   public static use<T extends AnnotationInterface, C extends (...args: unknown[]) => T>(
