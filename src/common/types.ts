@@ -31,6 +31,9 @@ export type TagType = string | symbol;
  */
 export type ConstructorType<T> = T extends new (...args: infer A) => infer R ? new (...args: A) => R : new (...args: any) => any;
 
+export type ParametersType<T> = T extends (...args: infer P) => any ? P : any;
+
+
 /**
  * Defines a safe function type
  *

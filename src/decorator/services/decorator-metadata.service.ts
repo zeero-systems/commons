@@ -13,6 +13,16 @@ export class DecoratorMetadata {
     return new Map()
   }
 
+  public static getDecoration(target: any, propertyKey: TargetPropertyType, annotation: string): DecoratorType | undefined {
+    const decorations = DecoratorMetadata.filterDecorations(target, [propertyKey], [annotation])
+
+    if (decorations) {
+      return decorations[0]
+    }
+
+    return undefined
+  }
+
   public static has(
     target: any,
     propertyKeys: Array<TargetPropertyType>,

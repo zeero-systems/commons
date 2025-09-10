@@ -6,7 +6,7 @@ import AnnotationException from '~/decorator/exceptions/annotation.exception.ts'
 import DecoratorKindEnum from '~/decorator/enums/decorator-kind.enum.ts';
 import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.ts';
 
-export class Singleton implements AnnotationInterface {
+export class SingletonAnnotation implements AnnotationInterface {
   public static readonly metadata: unique symbol = Symbol('Singleton.medadata');
 
   onAttach(artifact: ArtifactType, decorator: DecoratorType): any {
@@ -18,11 +18,11 @@ export class Singleton implements AnnotationInterface {
               return Reflect.construct(currentTarget, currentArgs, newTarget);
             }
             
-            if (!decorator.decoration.context.metadata[Singleton.metadata]) {
-              decorator.decoration.context.metadata[Singleton.metadata] = Reflect.construct(currentTarget, currentArgs, newTarget);
+            if (!decorator.decoration.context.metadata[SingletonAnnotation.metadata]) {
+              decorator.decoration.context.metadata[SingletonAnnotation.metadata] = Reflect.construct(currentTarget, currentArgs, newTarget);
             }
 
-            return decorator.decoration.context.metadata[Singleton.metadata];
+            return decorator.decoration.context.metadata[SingletonAnnotation.metadata];
           },
         });
       }
@@ -39,4 +39,4 @@ export class Singleton implements AnnotationInterface {
   onInitialize(_artifact: ArtifactType, _decorator: DecoratorType) { }
 }
 
-export default Singleton
+export default SingletonAnnotation

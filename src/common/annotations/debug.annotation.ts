@@ -2,7 +2,7 @@ import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { DecoratorType } from '~/decorator/types.ts';
 import type { ArtifactType, KeyType } from '~/common/types.ts';
 
-export class Debug implements AnnotationInterface {
+export class DebugAnnotation implements AnnotationInterface {
   public static readonly metadata: unique symbol = Symbol('Debug.metadata');
 
   onAttach(artifact: ArtifactType, decorator: DecoratorType): any {
@@ -14,4 +14,4 @@ export class Debug implements AnnotationInterface {
   }
 }
 
-export default Debug
+export default DebugAnnotation

@@ -12,7 +12,7 @@ import isString from '~/common/guards/is-string.guard.ts';
 import isNumber from '~/common/guards/is-number.guard.ts';
 import isDate from '~/common/guards/is-date.guard.ts';
 
-export class Equal implements AnnotationInterface, ValidationInterface {
+export class EqualValidation implements AnnotationInterface, ValidationInterface {
   accepts?: AcceptType[] | undefined = [
     isNull,
     isUndefined,
@@ -51,4 +51,4 @@ export class Equal implements AnnotationInterface, ValidationInterface {
   }
 }
 
-export default Equal;
+export default EqualValidation;

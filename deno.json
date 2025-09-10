@@ -1,10 +1,11 @@
 {
   "name": "@zeero-systems/commons",
-  "version": "0.22.3",
+  "version": "0.23.0",
   "license": "GPL-3.0",
   "exports": {
     ".": "./index.ts",
     "./annotations": "./annotations.ts",
+    "./decorations": "./decorations.ts",
     "./enums": "./enums.ts",
     "./exceptions": "./exceptions.ts",
     "./guards": "./guards.ts",
@@ -16,6 +17,7 @@
       "LICENSE", 
       "index.ts",
       "annotations.ts",
+      "decorations.ts",
       "enums.ts",
       "exceptions.ts",
       "guards.ts",
@@ -42,6 +44,7 @@
       "include": [
         "index.ts",
         "annotations.ts",
+        "decorations.ts",
         "enums.ts",
         "exceptions.ts",
         "guards.ts",
@@ -64,6 +67,7 @@
       "include": [
         "index.ts",
         "annotations.ts",
+        "decorations.ts",
         "enums.ts",
         "exceptions.ts",
         "guards.ts",

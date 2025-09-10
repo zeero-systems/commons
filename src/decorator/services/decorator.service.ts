@@ -1,4 +1,4 @@
-import type { ArtifactType, ConstructorType, TargetPropertyType } from '~/common/types.ts';
+import type { ArtifactType, ConstructorType, PropertiesType, TargetPropertyType } from '~/common/types.ts';
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type {
   DecorationSettingsType,
@@ -26,10 +26,16 @@ export class Decorator {
     onEvaluation: new Array<OnEvaluationType>,
     onDecoration: new Array<OnDecorationType>(Decorator.attachToMetadata)
   }
+  
+  public static create = <T extends AnnotationInterface, C extends new (...args: any[]) => T>(annotationTarget: C) => {
+    return (...parameters: ConstructorParameters<C>): DecoratorFunctionType => {
+      return Decorator.use(annotationTarget, parameters)
+    }  
+  }
 
-  public static use<T extends AnnotationInterface>(
-    annotationTarget: ConstructorType<T>,
-    annotationParameters?: any,
+  public static use<T extends AnnotationInterface, C extends (...args: unknown[]) => T>(
+    annotationTarget: new (...args: any[]) => T, 
+    annotationParameters?: PropertiesType<T> | Parameters<C>, 
     annotationSettings?: AnnotationSettingsType
   ): DecoratorFunctionType {
 
@@ -42,7 +48,7 @@ export class Decorator {
       decorationContext: TargetContextType,
       decorationSettings?: DecorationSettingsType,
     ) {
-      const artifactName = decorationTarget?.name || decorationTarget?.constructor?.name || ''
+      const artifactName = decorationTarget?.name || decorationTarget?.constructor?.name || decorationContext.name || ''
       const artifactParameterName = decorationContext.kind != DecoratorKindEnum.CLASS ? decorationContext.name : 'constructor';
 
       const annotationInstance = Factory.construct(annotationTarget, { arguments: annotationParameters })

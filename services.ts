@@ -1,4 +1,3 @@
-import Artifactor from '~/common/services/artifactor.service.ts';
 import Decorator from '~/decorator/services/decorator.service.ts';
 import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.ts';
 import Entity from '~/entity/services/entity.service.ts';
@@ -11,7 +10,6 @@ import Text from '~/common/services/text.service.ts';
 import Use from '~/decorator/services/decorator-use.service.ts';
 import Validator from '~/validator/services/validator.service.ts';
 
-export { Artifactor } from '~/common/services/artifactor.service.ts';
 export { Decorator } from '~/decorator/services/decorator.service.ts';
 export { DecoratorMetadata } from '~/decorator/services/decorator-metadata.service.ts';
 export { Entity } from '~/entity/services/entity.service.ts';
@@ -25,7 +23,6 @@ export { Use } from '~/decorator/services/decorator-use.service.ts';
 export { Validator } from '~/validator/services/validator.service.ts';
 
 export default {
-  Artifactor,
   Decorator,
   DecoratorMetadata,
   Entity,
