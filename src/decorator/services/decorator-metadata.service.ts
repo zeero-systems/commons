@@ -62,18 +62,6 @@ export class DecoratorMetadata {
     })
   }
 
-  public static filterByAnnotationClassName(
-    target: any,
-    annotationName: string,
-    targetPropertyKey?: PropertyType
-  ): Array<DecoratorType> {
-    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: PropertyType, decorator: DecoratorType) => {
-      return (
-        !targetPropertyKey || targetPropertyKey == currentTargetPropertyKey
-      ) && Text.toFirstLetterUppercase(decorator.annotation.target.constructor.name) == Text.toFirstLetterUppercase(annotationName);
-    })
-  }
-
   public static filter(target: any, predicate: (targetPropertyKey: PropertyType, decorator: DecoratorType, index: number, array: any[]) => any): Array<DecoratorType> {
     const decorators = []
     const metadata = DecoratorMetadata.get(target)
@@ -87,6 +75,18 @@ export class DecoratorMetadata {
     return decorators;  
   }
 
+  public static filterByAnnotationInteroperableName(
+    target: any,
+    interoperableName: string,
+    targetPropertyKey?: PropertyType
+  ): Array<DecoratorType> {
+    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: PropertyType, decorator: DecoratorType) => {
+      return (
+        !targetPropertyKey || targetPropertyKey == currentTargetPropertyKey
+      ) && Text.toFirstLetterUppercase(decorator.annotation.target.name) == Text.toFirstLetterUppercase(interoperableName);
+    })
+  }
+
   public static filterByAnnotationInteroperableNames(
     target: any,
     interoperableNames: Array<string>,
@@ -95,6 +95,18 @@ export class DecoratorMetadata {
       return interoperableNames.some((annotation: string) => {
         return Text.toFirstLetterUppercase(decorator.annotation.target.name) == Text.toFirstLetterUppercase(annotation);
       })
+    })
+  }
+
+  public static filterByAnnotationClassName(
+    target: any,
+    annotationName: string,
+    targetPropertyKey?: PropertyType
+  ): Array<DecoratorType> {
+    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: PropertyType, decorator: DecoratorType) => {
+      return (
+        !targetPropertyKey || targetPropertyKey == currentTargetPropertyKey
+      ) && Text.toFirstLetterUppercase(decorator.annotation.target.constructor.name) == Text.toFirstLetterUppercase(annotationName);
     })
   }
 
