@@ -1,5 +1,5 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
-import type { ArtifactType, ConstructorType, MetadataType, PropertiesType, TargetPropertyType } from '~/common/types.ts';
+import type { ArtifactType, ConstructorType, MetadataType, PropertiesType, PropertyType } from '~/common/types.ts';
 
 /**
  * The returned decorator function
@@ -31,7 +31,6 @@ export type TargetContextType = DecoratorContext & {
 export type AnnotationType = {
   name: string;
   target: AnnotationInterface & { constructor: { name: string, metadata?: symbol } };
-  parameterNames?: Array<string>;
 }
 
 /**
@@ -57,6 +56,6 @@ export type OnDecorationType = (artifact: ArtifactType, annotation: AnnotationTy
 
 export type DecoratorEventType = { onEvaluation: Array<OnEvaluationType>, onDecoration: Array<OnDecorationType> }
 
-export type DecoratorMetadataType = Map<TargetPropertyType, DecoratorType[]>
+export type DecoratorMetadataType = Map<PropertyType, DecoratorType[]>
 
 export default {};

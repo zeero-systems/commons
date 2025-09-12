@@ -1,4 +1,4 @@
-import type { TargetPropertyType } from '~/common/types.ts';
+import type { PropertyType } from '~/common/types.ts';
 import type { DecoratorMetadataType, DecoratorType } from '~/decorator/types.ts';
 
 import Decorator from '~/decorator/services/decorator.service.ts';
@@ -13,7 +13,7 @@ export class DecoratorMetadata {
     return new Map()
   }
 
-  public static find(target: any, predicate: (targetPropertyKey: TargetPropertyType, decorator: DecoratorType, index: number, array: any[]) => any): DecoratorType | undefined {
+  public static find(target: any, predicate: (targetPropertyKey: PropertyType, decorator: DecoratorType, index: number, array: any[]) => any): DecoratorType | undefined {
     const metadata = DecoratorMetadata.get(target)
     
     if (metadata) {
@@ -29,9 +29,9 @@ export class DecoratorMetadata {
   public static findByAnnotationInteroperableName(
     target: any,
     interoperableName: string,
-    targetPropertyKey?: TargetPropertyType
+    targetPropertyKey?: PropertyType
   ): Array<DecoratorType> {
-    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: TargetPropertyType, decorator: DecoratorType) => {
+    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: PropertyType, decorator: DecoratorType) => {
       return (
         !targetPropertyKey || targetPropertyKey == currentTargetPropertyKey
       ) && Text.toFirstLetterUppercase(decorator.annotation.target.name) == Text.toFirstLetterUppercase(interoperableName);
@@ -41,9 +41,9 @@ export class DecoratorMetadata {
   public static findByAnnotationClassName(
     target: any,
     annotationName: string,
-    targetPropertyKey?: TargetPropertyType
+    targetPropertyKey?: PropertyType
   ): Array<DecoratorType> {
-    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: TargetPropertyType, decorator: DecoratorType) => {
+    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: PropertyType, decorator: DecoratorType) => {
       return (
         !targetPropertyKey || targetPropertyKey == currentTargetPropertyKey
       ) && Text.toFirstLetterUppercase(decorator.annotation.target.constructor.name) == Text.toFirstLetterUppercase(annotationName);
@@ -53,16 +53,16 @@ export class DecoratorMetadata {
   public static filterByAnnotationClassName(
     target: any,
     annotationName: string,
-    targetPropertyKey?: TargetPropertyType
+    targetPropertyKey?: PropertyType
   ): Array<DecoratorType> {
-    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: TargetPropertyType, decorator: DecoratorType) => {
+    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: PropertyType, decorator: DecoratorType) => {
       return (
         !targetPropertyKey || targetPropertyKey == currentTargetPropertyKey
       ) && Text.toFirstLetterUppercase(decorator.annotation.target.constructor.name) == Text.toFirstLetterUppercase(annotationName);
     })
   }
 
-  public static filter(target: any, predicate: (targetPropertyKey: TargetPropertyType, decorator: DecoratorType, index: number, array: any[]) => any): Array<DecoratorType> {
+  public static filter(target: any, predicate: (targetPropertyKey: PropertyType, decorator: DecoratorType, index: number, array: any[]) => any): Array<DecoratorType> {
     const decorators = []
     const metadata = DecoratorMetadata.get(target)
 
@@ -79,7 +79,7 @@ export class DecoratorMetadata {
     target: any,
     interoperableNames: Array<string>,
   ): Array<DecoratorType> {
-    return DecoratorMetadata.filter(target, (_targetPropertyKey: TargetPropertyType, decorator: DecoratorType) => {
+    return DecoratorMetadata.filter(target, (_targetPropertyKey: PropertyType, decorator: DecoratorType) => {
       return interoperableNames.some((annotation: string) => {
         return Text.toFirstLetterUppercase(decorator.annotation.target.name) == Text.toFirstLetterUppercase(annotation);
       })
@@ -90,7 +90,7 @@ export class DecoratorMetadata {
     target: any,
     annotationNames: Array<string>,
   ): Array<DecoratorType> {
-    return DecoratorMetadata.filter(target, (_targetPropertyKey: TargetPropertyType, decorator: DecoratorType) => {
+    return DecoratorMetadata.filter(target, (_targetPropertyKey: PropertyType, decorator: DecoratorType) => {
       return annotationNames.some((annotation: string) => {
         return Text.toFirstLetterUppercase(decorator.annotation.target.constructor.name) == Text.toFirstLetterUppercase(annotation);
       })
@@ -99,9 +99,9 @@ export class DecoratorMetadata {
   
   public static filterByTargetPropertyKeys(
     target: any,
-    targetPropertyKeys: Array<TargetPropertyType>,
+    targetPropertyKeys: Array<PropertyType>,
   ): Array<DecoratorType> {
-    return DecoratorMetadata.filter(target, (targetPropertyKey: TargetPropertyType) => {
+    return DecoratorMetadata.filter(target, (targetPropertyKey: PropertyType) => {
       return targetPropertyKeys.includes(targetPropertyKey)
     })
   }
@@ -122,7 +122,7 @@ export class DecoratorMetadata {
   
   public static getByTargetPropertyKey(
     target: any,
-    targetPropertyKey: TargetPropertyType,
+    targetPropertyKey: PropertyType,
   ): DecoratorType | undefined {
     return DecoratorMetadata.filterByTargetPropertyKeys(target, [targetPropertyKey])[0]
   }

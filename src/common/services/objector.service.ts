@@ -1,4 +1,4 @@
-import type { EntryType, FunctionType, MappedPropertiesType, OmitType, TargetPropertyType } from '~/common/types.ts';
+import type { EntryType, FunctionType, MappedPropertiesType, OmitType, PropertyType } from '~/common/types.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
 
 import Decorator from '~/decorator/services/decorator.service.ts';

@@ -1,26 +1,19 @@
 /**
+ * Simple keyable type
+ *
+ * @type KeyableType
+ */
+export type KeyableType = string | symbol;
+
+/**
  * Defines the common artifact type
  *
  * @type ArtifactType
  */
 export type ArtifactType = {
-  name: KeyType;
+  name: KeyableType;
   target: any;
 };
-
-/**
- * Simple keyable type
- *
- * @type KeyType
- */
-export type KeyType = string | symbol;
-
-/**
- * Simple tag type
- *
- * @type TagType<T>
- */
-export type TagType = string | symbol;
 
 /**
  * Defines as a constructable type
@@ -28,9 +21,6 @@ export type TagType = string | symbol;
  * @type ConstructorType<T>
  */
 export type ConstructorType<T> = T extends new (...args: infer A) => infer R ? new (...args: A) => R : new (...args: any) => any;
-
-export type ParametersType<T> = T extends (...args: infer P) => any ? P : any;
-
 
 /**
  * Defines a safe function type
@@ -116,9 +106,9 @@ export type MappedKeyType<T> = { [K in keyof T]: T[K] };
 /**
  * Maps to a diferent type of value
  *
- * @type MappedType<T, V>
+ * @type ReMapType<T, V>
  */
-export type MappedType<T, V> = { [K in keyof T]: V };
+export type ReMapType<T, V> = { [K in keyof T]: V };
 
 /**
  * Define the default metadata object type
@@ -144,9 +134,9 @@ export type PickType<T, R> = { [P in keyof T as T[P] extends R ? P : never]: T[P
 /**
  * Define the possible types of the target property object
  *
- * @type TargetPropertyType
+ * @type PropertyType
  */
-export type TargetPropertyType = string | number | symbol;
+export type PropertyType = string | number | symbol;
 
 /**
  * Map a tuple entry type

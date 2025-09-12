@@ -1,4 +1,4 @@
-import type { ArtifactType, PropertiesType, TargetPropertyType } from '~/common/types.ts';
+import type { ArtifactType, PropertiesType, PropertyType } from '~/common/types.ts';
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type {
   DecorationType,
@@ -93,7 +93,7 @@ export class Decorator {
     const property = decoration.context.kind != DecoratorKindEnum.CLASS ? decoration.context.name : 'construct';
     
     if (!decoration.context.metadata[Decorator.metadata]) {
-      decoration.context.metadata[Decorator.metadata] = new Map<TargetPropertyType, DecoratorType[]>();
+      decoration.context.metadata[Decorator.metadata] = new Map<PropertyType, DecoratorType[]>();
     }
 
     if (!decoration.context.metadata[Decorator.metadata].has(property)) {

@@ -1,4 +1,4 @@
-import type { KeyType, MetadataType } from '~/common/types.ts';
+import type { KeyableType, MetadataType } from '~/common/types.ts';
 
 import isObject from '~/common/guards/is-object.guard.ts';
 
@@ -28,7 +28,7 @@ export class Metadata {
     }
   }
 
-  public static add<V>(target: any, key: KeyType, value: V): void {
+  public static add<V>(target: any, key: KeyableType, value: V): void {
     if (!Metadata.has(target)) {
       Metadata.set(target);
     }
@@ -48,7 +48,7 @@ export class Metadata {
     return target[Symbol.metadata] || target.constructor[Symbol.metadata]
   }
 
-  public static getByKey<V>(target: any, key: KeyType): V | undefined {
+  public static getByKey<V>(target: any, key: KeyableType): V | undefined {
     const metadata = Metadata.get(target)
 
     if (metadata) {

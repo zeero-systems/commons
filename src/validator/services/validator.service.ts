@@ -1,7 +1,7 @@
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
-import type { FunctionType, MappedType, OmitType } from '~/common/types.ts';
+import type { FunctionType, ReMapType, OmitType } from '~/common/types.ts';
 
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
 import Objector from '~/common/services/objector.service.ts';
@@ -14,7 +14,7 @@ export class Validator {
     validators: {
       [key: PropertyKey]: Array<ValidationInterface & AnnotationInterface>;
     },
-  ): Promise<MappedType<OmitType<T, FunctionType>, Array<ValidationResultType>>> {
+  ): Promise<ReMapType<OmitType<T, FunctionType>, Array<ValidationResultType>>> {
     
     return new Promise((resolve) => {
 
