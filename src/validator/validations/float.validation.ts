@@ -1,3 +1,4 @@
+import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 import type { AcceptType, ArtifactType } from '~/common/types.ts';
 import type { DecoratorType } from '~/decorator/types.ts';
@@ -9,8 +10,8 @@ import isUndefined from '~/common/guards/is-undefined.guard.ts';
 import isNumber from '~/common/guards/is-number.guard.ts';
 import isString from '~/common/guards/is-string.guard.ts';
 
-export class FloatValidation implements ValidationInterface {
-  name?: string | undefined = 'Float'
+export class FloatValidation implements AnnotationInterface, ValidationInterface {
+  name: string = 'Float'
 
   accepts?: AcceptType[] | undefined = [
     isNull,

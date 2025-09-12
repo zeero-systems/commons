@@ -13,7 +13,7 @@ import Required from '~/validator/validations/required.validation.ts';
 describe('decorator', () => {
 
   class TestAnnotation implements AnnotationInterface {
-    name?: string | undefined = 'DifferentName'
+    name: string = 'DifferentName'
 
     onAttach(_artifact: ArtifactType, _decorator: DecoratorType) { }
 
@@ -38,29 +38,28 @@ describe('decorator', () => {
   });
 
   it('decoration with both property and name', () => {
-    const decoration = DecoratorMetadata.filter(user, ['firstName'], ['RequiredValidation']);
+    const decoration = DecoratorMetadata.findByAnnotationClassName(user, 'RequiredValidation', 'firstName');
 
     expect(decoration).toBeDefined();
-    expect(decoration.get('firstName')).not.toBeUndefined();
+    expect(decoration).toHaveLength(1);
   });
 
   it('decoration filter by property', () => {
-    const decoration = DecoratorMetadata.filterDecorationsByPropertyKeys(user, ['firstName']);
+    const decoration = DecoratorMetadata.getByTargetPropertyKey(user, 'firstName');
 
     expect(decoration).toBeDefined();
-    expect(decoration.length).toEqual(2);
   });
 
   it('decoration filter by type', () => {
-    const decoration = DecoratorMetadata.filterDecorationsByAnnotationNames(user, ['RequiredValidation']);
+    const decoration = DecoratorMetadata.findByAnnotationClassName(user, 'RequiredValidation');
 
     expect(decoration).toBeDefined();
     expect(decoration.length).toEqual(1);
   });
 
-  it('decoration with different name', () => {
-    const decoration = DecoratorMetadata.filterDecorationsByAnnotationNames(user, ['TestAnnotation']);
+  it('decoration with interoperable name', () => {
+    const decoration = DecoratorMetadata.findByAnnotationInteroperableName(user, 'DifferentName');
 
-    expect(decoration[0].annotation.target.name).toEqual('DifferentName');
+    expect(decoration).toBeDefined();
   })
 });

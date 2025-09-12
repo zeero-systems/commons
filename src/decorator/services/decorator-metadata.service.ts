@@ -1,133 +1,132 @@
 import type { TargetPropertyType } from '~/common/types.ts';
-import type { DecoratorType } from '~/decorator/types.ts';
+import type { DecoratorMetadataType, DecoratorType } from '~/decorator/types.ts';
 
 import Decorator from '~/decorator/services/decorator.service.ts';
 import Text from '~/common/services/text.service.ts';
 
 export class DecoratorMetadata {
 
-  public static get(target: any): Map<TargetPropertyType, DecoratorType[]> {
+  public static get(target: any): DecoratorMetadataType {
     const targetMetadata = target[Symbol.metadata] || target.constructor[Symbol.metadata]
     
     if (targetMetadata) return targetMetadata[Decorator.metadata]
     return new Map()
   }
 
-  public static getDecoration(target: any, propertyKey: TargetPropertyType, annotation: string): DecoratorType | undefined {
-    const decorations = DecoratorMetadata.filterDecorations(target, [propertyKey], [annotation])
-
-    if (decorations) {
-      return decorations[0]
+  public static find(target: any, predicate: (targetPropertyKey: TargetPropertyType, decorator: DecoratorType, index: number, array: any[]) => any): DecoratorType | undefined {
+    const metadata = DecoratorMetadata.get(target)
+    
+    if (metadata) {
+      for (const [targetPropertyKey, decorations] of metadata) {
+        const found = decorations.find((decorator: DecoratorType, index: number, array: DecoratorType[]) => predicate(targetPropertyKey, decorator, index, array))
+        if (found) return found
+      }
     }
 
     return undefined
   }
 
-  public static has(
+  public static findByAnnotationInteroperableName(
     target: any,
-    propertyKeys: Array<TargetPropertyType>,
-    annotationNames: Array<string>,
-  ): boolean {
-    return DecoratorMetadata.filter(target, propertyKeys, annotationNames).size > 0
-  }
-
-  public static hasByPropertyKeys(
-    target: any,
-    propertyKeys: Array<TargetPropertyType>,
-  ): boolean {
-    return DecoratorMetadata.filterDecorationsByPropertyKeys(target, propertyKeys).length > 0
-  }
-
-  public static hasByAnnotationNames(
-    target: any,
-    annotationNames: Array<string>,
-  ): boolean {
-    return DecoratorMetadata.filterDecorationsByAnnotationNames(target, annotationNames).length > 0
-  }
-
-  public static filter(
-    target: any,
-    propertyKeys: Array<TargetPropertyType>,
-    annotations: Array<string>,
-  ): Map<TargetPropertyType, DecoratorType[]> {
-    const decorators = new Map()
-    const targetMetadata = target[Symbol.metadata] || target.constructor[Symbol.metadata]
-    const metadata = targetMetadata && targetMetadata[Decorator.metadata]
-
-    if (metadata) {
-      for (const [key, decorations] of metadata) {
-        if (propertyKeys[0] === "*" || propertyKeys.includes(key)) {
-          const results = decorations
-            .filter((decorator: DecoratorType) => {
-              return annotations.some((annotation) => {
-                return Text.toFirstLetterUppercase(decorator.annotation.target.constructor.name) == Text.toFirstLetterUppercase(annotation);
-              })
-            })
-          
-          if (results.length > 0) {
-            decorators.set(key, results)
-          }
-        }
-      }
-    }
-    
-    return decorators;
-  }
-
-  public static filterDecorations<T>(
-    target: T,
-    propertyKeys: Array<TargetPropertyType>,
-    annotations: Array<string>,
+    interoperableName: string,
+    targetPropertyKey?: TargetPropertyType
   ): Array<DecoratorType> {
-    return DecoratorMetadata
-      .filter(target, propertyKeys, annotations).values()
-      .reduce((result, decorator) => {
-        return [...result, ...decorator]
-      }, [])
+    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: TargetPropertyType, decorator: DecoratorType) => {
+      return (
+        !targetPropertyKey || targetPropertyKey == currentTargetPropertyKey
+      ) && Text.toFirstLetterUppercase(decorator.annotation.target.name) == Text.toFirstLetterUppercase(interoperableName);
+    })
   }
 
-  public static filterDecorationsByPropertyKeys(
+  public static findByAnnotationClassName(
     target: any,
-    propertyKeys: Array<TargetPropertyType>,
+    annotationName: string,
+    targetPropertyKey?: TargetPropertyType
   ): Array<DecoratorType> {
-    const decorators = new Map()
-    const targetMetadata = target[Symbol.metadata] || target.constructor[Symbol.metadata]
-    const metadata = targetMetadata && targetMetadata[Decorator.metadata]
-
-    if (metadata) {
-      for (const [key, decorations] of metadata) {
-        if (propertyKeys.includes(key)) {
-          decorators.set(key, decorations)
-        }
-      }
-    }
-    
-    return decorators.values().reduce((result, decorator) => {
-      return [...result, ...decorator]
-    }, [])
+    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: TargetPropertyType, decorator: DecoratorType) => {
+      return (
+        !targetPropertyKey || targetPropertyKey == currentTargetPropertyKey
+      ) && Text.toFirstLetterUppercase(decorator.annotation.target.constructor.name) == Text.toFirstLetterUppercase(annotationName);
+    })
   }
 
-  public static filterDecorationsByAnnotationNames(
+  public static filterByAnnotationClassName(
     target: any,
-    annotationNames: Array<string>,
+    annotationName: string,
+    targetPropertyKey?: TargetPropertyType
   ): Array<DecoratorType> {
+    return DecoratorMetadata.filter(target, (currentTargetPropertyKey: TargetPropertyType, decorator: DecoratorType) => {
+      return (
+        !targetPropertyKey || targetPropertyKey == currentTargetPropertyKey
+      ) && Text.toFirstLetterUppercase(decorator.annotation.target.constructor.name) == Text.toFirstLetterUppercase(annotationName);
+    })
+  }
+
+  public static filter(target: any, predicate: (targetPropertyKey: TargetPropertyType, decorator: DecoratorType, index: number, array: any[]) => any): Array<DecoratorType> {
     const decorators = []
-    const targetMetadata = target[Symbol.metadata] || target.constructor[Symbol.metadata]
-    const metadata = targetMetadata && targetMetadata[Decorator.metadata]
+    const metadata = DecoratorMetadata.get(target)
 
     if (metadata) {
-      for (const [_key, decorations] of metadata) {
-          decorators.push(...decorations.filter((decorator: DecoratorType) => {
-            return annotationNames.some((annotation) => {
-              return Text.toFirstLetterUppercase(decorator.annotation.target.constructor.name) == Text.toFirstLetterUppercase(annotation);
-            })
-          }))
+      for (const [targetPropertyKey, decorations] of metadata) {
+        decorators.push(...decorations.filter((decorator: DecoratorType, index: number, array: DecoratorType[]) => predicate(targetPropertyKey, decorator, index, array)))
       }
     }
-    
-    return decorators;
+
+    return decorators;  
+  }
+
+  public static filterByAnnotationInteroperableNames(
+    target: any,
+    interoperableNames: Array<string>,
+  ): Array<DecoratorType> {
+    return DecoratorMetadata.filter(target, (_targetPropertyKey: TargetPropertyType, decorator: DecoratorType) => {
+      return interoperableNames.some((annotation: string) => {
+        return Text.toFirstLetterUppercase(decorator.annotation.target.name) == Text.toFirstLetterUppercase(annotation);
+      })
+    })
+  }
+
+  public static filterByAnnotationClassNames(
+    target: any,
+    annotationNames: Array<string>,
+  ): Array<DecoratorType> {
+    return DecoratorMetadata.filter(target, (_targetPropertyKey: TargetPropertyType, decorator: DecoratorType) => {
+      return annotationNames.some((annotation: string) => {
+        return Text.toFirstLetterUppercase(decorator.annotation.target.constructor.name) == Text.toFirstLetterUppercase(annotation);
+      })
+    })
   }
   
+  public static filterByTargetPropertyKeys(
+    target: any,
+    targetPropertyKeys: Array<TargetPropertyType>,
+  ): Array<DecoratorType> {
+    return DecoratorMetadata.filter(target, (targetPropertyKey: TargetPropertyType) => {
+      return targetPropertyKeys.includes(targetPropertyKey)
+    })
+  }
+
+  public static getByAnnotationInteroperableName(
+    target: any,
+    interoperableName: string,
+  ): DecoratorType | undefined {
+    return DecoratorMetadata.findByAnnotationInteroperableName(target, interoperableName)[0]
+  }
+
+  public static getByAnnotationClassName(
+    target: any,
+    annotationName: string,
+  ): DecoratorType | undefined {
+    return DecoratorMetadata.findByAnnotationInteroperableName(target, annotationName)[0]
+  }
+  
+  public static getByTargetPropertyKey(
+    target: any,
+    targetPropertyKey: TargetPropertyType,
+  ): DecoratorType | undefined {
+    return DecoratorMetadata.filterByTargetPropertyKeys(target, [targetPropertyKey])[0]
+  }
+
 }
 
 export default DecoratorMetadata

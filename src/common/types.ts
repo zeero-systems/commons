@@ -6,8 +6,6 @@
 export type ArtifactType = {
   name: KeyType;
   target: any;
-  metadataKeys?: Array<symbol>;
-  parameterNames?: string[];
 };
 
 /**

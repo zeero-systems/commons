@@ -1,5 +1,6 @@
 import type { DecoratorType } from '~/decorator/types.ts';
 import type { ArtifactType } from '~/common/types.ts';
+import type { InteropeableInterface } from '~/common/interfaces.ts';
 
 /**
  * Annotation intefaces to implements decorators
@@ -9,8 +10,7 @@ import type { ArtifactType } from '~/common/types.ts';
  * @member {Function} onAttach - Called when the decorator is attached
  * @member {Function} onInitialize - Called when the decorator is initialized
  */
-export interface AnnotationInterface {
-  readonly name?: string;
+export interface AnnotationInterface extends InteropeableInterface {
   readonly persists?: boolean;
   readonly stackable?: boolean;
 

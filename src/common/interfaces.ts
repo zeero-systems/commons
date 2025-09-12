@@ -41,4 +41,8 @@ export interface KeyableExceptionOptionsInterface<K> extends ExceptionOptionsInt
   key?: K;
 }
 
+export interface InteropeableInterface {
+  readonly name: string;
+}
+
 export default {};

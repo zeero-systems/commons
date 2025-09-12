@@ -1,15 +1,14 @@
-import type { EntryType, FunctionType, MappedPropertiesType, OmitType, TargetPropertyType } from '~/common/types.ts';
+import type { EntryType, FunctionType, MappedPropertiesType, OmitType } from '~/common/types.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
 import type { EntityInterface } from '~/entity/interfaces.ts';
+import type { ValidationInterface } from '~/validator/interfaces.ts';
+import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 
 import Objector from '~/common/services/objector.service.ts';
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
 import Validator from '~/validator/services/validator.service.ts';
 import Metadata from '~/decorator/services/decorator-metadata.service.ts';
-import { DecoratorType } from '../../decorator/types.ts';
-import Decorator from '../../decorator/services/decorator.service.ts';
-import isValidation from '../../validator/guards/is-validation.guard.ts';
-import { ValidationInterface } from '../../validator/interfaces.ts';
+import isValidation from '~/validator/guards/is-validation.guard.ts';
 
 export class Entity implements EntityInterface {
   public toEntries(): ReadonlyArray<EntryType<OmitType<this, FunctionType>>> {
@@ -33,9 +32,9 @@ export class Entity implements EntityInterface {
   }
 
   public validateProperty<K extends keyof OmitType<this, FunctionType>>(propertyKey: K): Promise<Array<ValidationResultType>> {
-    const decorations = Metadata.filterDecorationsByPropertyKeys(this, [propertyKey])
+    const decorations = Metadata.filterByTargetPropertyKeys(this, [propertyKey])
 
-    const validations = decorations.reduce((previous: ValidationInterface[], current) => {
+    const validations = decorations.reduce((previous: (ValidationInterface & AnnotationInterface)[], current) => {
       if (isValidation(current.annotation.target)) {
         previous.push(current.annotation.target);
       }

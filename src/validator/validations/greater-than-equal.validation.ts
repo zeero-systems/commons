@@ -1,3 +1,4 @@
+import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 import type { AcceptType, ArtifactType } from '~/common/types.ts';
 import type { DecoratorType } from '~/decorator/types.ts';
@@ -11,8 +12,8 @@ import isString from '~/common/guards/is-string.guard.ts';
 import isNumber from '~/common/guards/is-number.guard.ts';
 import isDate from '~/common/guards/is-date.guard.ts';
 
-export class GreaterThanEqualValidation implements ValidationInterface {
-  name?: string | undefined = 'GreaterThanEqual'
+export class GreaterThanEqualValidation implements AnnotationInterface, ValidationInterface {
+  name: string = 'GreaterThanEqual'
 
   accepts?: AcceptType[] | undefined = [
     isNull,

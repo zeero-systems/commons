@@ -1,3 +1,4 @@
+import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 import type { AcceptType, ArtifactType } from '~/common/types.ts';
 import type { DecoratorType } from '~/decorator/types.ts';
@@ -8,8 +9,8 @@ import isNull from '~/common/guards/is-null.guard.ts';
 import isUndefined from '~/common/guards/is-undefined.guard.ts';
 import isString from '~/common/guards/is-string.guard.ts';
 
-export class RegexValidation implements ValidationInterface {
-  name?: string | undefined = 'Regex'
+export class RegexValidation implements AnnotationInterface, ValidationInterface {
+  name: string = 'Regex'
 
   accepts?: AcceptType[] | undefined = [
     isNull,

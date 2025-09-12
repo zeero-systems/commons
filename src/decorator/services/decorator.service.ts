@@ -18,7 +18,6 @@ import Factory from '~/common/services/factory.service.ts';
 import Objector from '~/common/services/objector.service.ts';
 
 export class Decorator {
-  public static readonly keys: unique symbol = Symbol('Decorator.keys');
   public static readonly metadata: unique symbol = Symbol('Decorator.medadata');
   
   public static onEvents: DecoratorEventType = {
@@ -46,20 +45,15 @@ export class Decorator {
       decorationContext: TargetContextType,
     ) {
       const artifactName = decorationTarget?.name || decorationTarget?.constructor?.name || decorationContext.name || ''
-      const artifactParameterName = decorationContext.kind != DecoratorKindEnum.CLASS ? decorationContext.name : 'constructor';
-
       const annotationInstance = Factory.construct(annotationTarget, { arguments: annotationParameters })
       
       const annotation: AnnotationType = {
         name: annotationTarget.name,
         target: annotationInstance,
-        parameterNames: Factory.getParameterNames(annotationTarget, 'constructor'),
       } 
 
       const artifact: ArtifactType = {
-        metadataKeys: [],
         name: artifactName,
-        parameterNames: Factory.getParameterNames(decorationTarget, String(artifactParameterName)),
         target: decorationTarget, 
       };
 
@@ -93,24 +87,11 @@ export class Decorator {
     };
   }
 
-  private static attachToMetadata(artifact: ArtifactType, annotation: AnnotationType, decoration: DecorationType): any {
+  private static attachToMetadata(_artifact: ArtifactType, annotation: AnnotationType, decoration: DecorationType): any {
     if (annotation.target.persists === false) return
 
-    const metadata = annotation.target.constructor.metadata
     const property = decoration.context.kind != DecoratorKindEnum.CLASS ? decoration.context.name : 'construct';
     
-    if (!decoration.context.metadata[Decorator.keys]) {
-      decoration.context.metadata[Decorator.keys] = [];
-    }
-
-    if (metadata) {
-      if (!decoration.context.metadata[Decorator.keys].includes(metadata)) {
-        decoration.context.metadata[Decorator.keys].push(metadata)
-      }
-    }
-
-    artifact.metadataKeys = decoration.context.metadata[Decorator.keys]
-
     if (!decoration.context.metadata[Decorator.metadata]) {
       decoration.context.metadata[Decorator.metadata] = new Map<TargetPropertyType, DecoratorType[]>();
     }

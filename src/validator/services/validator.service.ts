@@ -1,3 +1,4 @@
+import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
 import type { FunctionType, MappedType, OmitType } from '~/common/types.ts';
@@ -11,7 +12,7 @@ export class Validator {
   public static validateObject<T extends {}>(
     target: T,
     validators: {
-      [key: PropertyKey]: Array<ValidationInterface>;
+      [key: PropertyKey]: Array<ValidationInterface & AnnotationInterface>;
     },
   ): Promise<MappedType<OmitType<T, FunctionType>, Array<ValidationResultType>>> {
     
@@ -40,7 +41,7 @@ export class Validator {
 
   public static validateValue<T>(
     value: T,
-    validations: Array<ValidationInterface> = [],
+    validations: Array<ValidationInterface & AnnotationInterface> = [],
   ): Promise<ValidationResultType[]> {
     if (!validations || validations.length == 0) {
       return Promise.resolve([{ key: ValidationEnum.UNDEFINED }] as ValidationResultType[]);

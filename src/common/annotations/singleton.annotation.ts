@@ -4,14 +4,14 @@ import type { ArtifactType } from '~/common/types.ts';
 
 import AnnotationException from '~/decorator/exceptions/annotation.exception.ts';
 import DecoratorKindEnum from '~/decorator/enums/decorator-kind.enum.ts';
-import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.ts';
 
 export class SingletonAnnotation implements AnnotationInterface {
+  name: string = 'Singleton'
   public static readonly metadata: unique symbol = Symbol('Singleton.medadata');
 
   onAttach(artifact: ArtifactType, decorator: DecoratorType): any {
     if (decorator.decoration.kind == DecoratorKindEnum.CLASS) {
-      if (!DecoratorMetadata.has(artifact.target, ['construct'], ['singleton'])) {
+      if (!decorator.decoration.context.metadata[SingletonAnnotation.metadata]) {
         artifact.target = new Proxy(artifact.target as any, {
           construct(currentTarget, currentArgs, newTarget) {
             if (currentTarget.prototype !== newTarget.prototype) {
