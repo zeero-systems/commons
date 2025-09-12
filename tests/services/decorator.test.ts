@@ -41,11 +41,10 @@ describe('decorator', () => {
     const decoration = DecoratorMetadata.findByAnnotationClassName(user, 'RequiredValidation', 'firstName');
 
     expect(decoration).toBeDefined();
-    expect(decoration).toHaveLength(1);
   });
 
   it('decoration filter by property', () => {
-    const decoration = DecoratorMetadata.getByTargetPropertyKey(user, 'firstName');
+    const decoration = DecoratorMetadata.findByTargetPropertyKey(user, 'firstName');
 
     expect(decoration).toBeDefined();
   });
@@ -54,7 +53,6 @@ describe('decorator', () => {
     const decoration = DecoratorMetadata.findByAnnotationClassName(user, 'RequiredValidation');
 
     expect(decoration).toBeDefined();
-    expect(decoration.length).toEqual(1);
   });
 
   it('decoration with interoperable name', () => {

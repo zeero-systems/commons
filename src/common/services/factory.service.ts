@@ -51,7 +51,7 @@ export class Factory {
       }
     }
 
-    const canUpdateProperties = !DecoratorMetadata.getByAnnotationInteroperableName(target, 'singleton')
+    const canUpdateProperties = !DecoratorMetadata.findByAnnotationInteroperableName(target, 'singleton')
     const targetInstance = Reflect.construct(target, indexedArguments);
     
     if (canUpdateProperties) {

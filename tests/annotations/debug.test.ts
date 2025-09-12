@@ -26,7 +26,7 @@ describe('annotation', () => {
     });
     
     it('should be registered in class metadata', () => {
-      const metadata = Metadata.getByAnnotationInteroperableName(UserEntityMock, 'debug');
+      const metadata = Metadata.findByAnnotationInteroperableName(UserEntityMock, 'debug');
       expect(metadata).toBeDefined();
       expect(metadata?.annotation.target instanceof DebugAnnotation).toBeTruthy();
     });
