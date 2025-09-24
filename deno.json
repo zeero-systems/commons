@@ -1,6 +1,6 @@
 {
   "name": "@zeero-systems/commons",
-  "version": "0.26.0",
+  "version": "0.26.2",
   "license": "GPL-3.0",
   "exports": {
     ".": "./index.ts",
@@ -34,10 +34,10 @@
   "imports": {
     "-/": "./",
     "~/": "./src/",
-    "@std/bdd": "jsr:@std/testing@1.0.15/bdd",
-    "@std/mock": "jsr:@std/testing@1.0.15/mock",
     "@std/assert": "jsr:@std/assert@^1.0.14",
-    "@std/expect": "jsr:@std/expect@1.0.17"
+    "@std/bdd": "jsr:@std/testing@1.0.15/bdd",
+    "@std/expect": "jsr:@std/expect@1.0.17",
+    "@std/mock": "jsr:@std/testing@1.0.15/mock"
   },
   "fmt": {
     "files": {

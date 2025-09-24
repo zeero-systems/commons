@@ -9,16 +9,16 @@ import Objector from '~/common/services/objector.service.ts';
 import Text from '~/common/services/text.service.ts';
 import Validator from '~/validator/services/validator.service.ts';
 
-export { Decorator } from '~/decorator/services/decorator.service.ts';
-export { DecoratorMetadata } from '~/decorator/services/decorator-metadata.service.ts';
-export { Entity } from '~/entity/services/entity.service.ts';
-export { Exception } from '~/common/services/exception.service.ts';
-export { Factory } from '~/common/services/factory.service.ts';
-export { List } from '~/common/services/list.service.ts';
-export { Metadata } from '~/common/services/metadata.service.ts';
-export { Objector } from '~/common/services/objector.service.ts';
-export { Text } from '~/common/services/text.service.ts';
-export { Validator } from '~/validator/services/validator.service.ts';
+export { default as Decorator } from '~/decorator/services/decorator.service.ts';
+export { default as DecoratorMetadata } from '~/decorator/services/decorator-metadata.service.ts';
+export { default as Entity } from '~/entity/services/entity.service.ts';
+export { default as Exception } from '~/common/services/exception.service.ts';
+export { default as Factory } from '~/common/services/factory.service.ts';
+export { default as List } from '~/common/services/list.service.ts';
+export { default as Metadata } from '~/common/services/metadata.service.ts';
+export { default as Objector } from '~/common/services/objector.service.ts';
+export { default as Text } from '~/common/services/text.service.ts';
+export { default as Validator } from '~/validator/services/validator.service.ts';
 
 export default {
   Decorator,

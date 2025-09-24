@@ -22,7 +22,7 @@ export class Decorator {
   
   public static onEvents: DecoratorEventType = {
     onEvaluation: new Array<OnEvaluationType>,
-    onDecoration: new Array<OnDecorationType>(Decorator.attachToMetadata)
+    onDecoration: new Array<OnDecorationType>(Decorator.attach)
   }
   
   public static create<C extends abstract new (...args: any) => any>(annotation: C): DecorationFunctionType<C> {
@@ -87,7 +87,7 @@ export class Decorator {
     };
   }
 
-  private static attachToMetadata(_artifact: ArtifactType, annotation: AnnotationType, decoration: DecorationType): any {
+  public static attach(_artifact: ArtifactType, annotation: AnnotationType, decoration: DecorationType): any {
     if (annotation.target.persists === false) return
 
     const property = decoration.context.kind != DecoratorKindEnum.CLASS ? decoration.context.name : 'construct';

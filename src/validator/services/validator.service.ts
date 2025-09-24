@@ -9,6 +9,7 @@ import Objector from '~/common/services/objector.service.ts';
 export class Validator {
   public static readonly validation: unique symbol = Symbol('validation');
 
+  // deno-lint-ignore ban-types
   public static validateObject<T extends {}>(
     target: T,
     validators: {

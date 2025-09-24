@@ -7,7 +7,7 @@ import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import Objector from '~/common/services/objector.service.ts';
 import ValidationEnum from '~/validator/enums/validation.enum.ts';
 import Validator from '~/validator/services/validator.service.ts';
-import Metadata from '~/decorator/services/decorator-metadata.service.ts';
+import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.ts';
 import isValidation from '~/validator/guards/is-validation.guard.ts';
 
 export class Entity implements EntityInterface {
@@ -32,7 +32,7 @@ export class Entity implements EntityInterface {
   }
 
   public validateProperty<K extends keyof OmitType<this, FunctionType>>(propertyKey: K): Promise<Array<ValidationResultType>> {
-    const decorations = Metadata.filterByTargetPropertyKeys(this, [propertyKey])
+    const decorations = DecoratorMetadata.filterByTargetPropertyKeys(this, [propertyKey])
 
     const validations = decorations.reduce((previous: (ValidationInterface & AnnotationInterface)[], current) => {
       if (isValidation(current.annotation.target)) {
