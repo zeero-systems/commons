@@ -1,7 +1,7 @@
 import type { PropertiesType } from '~/common/types.ts';
-import DecoratorMetadata from '../../decorator/services/decorator-metadata.service.ts';
-import isArray from '../guards/is-array.guard.ts';
-import isObject from '../guards/is-object.guard.ts';
+import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.ts';
+import isArray from '~/common/guards/is-array.guard.ts';
+import isObject from '~/common/guards/is-object.guard.ts';
 
 /**
  * Utility class providing common operations for class instantiation and function parameter inspection

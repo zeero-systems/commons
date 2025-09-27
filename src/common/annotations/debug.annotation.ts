@@ -4,6 +4,7 @@ import type { ArtifactType } from '~/common/types.ts';
 
 export class DebugAnnotation implements AnnotationInterface {
   name: string = 'Debug'
+  persists?: boolean | undefined = false
   public static readonly metadata: unique symbol = Symbol('Debug.metadata');
 
   onAttach(artifact: ArtifactType, decorator: DecoratorType): any {

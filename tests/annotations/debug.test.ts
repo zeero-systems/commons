@@ -25,10 +25,9 @@ describe('annotation', () => {
       expect(logSpy.calls[0].args[0]).not.toBeNull();
     });
     
-    it('should be registered in class metadata', () => {
+    it('should not be registered in class metadata', () => {
       const metadata = Metadata.findByAnnotationInteroperableName(UserEntityMock, 'debug');
-      expect(metadata).toBeDefined();
-      expect(metadata?.annotation.target instanceof DebugAnnotation).toBeTruthy();
+      expect(metadata).not.toBeDefined();
     });
 
   });
