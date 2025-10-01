@@ -102,7 +102,7 @@ export class Decorator {
 
     const stackable = annotation.target.stackable === undefined ? true : annotation.target.stackable;
     const decorations = decoration.context.metadata[Decorator.metadata].get(property) as Array<DecoratorType>;
-    const alreadyExists = !decorations.some((decorator: DecoratorType) => {
+    const alreadyExists = decorations.some((decorator: DecoratorType) => {
       return decorator.annotation.target.constructor.name === annotation.target.constructor.name;
     });
 
