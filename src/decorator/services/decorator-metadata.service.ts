@@ -7,7 +7,7 @@ import Text from '~/common/services/text.service.ts';
 export class DecoratorMetadata {
 
   public static get(target: any): DecoratorMetadataType {
-    const targetMetadata = target[Symbol.metadata] || target.constructor[Symbol.metadata]
+    const targetMetadata = target.metadata || target[Symbol.metadata] || target.constructor[Symbol.metadata]
     
     if (targetMetadata) return targetMetadata[Decorator.metadata]
     return new Map()
