@@ -120,7 +120,7 @@ describe('container', () => {
   const newContainer = testContainer.duplicate()
 
   it('instances from a container create method', () => {
-    const userServiceMock = newContainer.construct<UserServiceMock>('UserServiceMock')
+    const _userServiceMock = newContainer.construct<UserServiceMock>('UserServiceMock')
 
     expect(testContainer.instances.size).toEqual(0)
     expect(newContainer.instances.size).toEqual(2)
