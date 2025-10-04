@@ -28,11 +28,11 @@ import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.t
 export class Factory {
   public static readonly metadata: unique symbol = Symbol('Factory.metadata');
 
-  public static arguments<T extends NewableType<T>>(target: T, args?: ConstructorParameters<T>) {
+  public static arguments<T extends NewableType<T>>(target: T, args?: ConstructorParameters<T>): InstanceType<T> {
     return Factory.construct(target, { arguments: args })
   }
 
-  public static properties<T extends NewableType<T>>(target: T, properties?: PropertiesType<InstanceType<T>>) {
+  public static properties<T extends NewableType<T>>(target: T, properties?: PropertiesType<InstanceType<T>>): InstanceType<T> {
     return Factory.construct(target, { properties })
   }
 
