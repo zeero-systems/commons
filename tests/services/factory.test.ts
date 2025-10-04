@@ -9,7 +9,9 @@ describe('factory', () => {
     public nickName!: string
     public avatarUrl?: string
 
-    constructor(public firstName?: string, public lastName?: string) {}
+    constructor(login: string, public firstName: string, public lastName?: string) {
+      login = `_${login}_`
+    }
   }
 
   class UserEntityMock extends Entity {
@@ -19,23 +21,21 @@ describe('factory', () => {
 
   describe('construct method', () => {
     it('with index parameters', () => {
-      const userMock = Factory.construct(UserMock, { arguments: [ 'eduardo', 'segura' ] });
+      const userMock = Factory.arguments(UserMock, ['test', 'eduardo', 'segura'])
 
       expect(userMock.firstName).toBe('eduardo');
       expect(userMock.lastName).toBe('segura');
     });
 
     it('with named parameters', () => {
-      const userMock = Factory.construct(UserMock, { arguments: { nickName: 'eduardo' } } );
+      const userMock = Factory.properties(UserMock, { firstName: 'eduardo', nickName: 'zero' });
 
-      expect(userMock.nickName).toBe('eduardo');
+      expect(userMock.nickName).toBe('zero');
       expect(userMock.avatarUrl).toBe(undefined);
     });
 
     it('with a entity class', () => {
-      const userEntityMock = Factory.construct(UserEntityMock, {
-        arguments: { nickName: 'jaime', email: 'test@email.com' },
-      });
+      const userEntityMock = Factory.properties(UserEntityMock, { nickName: 'jaime', email: 'test@email.com' });
 
       expect(userEntityMock.nickName).toBe('jaime');
       expect(userEntityMock.email).toBe('test@email.com');

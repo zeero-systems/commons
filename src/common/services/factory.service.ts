@@ -1,7 +1,5 @@
-import type { PropertiesType } from '~/common/types.ts';
+import type { NewableType, PropertiesType } from '~/common/types.ts';
 import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.ts';
-import isArray from '~/common/guards/is-array.guard.ts';
-import isObject from '~/common/guards/is-object.guard.ts';
 
 /**
  * Utility class providing common operations for class instantiation and function parameter inspection
@@ -30,25 +28,32 @@ import isObject from '~/common/guards/is-object.guard.ts';
 export class Factory {
   public static readonly metadata: unique symbol = Symbol('Factory.metadata');
 
-  public static construct<T, C extends (...args: any) => T>(
-    target: new (...args: any) => T,
+  public static arguments<T extends NewableType<T>>(target: T, args?: ConstructorParameters<T>) {
+    return Factory.construct(target, { arguments: args })
+  }
+
+  public static properties<T extends NewableType<T>>(target: T, properties?: PropertiesType<InstanceType<T>>) {
+    return Factory.construct(target, { properties })
+  }
+
+  public static construct<T extends NewableType<T>>(
+    target: T,
     options?: {
-      arguments?: Parameters<C> | PropertiesType<T>;
+      arguments?: ConstructorParameters<T>, 
+      properties?: PropertiesType<InstanceType<T>>
     },
-  ): T {
+  ): InstanceType<T> {
     let indexedArguments: any[] = [];
     const namedArguments: any = {};
-
+    
     if (options?.arguments) {
-      if (isArray(options?.arguments)) {
-        indexedArguments = [...options.arguments];
-      }
-
-      if (isObject(options?.arguments)) {
-        Object.entries(options?.arguments).forEach(([key, value]) => {
-          namedArguments[key] = value;
-        });
-      }
+      indexedArguments = [...options.arguments];
+    }
+    
+    if (options?.properties) {
+      Object.entries(options.properties).forEach(([key, value]) => {
+        namedArguments[key] = value;
+      });
     }
 
     const canUpdateProperties = !DecoratorMetadata.findByAnnotationInteroperableName(target, 'singleton')

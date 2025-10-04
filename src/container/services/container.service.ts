@@ -36,7 +36,6 @@ export class Container implements ContainerInterface {
     if (!item) return undefined
     
     let target = item.artifact.target
-    
     if (isClass(target)) {
       if (item.tags.includes('C')) {
         target = this.createProxy(item.artifact, this);
@@ -168,7 +167,7 @@ export class Container implements ContainerInterface {
                       methodArgs[index] = container.construct(parameterProvider.provider, parameterProvider.scope);
                     }
                   }
-
+                  
                   return currentTarget[currentPropertyKey].apply(currentTarget, methodArgs);
                 };
               }

@@ -19,7 +19,7 @@ describe('multiple annotation', () => {
   }
 
   it('multiple decorators', () => {
-    const userSingletonMockFirst = Factory.construct(UserEntityMock, { arguments: { firstName: 'Eduardo' } });
+    const userSingletonMockFirst = Factory.properties(UserEntityMock, { firstName: 'Eduardo' });
 
     const decorations = DecoratorMetadata.filterByTargetPropertyKeys(userSingletonMockFirst, ['firstName'])
     const decoratorNames = decorations.map((decorator: DecoratorType) => decorator.annotation.target.constructor .name)

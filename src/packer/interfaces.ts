@@ -1,5 +1,5 @@
 import type { ContainerInterface } from '~/container/interfaces.ts';
-import type { ArtifactType, ConstructorType, KeyableType } from '~/common/types.ts';
+import type { ArtifactType, KeyableType } from '~/common/types.ts';
 import type { UnpackType } from '~/packer/types.ts';
 
 export interface PackInterface {  
@@ -13,5 +13,5 @@ export interface PackerInterface {
   container: ContainerInterface
 
   artifacts(): Array<ArtifactType>
-  unpack(pack: ConstructorType<PackInterface>): UnpackType
+  unpack(pack: PackInterface): UnpackType
 }

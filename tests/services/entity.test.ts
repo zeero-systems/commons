@@ -17,12 +17,10 @@ describe('entity', () => {
     email!: Array<{ isMain: boolean; address: string }>;
   }
 
-  const entityExtended = Factory.construct(EntityExtended, {
-    arguments: {
-      firstName: 'eduardo',
-      lastName: 'segura',
-      email: [{ isMain: true, address: 'test@email.com' }],
-    },
+  const entityExtended = Factory.properties(EntityExtended, {
+    firstName: 'eduardo',
+    lastName: 'segura',
+    email: [{ isMain: true, address: 'test@email.com' }],
   });
 
   it('toEntries method', () => {

@@ -1,4 +1,4 @@
-import type { ArtifactType, ConstructorType } from '~/common/types.ts';
+import type { ArtifactType, NewableType } from '~/common/types.ts';
 import type { DecoratorType } from '~/decorator/types.ts';
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ConsumerType, ProviderType } from '~/container/types.ts';
@@ -15,9 +15,9 @@ export class PackAnnotation implements AnnotationInterface {
 
   constructor(
     public options: {
-      providers?: Array<ProviderType | ConstructorType<any>>,
-      consumers?: Array<ConsumerType | ConstructorType<any>>,
-      packs?: Array<ConstructorType<PackInterface>>,
+      providers?: Array<ProviderType | NewableType<any>>,
+      consumers?: Array<ConsumerType | NewableType<any>>,
+      packs?: Array<PackInterface>,
     }
   ) {}
 

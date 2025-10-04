@@ -30,12 +30,7 @@ describe('decorator', () => {
     lastName!: string;
   }
 
-  const user = Factory.construct(User, {
-    arguments: {
-      firstName: 'eduardo',
-      lastName: 'segura',
-    },
-  });
+  const user = Factory.properties(User, { firstName: 'eduardo', lastName: 'segura' });
 
   it('decoration with both property and name', () => {
     const decoration = DecoratorMetadata.findByAnnotationClassName(user, 'RequiredValidation', 'firstName');

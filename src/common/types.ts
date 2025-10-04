@@ -16,13 +16,6 @@ export type ArtifactType = {
 };
 
 /**
- * Defines as a constructable type
- *
- * @type ConstructorType<T>
- */
-export type ConstructorType<T> = T extends new (...args: infer A) => infer R ? new (...args: A) => R : new (...args: any) => any;
-
-/**
  * Defines a safe function type
  *
  * @type PropertiesType<T>
@@ -36,12 +29,7 @@ export type FunctionType = (...args: any[]) => any;
  */
 export type PropertiesType<T> = { [P in keyof T as T[P] extends FunctionType ? never : P]: T[P]; }
 
-/**
- * Defines a type for only the constructor args
- *
- * @type PropertiesType<T>
- */
-export type ConstructorPropertiesType<T extends (...args: any[]) => any, A = Parameters<T>> = { [P in keyof A]: A[P]; }
+export type NewableType<T extends new (...args: any[]) => any> = new (...args: any) => InstanceType<T>
 
 /**
  * Map a value to a type without his functions

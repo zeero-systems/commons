@@ -16,11 +16,7 @@ describe('validator', () => {
     birthDate?: Date
   }
 
-  const userEntity = Factory.construct(UserMock, {
-    arguments: {
-      firstName: 'eduardo',
-    },
-  });
+  const userEntity = Factory.properties(UserMock, { firstName: 'eduardo' });
 
 
   it('validateValue method', async () => {

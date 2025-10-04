@@ -1,4 +1,4 @@
-import type { ArtifactType, PropertiesType, PropertyType } from '~/common/types.ts';
+import type { ArtifactType, NewableType, PropertiesType, PropertyType } from '~/common/types.ts';
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type {
   DecorationType,
@@ -25,15 +25,15 @@ export class Decorator {
     onDecoration: new Array<OnDecorationType>(Decorator.attach)
   }
   
-  public static create<C extends abstract new (...args: any) => any>(annotation: C): DecorationFunctionType<C> {
+  public static create<C extends NewableType<C>>(annotation: C): DecorationFunctionType<C> {
     return (...parameters: ConstructorParameters<C>) => {
       return Decorator.use(annotation as any, parameters)
     }
   }
 
-  public static use<T extends AnnotationInterface, C extends (...args: unknown[]) => T>(
-    annotationTarget: new (...args: any[]) => T, 
-    annotationParameters?: PropertiesType<T> | Parameters<C>,
+  public static use<T extends NewableType<T>>(
+    annotationTarget: T, 
+    annotationParameters?: ConstructorParameters<T>,
   ): DecoratorFunctionType {
 
     for (let index = 0; index < Decorator.onEvents.onEvaluation.length; index++) {
@@ -45,11 +45,11 @@ export class Decorator {
       decorationContext: TargetContextType,
     ) {
       const artifactName = decorationTarget?.name || decorationTarget?.constructor?.name || decorationContext.name || ''
-      const annotationInstance = Factory.construct(annotationTarget, { arguments: annotationParameters })
+      const annotationInstance = Factory.arguments(annotationTarget, annotationParameters)
       
       const annotation: AnnotationType = {
         name: annotationTarget.name,
-        target: annotationInstance,
+        target: annotationInstance as AnnotationInterface,
       } 
 
       const artifact: ArtifactType = {
