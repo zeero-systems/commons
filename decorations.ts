@@ -1,5 +1,6 @@
 import Consumer from '~/container/decorations/consumer.decoration.ts';
 import Debug from '~/common/decorations/debug.decoration.ts';
+import Descriptor from '~/common/decorations/descriptor.decoration.ts';
 import Equal from '~/validator/decorations/equal.decoration.ts';
 import Float from '~/validator/decorations/float.decoration.ts';
 import GreaterThan from '~/validator/decorations/greater-than.decoration.ts';
@@ -14,6 +15,7 @@ import Singleton from '~/common/decorations/singleton.decoration.ts';
 
 export { default as Consumer } from '~/container/decorations/consumer.decoration.ts';
 export { default as Debug } from '~/common/decorations/debug.decoration.ts';
+export { default as Descriptor } from '~/common/decorations/descriptor.decoration.ts';
 export { default as Equal } from '~/validator/decorations/equal.decoration.ts';
 export { default as Float } from '~/validator/decorations/float.decoration.ts';
 export { default as GreaterThan } from '~/validator/decorations/greater-than.decoration.ts';
@@ -29,6 +31,7 @@ export { default as Singleton } from '~/common/decorations/singleton.decoration.
 export default {
   Consumer,
   Debug,
+  Descriptor,
   Equal,
   Float,
   GreaterThan,
