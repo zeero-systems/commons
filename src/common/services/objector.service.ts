@@ -9,6 +9,35 @@ import isDate from '~/common/guards/is-date.guard.ts';
  * @member {OmitType<T, K>} deleteProperties - Deletes and return an object without the deleted properties
  */
 export class Objector {
+  
+  public static hasUniqueValues(obj: any, seenValues = new Set<any>()): boolean {
+    if (typeof obj !== 'object' || obj === null) {
+      if (seenValues.has(obj)) {
+        return false;
+      }
+      seenValues.add(obj);
+      return true;
+    }
+
+    if (Array.isArray(obj)) {
+      for (const item of obj) {
+        if (!Objector.hasUniqueValues(item, seenValues)) {
+          return false;
+        }
+      }
+    } else {
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          if (!Objector.hasUniqueValues(obj[key], seenValues)) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
+  }
+
   public static getKeys<T extends Record<PropertyKey, any>>(target: T): Array<string | symbol> {
     return Object.keys(target);
   }
@@ -56,6 +85,27 @@ export class Objector {
     }
 
     return `${typeof target[propertyKey]}`;
+  }
+
+  public static assign(target: any, ...sources: any[]): any {
+    sources.forEach((source: any) => {
+      const descriptors: { [key: string | number | symbol]: any } = {};
+
+      while (source && source !== Object.prototype) {
+        const propertyNames = Object.getOwnPropertyNames(source);
+
+        for (const name of propertyNames) {
+          const descriptor = Object.getOwnPropertyDescriptor(source, name);
+          if (descriptor && !descriptors[name]) {
+            descriptors[name] = descriptor;
+          }
+        }
+        source = Object.getPrototypeOf(source);
+      }
+
+      Object.defineProperties(target, descriptors);
+    });
+    return target;
   }
 }
 

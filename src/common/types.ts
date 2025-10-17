@@ -135,4 +135,15 @@ export type TupleEntryType<T extends readonly unknown[], I extends unknown[] = [
   readonly [infer Head, ...infer Tail] ? TupleEntryType<Tail, [...I, unknown], R | [`${I['length']}`, Head]>
   : R;
 
+export type DescriptorOptionsType = {
+  predicate?: (name: string) => boolean;
+  properties: PropertyDescriptor;
+};
+
+export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> =
+  & Pick<T, Exclude<keyof T, Keys>>
+  & {
+    [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
+  }[Keys];
+
 export default {};

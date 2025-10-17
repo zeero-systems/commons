@@ -1,6 +1,6 @@
 {
   "name": "@zeero-systems/commons",
-  "version": "0.32.4",
+  "version": "0.35.0",
   "license": "GPL-3.0",
   "exports": {
     ".": "./index.ts",
