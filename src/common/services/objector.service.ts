@@ -10,7 +10,7 @@ import isDate from '~/common/guards/is-date.guard.ts';
  */
 export class Objector {
   
-  public static hasUniqueValues(obj: any, seenValues = new Set<any>()): boolean {
+  public static hasUniqueValues(obj: any, seenValues: Set<any> = new Set<any>()): boolean {
     if (typeof obj !== 'object' || obj === null) {
       if (seenValues.has(obj)) {
         return false;
