@@ -1,4 +1,4 @@
-import type { ArtifactType, KeyableType } from '~/common/types.ts';
+import type { ArtifactType, KeyableType, NewableType } from '~/common/types.ts';
 import type { ContainerInterface } from '~/container/interfaces.ts';
 import type { PackerInterface, PackInterface } from '~/packer/interfaces.ts';
 import type { UnpackType } from '~/packer/types.ts';
@@ -14,7 +14,7 @@ export class Packer implements PackerInterface {
   public packs: Array<KeyableType> = []
   public container: ContainerInterface
 
-  constructor(public pack: PackInterface) {
+  constructor(public pack: NewableType<new (...args: any[]) => PackInterface>) {
     this.container = new Container(this.unpack(pack))
   }
 
@@ -22,7 +22,7 @@ export class Packer implements PackerInterface {
     return this.container.collection.values().map((collection) => collection.artifact).toArray() || []
   }
 
-  public unpack(pack: PackInterface): UnpackType {
+  public unpack(pack: NewableType<new (...args: any[]) => PackInterface>): UnpackType {
     const collection: UnpackType = { providers: [], consumers: [] }
     const decorator = DecoratorMetadata.findByAnnotationInteroperableName(pack, 'pack', 'construct')
     

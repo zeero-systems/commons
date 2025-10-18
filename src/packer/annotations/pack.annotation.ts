@@ -17,7 +17,7 @@ export class PackAnnotation implements AnnotationInterface {
     public options: {
       providers?: Array<ProviderType | NewableType<any>>,
       consumers?: Array<ConsumerType | NewableType<any>>,
-      packs?: Array<PackInterface>,
+      packs?: Array<NewableType<new (...args: any[]) => PackInterface>>,
     }
   ) {}
 
