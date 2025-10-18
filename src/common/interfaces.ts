@@ -12,7 +12,7 @@ import type { JsonType } from '~/common/types.ts';
  * @member {string | undefined} stack - Execution stack
  */
 export interface ExceptionInterface<K> extends Error {
-  key?: K | 'EXCEPTION';
+  key?: K | 'ERROR';
   name: string;
   message: string;
   context?: JsonType;

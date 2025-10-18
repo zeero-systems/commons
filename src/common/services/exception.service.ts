@@ -11,12 +11,12 @@ import type { JsonType } from '~/common/types.ts';
  * @param {KeyableExceptionOptionsInterface<K>} options - Adds extra options to the exception
  */ 
 export class Exception<K> extends Error implements ExceptionInterface<K> {
-  key?: K | 'EXCEPTION';
+  key?: K | 'ERROR';
   context?: JsonType;
 
   constructor(message: string, options?: KeyableExceptionOptionsInterface<K>) {
     super(message, { cause: options?.cause });
-    this.key = options?.key || 'EXCEPTION';
+    this.key = options?.key || 'ERROR';
     this.context = options?.context;
     this.name = this.constructor.name;
   }
