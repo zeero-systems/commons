@@ -11,7 +11,7 @@ import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.t
 import isValidation from '~/validator/guards/is-validation.guard.ts';
 
 export class Entity implements EntityInterface {
-  public toEntries(): ReadonlyArray<EntryType<OmitType<this, FunctionType>>> {
+  public toEntries(): readonly [string, unknown][] {
     return Objector.toEntries(this);
   }
 

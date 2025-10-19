@@ -22,7 +22,7 @@ import ValidationEnum from '~/validator/enums/validation.enum.ts';
 export interface EntityInterface {
   toJson(): MappedKeyType<OmitType<this, FunctionType>>;
   toPlain(): string;
-  toEntries(): ReadonlyArray<EntryType<OmitType<this, FunctionType>>>;
+  toEntries(): readonly [string, unknown][];
 
   getPropertyKeys<K extends keyof OmitType<this, FunctionType>>(): K[];
   getPropertyType<K extends keyof OmitType<this, FunctionType>>(propertyKey: K): string;
