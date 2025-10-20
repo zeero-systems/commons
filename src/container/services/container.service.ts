@@ -159,16 +159,19 @@ export class Container implements ContainerInterface {
             if (consumerGraph && consumerGraph[currentPropertyKey]) {
               
               if (typeof currentTarget[currentPropertyKey] === 'function') {
-                return function (...methodArgs: any[]) {
+                return function (this: any, ...methodArgs: any[]) {
+                  const args = []
                   for (let index = 0; index < consumerGraph[currentPropertyKey].length; index++) {
                     const parameterProvider = consumerGraph[currentPropertyKey][index]
                     
                     if (parameterProvider) {
-                      methodArgs[index] = container.construct(parameterProvider.provider, parameterProvider.scope);
+                      args.push(container.construct(parameterProvider.provider, parameterProvider.scope))
+                    } else {
+                      args.push(methodArgs[index] ? methodArgs[index] : undefined)
                     }
                   }
                   
-                  return currentTarget[currentPropertyKey].apply(currentTarget, methodArgs);
+                  return currentTarget[currentPropertyKey].apply(this === currentReceiver ? currentTarget : this, args);
                 };
               }
 
