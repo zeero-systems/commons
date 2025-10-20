@@ -1,4 +1,4 @@
-import type { EntryType, FunctionType, MappedPropertiesType, OmitType } from '~/common/types.ts';
+import type { FunctionType, MappedPropertiesType, OmitType } from '~/common/types.ts';
 import type { ValidationResultType } from '~/validator/types.ts';
 import type { EntityInterface } from '~/entity/interfaces.ts';
 import type { ValidationInterface } from '~/validator/interfaces.ts';

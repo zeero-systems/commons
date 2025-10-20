@@ -16,6 +16,7 @@ export class Packer implements PackerInterface {
 
   constructor(public pack: NewableType<new (...args: any[]) => PackInterface>) {
     this.container = new Container(this.unpack(pack))
+    this.container.add([{ name: 'Container', target: this.container }], 'provider')
   }
 
   public artifacts(): Array<ArtifactType> {
@@ -45,7 +46,7 @@ export class Packer implements PackerInterface {
         })
       }
       
-      this.packs.push(name)
+      this.packs.unshift(name)
 
       if (annotation.options?.packs) {
         for (const pack of annotation.options.packs) {
