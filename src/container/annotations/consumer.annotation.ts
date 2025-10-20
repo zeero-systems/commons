@@ -1,12 +1,12 @@
 import type { ArtifactType } from '~/common/types.ts';
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { DecoratorType } from '~/decorator/types.ts';
+import type { ConsumerAnnotationInterface } from '~/container/interfaces.ts';
 
 import AnnotationException from '~/decorator/exceptions/annotation.exception.ts';
 import DecoratorKindEnum from '~/decorator/enums/decorator-kind.enum.ts';
 import ScopeEnum from '~/container/enums/scope.enum.ts';
-import { ConsumerAnnotationInterface } from '../interfaces.ts';
-import { Factory } from '@zeero-systems/commons/services';
+import Factory from '~/common/services/factory.service.ts';
 
 export class ConsumerAnnotation implements AnnotationInterface, ConsumerAnnotationInterface {
   readonly name: string = 'Consumer'
