@@ -6,6 +6,8 @@ import type { PackInterface } from '~/packer/interfaces.ts';
 
 import DecoratorKindEnum from '~/decorator/enums/decorator-kind.enum.ts';
 import AnnotationException from '~/decorator/exceptions/annotation.exception.ts';
+import Decorator from '~/decorator/services/decorator.service.ts';
+import ConsumerAnnotation from '~/container/annotations/consumer.annotation.ts';
 
 export class PackAnnotation implements AnnotationInterface {
   readonly name: string = 'Pack'
@@ -22,12 +24,9 @@ export class PackAnnotation implements AnnotationInterface {
   ) { }
 
   onAttach(artifact: ArtifactType, decorator: DecoratorType): any {
-    if (
-      decorator.decoration.kind == DecoratorKindEnum.CLASS ||
-      decorator.decoration.kind == DecoratorKindEnum.METHOD ||
-      decorator.decoration.kind == DecoratorKindEnum.ACCESSOR ||
-      decorator.decoration.kind == DecoratorKindEnum.FIELD
-    ) {
+    if (decorator.decoration.kind == DecoratorKindEnum.CLASS) {
+      const consumer = new ConsumerAnnotation()
+      Decorator.attach(artifact, { name: 'ConsumerAnnotation', target: consumer }, decorator.decoration)
       return artifact.target;
     }
 

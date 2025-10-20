@@ -1,22 +1,27 @@
 import { describe, it } from '@std/bdd';
 import { expect } from '@std/expect';
 
-import Entity from '~/entity/services/entity.service.ts';
-import Packer from '~/packer/services/packer.service.ts';
+import type { ContainerInterface } from '~/container/interfaces.ts';
+import type { PackInterface } from '~/packer/interfaces.ts';
+
 import Pack from '~/packer/decorations/pack.decoration.ts';
-import { PackInterface } from '@zeero-systems/commons';
+import Packer from '~/packer/services/packer.service.ts';
 
 describe('packer', () => {
   @Pack()
   class Trace implements PackInterface {
-    constructor() { }
+    constructor(container: ContainerInterface) {
+      container.collection
+    }
   }
   
   @Pack({
     packs: [Trace]
   })
   class App implements PackInterface {
-    constructor() { }
+    constructor(container: ContainerInterface) {
+      container.collection
+    }
   }
 
   it('collect pack names', () => {
@@ -26,5 +31,16 @@ describe('packer', () => {
       expect(['App', 'Trace']).toContain(packName);
     }
   });
+
+  it('can consume container artifacts', () => {
+    expect(() => {
+      const packer = new Packer(App)
+
+      for (const packName of packer.packs) {
+        packer.container.construct(packName)
+      }
+
+    }).not.toThrow()
+  })
   
 });
