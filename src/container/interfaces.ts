@@ -3,6 +3,10 @@ import type { ConsumerType, InjectType, ProviderType } from '~/container/types.t
 
 import ScopeEnum from '~/container/enums/scope.enum.ts';
 
+export interface ConsumerAnnotationInterface {
+  parameterNames?: Array<string>
+}
+
 export interface ContainerInterface {
   artifacts?: { providers?: Array<ProviderType>; consumers?: Array<ConsumerType> };
   collection: Map<KeyableType, { artifact: ConsumerType | ProviderType; tags: Array<'P' | 'C'> }>;
