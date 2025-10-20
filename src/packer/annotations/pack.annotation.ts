@@ -18,8 +18,8 @@ export class PackAnnotation implements AnnotationInterface {
       providers?: Array<ProviderType | NewableType<any>>,
       consumers?: Array<ConsumerType | NewableType<any>>,
       packs?: Array<NewableType<new (...args: any[]) => PackInterface>>,
-    }
-  ) {}
+    } = {}
+  ) { }
 
   onAttach(artifact: ArtifactType, decorator: DecoratorType): any {
     if (
