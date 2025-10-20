@@ -28,7 +28,7 @@ export class Packer implements PackerInterface {
     const decorator = DecoratorMetadata.findByAnnotationInteroperableName(pack, 'pack', 'construct')
     
     if (decorator) {
-      const name = pack.constructor.name
+      const name = pack.name
       const annotation = decorator.annotation.target as PackAnnotation
       
       
