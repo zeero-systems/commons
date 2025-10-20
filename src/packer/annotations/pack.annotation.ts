@@ -1,5 +1,5 @@
 import type { ArtifactType, NewableType } from '~/common/types.ts';
-import type { DecoratorType } from '~/decorator/types.ts';
+import type { DecoratorType, DecorationType } from '~/decorator/types.ts';
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type { ConsumerType, ProviderType } from '~/container/types.ts';
 import type { PackInterface } from '~/packer/interfaces.ts';
@@ -25,8 +25,26 @@ export class PackAnnotation implements AnnotationInterface {
 
   onAttach(artifact: ArtifactType, decorator: DecoratorType): any {
     if (decorator.decoration.kind == DecoratorKindEnum.CLASS) {
-      const consumer = new ConsumerAnnotation()
-      Decorator.attach(artifact, { name: 'ConsumerAnnotation', target: consumer }, decorator.decoration)
+      Decorator.attach(artifact, { name: 'ConsumerAnnotation', target: new ConsumerAnnotation() }, decorator.decoration)
+      
+      const methodNames = ['onBoot', 'onStart', 'onStop']
+
+      for (const methodName of methodNames) {
+        if (artifact.target.prototype[methodName]) {
+          const onBootDecoration: DecorationType = { 
+            ...decorator.decoration, 
+            kind: 'method', 
+            property: methodName, 
+            context: { 
+              ...decorator.decoration.context, 
+              name: methodName, 
+              kind: 'method' 
+            } as any 
+          }
+          Decorator.attach(artifact, { name: 'ConsumerAnnotation', target: new ConsumerAnnotation() }, onBootDecoration)
+        }
+      }
+
       return artifact.target;
     }
 

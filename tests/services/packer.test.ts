@@ -13,6 +13,10 @@ describe('packer', () => {
     constructor(container: ContainerInterface) {
       container.collection
     }
+
+    onBoot(container: ContainerInterface): void {
+      container.collection
+    }
   }
   
   @Pack({
@@ -37,7 +41,8 @@ describe('packer', () => {
       const packer = new Packer(App)
 
       for (const packName of packer.packs) {
-        packer.container.construct(packName)
+        const pack = packer.container.construct<PackInterface>(packName)
+        if (pack?.onBoot) pack?.onBoot()
       }
 
     }).not.toThrow()
