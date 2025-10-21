@@ -1,4 +1,4 @@
-import type { ArtifactType, NewableType, PropertiesType, PropertyType } from '~/common/types.ts';
+import type { ArtifactType, NewableType, PropertyType } from '~/common/types.ts';
 import type { AnnotationInterface } from '~/decorator/interfaces.ts';
 import type {
   DecorationType,

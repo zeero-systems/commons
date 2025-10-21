@@ -10,6 +10,7 @@ import Metadata from '~/common/services/metadata.service.ts';
 import Objector from '~/common/services/objector.service.ts';
 import Packer from '~/packer/services/packer.service.ts';
 import Text from '~/common/services/text.service.ts';
+import Timer from '~/common/services/timer.service.ts';
 import Validator from '~/validator/services/validator.service.ts';
 
 export { default as Container } from '~/container/services/container.service.ts';
@@ -24,6 +25,7 @@ export { default as Metadata } from '~/common/services/metadata.service.ts';
 export { default as Objector } from '~/common/services/objector.service.ts';
 export { default as Packer } from '~/packer/services/packer.service.ts';
 export { default as Text } from '~/common/services/text.service.ts';
+export { default as Timer } from '~/common/services/timer.service.ts';
 export { default as Validator } from '~/validator/services/validator.service.ts';
 
 export default {
@@ -39,5 +41,6 @@ export default {
   Objector,
   Packer,
   Text,
+  Timer,
   Validator,
 }
