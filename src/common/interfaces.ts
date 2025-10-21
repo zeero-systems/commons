@@ -1,4 +1,4 @@
-import type { JsonType } from '~/common/types.ts';
+import type { JsonType, TimeType } from '~/common/types.ts';
 
 /**
  * Extended errors with known keys
@@ -43,6 +43,14 @@ export interface KeyableExceptionOptionsInterface<K> extends ExceptionOptionsInt
 
 export interface InteropeableInterface {
   readonly name: string;
+}
+
+export interface TimerInterface {
+  timers: Map<string, TimeType>;
+  
+  setTime(key: string): void
+  endTime(key: string): void
+  getTime(key: string): TimeType | undefined
 }
 
 export default {};
