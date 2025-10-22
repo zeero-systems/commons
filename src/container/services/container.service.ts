@@ -95,42 +95,51 @@ export class Container implements ContainerInterface {
         }
 
         const injection = this.injection.get(artifact.name)
-        
-        if (isClass(artifact.target)) {
+        if (isClass(artifact.target) && injection) {
           const metadata = DecoratorMetadata.get(artifact.target);
+          const decorators = metadata.get('construct') || [undefined]
           
-          if (metadata && injection) {
+          for (const decorator of decorators) {
+            this.addConsumerProperties(artifact.name, 'construct', Factory.getParameterNames(artifact.target, 'constructor'), decorator)
+          }
+
+          if (metadata) {
             for (const [key, decorators] of metadata.entries()) {
               const propertyName = String(key)
-              
-              injection[propertyName] = []
-              
-              for (const decorator of decorators) {
-                if (decorator.annotation.target.name == 'Consumer') {
-                  let propertyParameters: Array<KeyableType> = [propertyName]
 
-                  if (propertyName == 'construct') {
-                    propertyParameters = Factory.getParameterNames(artifact.target, 'constructor')
-                  } else {
+              if (propertyName != 'construct') {
+                for (const decorator of decorators) {
+                  if (decorator.annotation.target.name == 'Consumer') {
+                    let propertyParameters: Array<KeyableType> = [propertyName]
                     if (decorator.decoration.kind == DecoratorKindEnum.METHOD) {
                       propertyParameters = Factory.getParameterNames(artifact.target, propertyName)
                     }
-                  }
-
-                  for (let jndex = 0; jndex < propertyParameters.length; jndex++) {
-                    const parameterName = propertyParameters[jndex];
-                    const provider = this.getProviderByName(decorator, parameterName)
-                    
-                    injection[propertyName].push({
-                      provider: Text.toFirstLetterUppercase(provider.name),
-                      scope: provider.scope
-                    })
+  
+                    this.addConsumerProperties(artifact.name, propertyName, propertyParameters, decorator)
                   }
                 }
-              }
+              }              
             }
           }
         }
+      }
+    }
+  }
+
+  private addConsumerProperties(name: KeyableType, propertyName: string, propertyParameters: Array<KeyableType>, decorator?: DecoratorType) {
+    const injection = this.injection.get(name)
+
+    if (injection) {
+      injection[propertyName] = []
+
+      for (let jndex = 0; jndex < propertyParameters.length; jndex++) {
+        const parameterName = propertyParameters[jndex];
+        const provider = this.getProviderByName(parameterName, decorator)
+        
+        injection[propertyName].push({
+          provider: Text.toFirstLetterUppercase(provider.name),
+          scope: provider.scope
+        })
       }
     }
   }
@@ -186,12 +195,12 @@ export class Container implements ContainerInterface {
     });
   }
 
-  private getProviderByName(decorator: DecoratorType, name: KeyableType): { name: KeyableType, scope: ScopeEnum } {
+  private getProviderByName(name: KeyableType, decorator?: DecoratorType): { name: KeyableType, scope: ScopeEnum } {
     const provider = { name, scope: ScopeEnum.Default }
-    const annotation = decorator.annotation.target as ConsumerAnnotation
+    const annotation = decorator?.annotation.target as ConsumerAnnotation | undefined
 
-    if (annotation.provider) provider.name = annotation.provider
-    if (annotation.options?.scope) provider.scope = annotation.options.scope
+    if (annotation?.provider) provider.name = annotation.provider
+    if (annotation?.options?.scope) provider.scope = annotation.options.scope
 
     return provider
   }

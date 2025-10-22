@@ -32,7 +32,6 @@ describe('container', () => {
     }
   }
 
-  @Consumer()
   class CustomServiceMock {
     constructor(public LATER: any) {}
   }
