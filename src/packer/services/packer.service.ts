@@ -13,65 +13,59 @@ import ScopeEnum from '~/container/enums/scope.enum.ts';
 import isArtifact from '~/common/guards/is-artifact.guard.ts';
 
 export class Packer implements PackerInterface {
-  public packs: Array<KeyableType> = []
-  public container: ContainerInterface
-  public dispatcher: DispatcherInterface<{ unpacked: [PackNewableType] }> = new Dispatcher<{ unpacked: [PackNewableType] }>();
+  public packs: Array<KeyableType> = [];
+  public dispatcher: DispatcherInterface<{ unpacked: [PackNewableType] }> = new Dispatcher<
+    { unpacked: [PackNewableType] }
+  >();
 
   constructor(
     public pack: PackNewableType,
-    subscribers: Array<(pack: PackNewableType) => void> = []
+    public container: ContainerInterface = new Container(),
   ) {
-    this.container = new Container()
-    this.container.add([{ name: 'Container', target: this.container }], 'provider')
-
-    for (const subscriber of subscribers) {
-      this.dispatcher.subscribe('unpacked', subscriber)
-    }
-
-    this.unpack(pack)
+    this.container.add([{ name: 'Container', target: this.container }], 'provider');
   }
 
   public artifacts(): Array<ArtifactType> {
-    return this.container.collection.values().map((collection) => collection.artifact).toArray() || []
+    return this.container.collection.values().map((collection) => collection.artifact).toArray() || [];
   }
 
   public unpack(pack: PackNewableType): void {
-    const decorator = DecoratorMetadata.findByAnnotationInteroperableName(pack, 'pack', 'construct')
-    
+    const decorator = DecoratorMetadata.findByAnnotationInteroperableName(pack, 'pack', 'construct');
+
     if (decorator) {
-      const name = pack.name
-      const annotation = decorator.annotation.target as PackAnnotation
-      
+      const name = pack.name;
+      const annotation = decorator.annotation.target as PackAnnotation;
+
       if (annotation.options?.providers) {
         const providers = annotation.options?.providers.map((provider) => {
-          if (isArtifact(provider)) return provider
-          return { name: provider.name || provider.constructor.name, target: provider }
-        })
+          if (isArtifact(provider)) return provider;
+          return { name: provider.name || provider.constructor.name, target: provider };
+        });
 
-        this.container.add(providers, 'provider')
+        this.container.add(providers, 'provider');
       }
-      
+
       if (annotation.options?.consumers) {
         const consumers = annotation.options.consumers.map((consumer) => {
-          if (isArtifact(consumer)) return consumer
-          return { name: consumer.name || consumer.constructor.name, target: consumer, scope: ScopeEnum.Default }
-        })
+          if (isArtifact(consumer)) return consumer;
+          return { name: consumer.name || consumer.constructor.name, target: consumer, scope: ScopeEnum.Default };
+        });
 
-        this.container.add(consumers, 'consumer')
+        this.container.add(consumers, 'consumer');
       }
-      
-      this.packs.unshift(name)
+
+      this.packs.unshift(name);
 
       if (annotation.options?.packs) {
         for (const pack of annotation.options.packs) {
-          this.unpack(pack)
+          this.unpack(pack);
         }
       }
-      
-      this.container.add([{ name, target: pack }], 'consumer')
-      this.dispatcher.dispatch('unpacked', pack)
+
+      this.container.add([{ name, target: pack }], 'consumer');
+      this.dispatcher.dispatch('unpacked', pack);
     }
   }
 }
 
-export default Packer
+export default Packer;
