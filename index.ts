@@ -33,6 +33,8 @@ export * from '~/entity/interfaces.ts';
 export * from '~/entity/types.ts';
 export * from '~/packer/interfaces.ts';
 export * from '~/packer/types.ts';
+export * from '~/tracer/interfaces.ts';
+export * from '~/tracer/types.ts';
 export * from '~/validator/interfaces.ts';
 export * from '~/validator/types.ts';
 

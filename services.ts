@@ -1,4 +1,5 @@
 import Container from '~/container/services/container.service.ts';
+import ConsoleTransport from '~/tracer/transports/console.transport.ts';
 import Decorator from '~/decorator/services/decorator.service.ts';
 import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.ts';
 import Dispatcher from '~/emitter/services/dispatcher.service.ts';
@@ -11,9 +12,11 @@ import Objector from '~/common/services/objector.service.ts';
 import Packer from '~/packer/services/packer.service.ts';
 import Text from '~/common/services/text.service.ts';
 import Timer from '~/common/services/timer.service.ts';
+import Tracer from '~/tracer/services/tracer.service.ts';
 import Validator from '~/validator/services/validator.service.ts';
 
 export { default as Container } from '~/container/services/container.service.ts';
+export { default as ConsoleTransport } from '~/tracer/transports/console.transport.ts';
 export { default as Decorator } from '~/decorator/services/decorator.service.ts';
 export { default as DecoratorMetadata } from '~/decorator/services/decorator-metadata.service.ts';
 export { default as Dispatcher } from '~/emitter/services/dispatcher.service.ts';
@@ -26,10 +29,12 @@ export { default as Objector } from '~/common/services/objector.service.ts';
 export { default as Packer } from '~/packer/services/packer.service.ts';
 export { default as Text } from '~/common/services/text.service.ts';
 export { default as Timer } from '~/common/services/timer.service.ts';
+export { default as Tracer } from '~/tracer/services/tracer.service.ts';
 export { default as Validator } from '~/validator/services/validator.service.ts';
 
 export default {
   Container,
+  ConsoleTransport,
   Decorator,
   DecoratorMetadata,
   Dispatcher,
@@ -42,5 +47,6 @@ export default {
   Packer,
   Text,
   Timer,
+  Tracer,
   Validator,
 }

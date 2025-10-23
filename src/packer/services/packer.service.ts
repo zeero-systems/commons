@@ -5,6 +5,7 @@ import type { UnpackType } from '~/packer/types.ts';
 
 import Container from '~/container/services/container.service.ts';
 import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.ts';
+import Dispatcher from '~/emitter/services/dispatcher.service.ts';
 import PackAnnotation from '~/packer/annotations/pack.annotation.ts';
 import ScopeEnum from '~/container/enums/scope.enum.ts';
 
@@ -13,6 +14,7 @@ import isArtifact from '~/common/guards/is-artifact.guard.ts';
 export class Packer implements PackerInterface {
   public packs: Array<KeyableType> = []
   public container: ContainerInterface
+  public dispatcher = new Dispatcher<{ unpacked: [NewableType<new (...args: any[]) => PackInterface>] }>();
 
   constructor(public pack: NewableType<new (...args: any[]) => PackInterface>) {
     this.container = new Container(this.unpack(pack))
@@ -57,6 +59,8 @@ export class Packer implements PackerInterface {
       }
       
       collection.consumers.push({ name, target: pack })
+
+      this.dispatcher.dispatch('unpacked', pack)
     }
 
     return collection
