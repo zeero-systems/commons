@@ -14,7 +14,7 @@ export class ConsoleTransport implements LogTransportInterface {
     const hours = date.getUTCHours().toString().padStart(2, '0');
     const minutes = date.getUTCMinutes().toString().padStart(2, '0');
     const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-    const miliseconds = date.getUTCMilliseconds()
+    const miliseconds = date.getUTCMilliseconds().toString().padStart(3, '0');
 
     const ns = record.namespaces ? `[${record.namespaces[record.namespaces.length-1]}]` : '';
     const line = `${year}/${month}/${day} ${hours}:${minutes}:${seconds}:${miliseconds} UTC ${LogEnum[record.level].toUpperCase()} ${ns} ${record.message}`;

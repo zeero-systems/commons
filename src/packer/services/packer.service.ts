@@ -21,9 +21,7 @@ export class Packer implements PackerInterface {
   constructor(
     public pack: PackNewableType,
     public container: ContainerInterface = new Container(),
-  ) {
-    this.container.add([{ name: 'Container', target: this.container }], 'provider');
-  }
+  ) {}
 
   public artifacts(): Array<ArtifactType> {
     return this.container.collection.values().map((collection) => collection.artifact).toArray() || [];
