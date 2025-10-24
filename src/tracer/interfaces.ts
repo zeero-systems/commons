@@ -1,26 +1,47 @@
-import type { LogRecordType, TracerOptionsType } from '~/tracer/types.ts';
+import type {
+  AttributesType,
+  LogType,
+  RedactFunctionType,
+  SpanOptionsType,
+  SpanType,
+  StartOptionsType,
+} from '~/tracer/types.ts';
 
-import LogLevelEnum from '~/tracer/enums/log-level.enum.ts';
+import StatusEnum from '~/tracer/enums/status.enum.ts';
+import LogEnum from '~/tracer/enums/log.enum.ts';
 
-export interface TracerInterface {
-  options: TracerOptionsType
-
-  flush(): Promise<void>
-  close(): Promise<void>
-  child(extra: Partial<TracerOptionsType>): TracerInterface
-
-  debug(message: string, context?: Record<string, any>): void
-  info(message: string, context?: Record<string, any>): void
-  warn(message: string, context?: Record<string, any>): void
-  error(message: string, context?: Record<string, any>): void
-  fatal(message: string, context?: Record<string, any>): void
+export interface TransportInterface {
+  send(data: SpanType | LogType): Promise<void>;
 }
 
-export interface LogTransportInterface {
-  minLevel?: LogLevelEnum
-  write(record: LogRecordType): Promise<void>
-  flush?(): Promise<void>
-  close?(): Promise<void>
+export interface LogInterface {
+  debug(message: string, attributes?: AttributesType): void;
+  info(message: string, attributes?: AttributesType): void;
+  warn(message: string, attributes?: AttributesType): void;
+  error(message: string, attributes?: AttributesType): void;
+  fatal(message: string, attributes?: AttributesType): void;
 }
 
-export default {}
+export interface SpanInterface extends LogInterface {
+  options: SpanOptionsType;
+
+  setAttributes(attributes: AttributesType): SpanInterface;
+  setStatus(status: StatusEnum, message?: string): SpanInterface;
+  addEvent(name: string, attributes?: AttributesType): SpanInterface;
+  end(): void;
+
+  child(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>;
+}
+
+export interface TracerInterface extends LogInterface {
+  level: LogEnum;
+  redact: RedactFunctionType;
+  namespaces: Array<string>;
+  transports: Array<TransportInterface>;
+  attributes: Record<string, unknown>;
+
+  send(span: SpanType | LogType): void;
+  start(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>;
+}
+
+export default {};

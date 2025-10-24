@@ -1,91 +1,119 @@
-import type { LogRecordType, TracerOptionsType } from '~/tracer/types.ts';
-import type { TracerInterface } from '~/tracer/interfaces.ts';
+import type { SpanInterface, TracerInterface, TransportInterface } from '~/tracer/interfaces.ts';
+import type {
+  AttributesType,
+  LogType,
+  RedactFunctionType,
+  SpanType,
+  StartOptionsType,
+  TracerOptionsType,
+} from '~/tracer/types.ts';
 
-import LogLevelEnum from '~/tracer/enums/log-level.enum.ts';
+import SpanEnum from '~/tracer/enums/span.enum.ts';
+import LogEnum from '~/tracer/enums/log.enum.ts';
+import Generator from '~/tracer/services/generator.service.ts';
+import Span from '~/tracer/services/span.service.ts';
 
 export class Tracer implements TracerInterface {
-  constructor(public options: TracerOptionsType) {}
+  name: string;
+  level: LogEnum;
+  namespaces: Array<string>;
+  transports: Array<TransportInterface>;
+  redact: RedactFunctionType;
+  attributes: Record<string, unknown>;
 
-  private shouldLog(level: LogLevelEnum, minLevel: LogLevelEnum): boolean {
-    return level >= minLevel;
+  constructor(options: Partial<TracerOptionsType> = {}) {
+    this.name = options.name || 'tracer';
+    this.level = options.level ?? LogEnum.INFO;
+    this.redact = options.redact ?? ((_k: string, v: unknown) => v);
+    this.transports = options.transports ?? [];
+    this.attributes = options.attributes ?? {};
+    this.namespaces = options.namespaces ?? [];
   }
 
-  private createLogType(level: LogLevelEnum, message: string, context?: Record<string, any>): LogRecordType {
-    return {
-      level,
-      time: Date.now(),
-      namespaces: this.options.namespaces,
-      message,
-      context,
-    };
-  }
+  public send(data: SpanType | LogType): void {
+    let shouldSend = true;
+    if (this.namespaces.length > 0 && 'name' in data) {
+      shouldSend = this.namespaces.some((ns) => data.name.startsWith(ns));
+    }
 
-  private emit(level: LogLevelEnum, message: string, context?: Record<string, any>): void {
-    if (!this.shouldLog(level, this.options.level)) return;
+    if (shouldSend) {
+      const processedRecord = this.applyRedaction(data);
 
-    const redact = this.options.redact ?? ((_, v) => v);
-    const safe = Object.fromEntries(
-      Object.entries({
-        ...(this.options.context || {}),
-        ...(context || {}),
-      }).map(([k, v]) => [k, redact(k, v)]),
-    );
-
-    const record = this.createLogType(level, message, Object.keys(safe).length ? safe : undefined);
-
-    for (const transport of this.options.transports) {
-      if (transport.minLevel && !this.shouldLog(level, transport.minLevel)) continue;
-
-      try {
-        void transport.write(record);
-      } catch {
-        // intentionally ignore synchronous errors from transport.write
-      }
+      this.transports.forEach((transport) => {
+        transport.send(processedRecord).catch((error) => {
+          // @TODO maybe this should not be handled here
+          // Maybe logging this error on the last transport that was successfull
+          console.error('Transport error:', error);
+        });
+      });
     }
   }
 
-  public child(extra: Partial<TracerOptionsType>): TracerInterface {
-    return new Tracer({
-      ...this.options,
-      namespaces: [ ...(this.options.namespaces || []), ...(extra.namespaces ?? []) ],
-      context: { ...(this.options.context || {}), ...(extra.context || {}) },
+  public applyRedaction(data: SpanType | LogType): SpanType | LogType {
+    const redactObject = (obj: Record<string, unknown>): Record<string, unknown> => {
+      const result: Record<string, unknown> = {};
+      for (const [key, value] of Object.entries(obj)) {
+        result[key] = this.redact(key, value);
+      }
+      return result;
+    };
+
+    return {
+      ...data,
+      attributes: redactObject(data.attributes),
+    };
+  }
+
+  public start(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface> {
+    const span = new Span(this, {
+      parentId: options?.parentId,
+      traceId: options?.traceId ?? Generator.randomId(16),
+      spanId: Generator.randomId(8),
+      name: options.name,
+      kind: options?.kind ?? SpanEnum.INTERNAL,
+    });
+
+    if (callback) {
+      return callback(span).then(() => span).finally(() => {
+        span.end();
+      });
+    }
+
+    return Promise.resolve(span);
+  }
+
+  public log(level: LogEnum, message: string, attributes?: AttributesType): void {
+    if (level < this.level) {
+      return;
+    }
+
+    this.send({
+      level,
+      message,
+      name: this.name,
+      timestamp: Date.now(),
+      attributes: attributes || {},
     });
   }
 
-  public flush(): Promise<void> {
-    const promises = this.options.transports
-      .map((t) => t.flush?.())
-      .filter((p) => p !== undefined);
-
-    return Promise.all(promises).then(() => {});
+  debug(message: string, attributes?: AttributesType): void {
+    this.log(LogEnum.DEBUG, message, attributes);
   }
 
-  public close(): Promise<void> {
-    const promises = this.options.transports
-      .map((t) => t.close?.())
-      .filter((p) => p !== undefined);
-
-    return Promise.all(promises).then(() => {});
+  info(message: string, attributes?: AttributesType): void {
+    this.log(LogEnum.INFO, message, attributes);
   }
 
-  public debug(message: string, context?: Record<string, any>): void {
-    this.emit(LogLevelEnum.DEBUG, message, context);
+  warn(message: string, attributes?: AttributesType): void {
+    this.log(LogEnum.WARN, message, attributes);
   }
 
-  public info(message: string, context?: Record<string, any>): void {
-    this.emit(LogLevelEnum.INFO, message, context);
+  error(message: string, attributes?: AttributesType): void {
+    this.log(LogEnum.ERROR, message, attributes);
   }
 
-  public warn(message: string, context?: Record<string, any>): void {
-    this.emit(LogLevelEnum.WARN, message, context);
-  }
-
-  public error(message: string, context?: Record<string, any>): void {
-    this.emit(LogLevelEnum.ERROR, message, context);
-  }
-
-  public fatal(message: string, context?: Record<string, any>): void {
-    this.emit(LogLevelEnum.FATAL, message, context);
+  fatal(message: string, attributes?: AttributesType): void {
+    this.log(LogEnum.FATAL, message, attributes);
   }
 }
 

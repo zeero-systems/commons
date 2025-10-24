@@ -1,5 +1,5 @@
 
-export enum LogLevelEnum {
+export enum LogEnum {
   TRACE = 0,
   DEBUG = 1,
   INFO = 2,
@@ -8,4 +8,4 @@ export enum LogLevelEnum {
   FATAL = 5,
 }
 
-export default LogLevelEnum
+export default LogEnum
