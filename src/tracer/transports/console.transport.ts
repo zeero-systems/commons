@@ -78,16 +78,16 @@ export class ConsoleTransport implements TransportInterface {
       const duration = Number(data.endTime ? data.endTime - data.startTime : 0).toFixed(3);
 
       if (data.status === StatusEnum.REJECTED) log = console.error
-      log(`${color}·  TRACE ${name} at ${timestamp} took ${duration}ms as ${data.status}${Console.reset}`);
+      log(`${color}·  TRACE ${String(data.attributes?.kind).toUpperCase()} ${name} at ${timestamp} took ${duration}ms as ${data.status}${Console.reset}`);
 
       let nextIndent = '└─';
       if (data.attributes || data.events.length > 0) {
         nextIndent = '├─';
       }
-
-      log(`${Console.gray.medium}${nextIndent} ATTRS trace=${data.attributes?.traceId} span=${data.attributes?.spanId} kind=${data.attributes?.kind}${Console.reset}`)
+      const parentId = data.attributes?.parentId ? ` parentId=${data.attributes.parentId}` : '';
+      log(`${Console.gray.medium}${nextIndent} ATTRS traceId=${data.attributes?.traceId}${parentId} spanId=${data.attributes?.spanId}`)
       
-      const attributes = Object.entries(data.attributes || {}).filter(([key]) => key !== 'traceId' && key !== 'spanId' && key !== 'kind')
+      const attributes = Object.entries(data.attributes || {}).filter(([key]) => key !== 'traceId' && key !== 'spanId' && key !== 'parentId')
         .map(([key, value]) => `${key}=${typeof value === 'object' ? JSON.stringify(value) : value}`)
         .join(' ');
       
