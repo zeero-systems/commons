@@ -12,27 +12,30 @@ import SpanEnum from '~/tracer/enums/span.enum.ts';
 import LogEnum from '~/tracer/enums/log.enum.ts';
 import Generator from '~/tracer/services/generator.service.ts';
 import Span from '~/tracer/services/span.service.ts';
+import StatusEnum from '~/tracer/enums/status.enum.ts';
 
 export class Tracer implements TracerInterface {
   name: string;
-  level: LogEnum;
-  namespaces: Array<string>;
+  level?: LogEnum;
+  status?: Array<StatusEnum>;
+  namespaces?: Array<string>;
   transports: Array<TransportInterface>;
   redact: RedactFunctionType;
-  attributes: Record<string, unknown> | null;
+  attributes?: Record<string, unknown>;
 
   constructor(options: Partial<TracerOptionsType> = {}) {
     this.name = options.name || 'tracer';
-    this.level = options.level ?? LogEnum.INFO;
+    this.level = options.level;
     this.redact = options.redact ?? ((_k: string, v: unknown) => v);
     this.transports = options.transports ?? [];
-    this.attributes = options.attributes ?? null;
-    this.namespaces = options.namespaces ?? [];
+    this.attributes = options.attributes;
+    this.namespaces = options.namespaces;
+    this.status = options.status;
   }
 
   public send(data: SpanType | LogType): void {
     let shouldSend = true;
-    if (this.namespaces.length > 0 && 'name' in data) {
+    if (this.namespaces && this.namespaces.length > 0 && 'name' in data) {
       shouldSend = this.namespaces.some((ns) => data.name.startsWith(ns));
     }
 
@@ -98,7 +101,7 @@ export class Tracer implements TracerInterface {
   }
 
   public log(level: LogEnum, message: string, attributes?: AttributesType): void {
-    if (level < this.level) {
+    if (this.level && level < this.level) {
       return;
     }
 

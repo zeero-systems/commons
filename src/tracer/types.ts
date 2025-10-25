@@ -35,11 +35,12 @@ export type RedactFunctionType = (key: string, value: unknown) => unknown;
 
 export type TracerOptionsType = {
   name: string;
-  level: LogEnum;
+  level?: LogEnum;
+  status?: Array<StatusEnum>;
   namespaces?: Array<string>;
   transports: Array<TransportInterface>;
   redact?: RedactFunctionType;
-  attributes: Record<string, unknown>;
+  attributes?: Record<string, unknown>;
 }
 
 export type SpanOptionsType = {

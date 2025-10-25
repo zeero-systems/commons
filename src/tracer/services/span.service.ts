@@ -72,6 +72,10 @@ export class Span implements SpanInterface {
     this.ended = true;
     this.endTime = performance.now();
 
+    if (this.tracer.status && !this.tracer.status.includes(this.status)) {
+      return;
+    }
+
     this.tracer.send(this.getData());
   }
 
@@ -84,7 +88,7 @@ export class Span implements SpanInterface {
   }
 
   log(level: LogEnum, message: string, attributes?: AttributesType): void {
-    if (level < this.tracer.level) {
+    if (this.tracer.level && level < this.tracer.level) {
       return;
     }
 

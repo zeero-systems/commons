@@ -35,11 +35,13 @@ export interface SpanInterface extends LogInterface {
 }
 
 export interface TracerInterface extends LogInterface {
-  level: LogEnum;
+  name: string
+  level?: LogEnum;
+  status?: Array<StatusEnum>;
   redact: RedactFunctionType;
-  namespaces: Array<string>;
   transports: Array<TransportInterface>;
-  attributes: Record<string, unknown> | null;
+  namespaces?: Array<string>;
+  attributes?: Record<string, unknown>;
 
   send(span: SpanType | LogType): void;
   start(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface

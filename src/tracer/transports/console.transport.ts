@@ -22,7 +22,7 @@ export class ConsoleTransport implements TransportInterface {
     this.options = options;
   }
 
-  public async send(data: SpanType): Promise<void> {
+  public async send(data: SpanType | LogType): Promise<void> {
     if (this.options.pretty) {
       await this.prettyPrint(data);
     } else {
