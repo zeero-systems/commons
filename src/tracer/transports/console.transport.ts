@@ -41,19 +41,19 @@ export class ConsoleTransport implements TransportInterface {
       const level = LogEnum[data.level];
       log(`[${data.name.toUpperCase()}][${level}] ${timestamp} - ${data.message}`);
       if (data.attributes) {
-        log('  Attributes:', data.attributes);
+        log(`[${data.name.toUpperCase()}][${level}] ${timestamp} - ${JSON.stringify(data.attributes)}`);
       }
     } else {
       const duration = data.endTime ? data.endTime - data.startTime : 0;
 
       if (data.status === StatusEnum.REJECTED) log = console.error
 
-      log(`[${data.name.toUpperCase()}][SPAN] (${duration}ms)`);
-      log('  Attributes:', data.attributes);
+      log(`[${data.name.toUpperCase()}][SPAN] ${timestamp} - Duration: (${duration}ms)`);
+      log(`[${data.name.toUpperCase()}][SPAN] ${timestamp} - Attributes: ${JSON.stringify(data.attributes)}`);
       if (data.events.length > 0) {
-        log('  Events:', data.events);
+        log(`[${data.name.toUpperCase()}][SPAN] ${timestamp} - Events: ${JSON.stringify(data.events)}`);
       }
-      log('  Status:', data.status);
+      log(`[${data.name.toUpperCase()}][SPAN] ${timestamp} - Status: ${data.status}`);
     }
   }
 }
