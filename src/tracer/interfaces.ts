@@ -1,16 +1,18 @@
 import type {
   AttributesType,
+  EventType,
   LogType,
   RedactFunctionType,
   SpanOptionsType,
   SpanType,
   StartOptionsType,
+  StatusType,
+  TransportOptionsType
 } from '~/tracer/types.ts';
-
-import StatusEnum from '~/tracer/enums/status.enum.ts';
-import LogEnum from '~/tracer/enums/log.enum.ts';
+import { TracerOptionsType } from '@zeero-systems/commons';
 
 export interface TransportInterface {
+  options: TransportOptionsType
   send(data: SpanType | LogType): Promise<void>;
 }
 
@@ -25,23 +27,17 @@ export interface LogInterface {
 export interface SpanInterface extends LogInterface {
   options: SpanOptionsType;
 
-  setAttributes(attributes: AttributesType): SpanInterface;
-  setStatus(status: StatusEnum, message?: string): SpanInterface;
-  addEvent(name: string, attributes?: AttributesType): SpanInterface;
+  attributes(attributes: AttributesType): SpanInterface;
+  status(status: StatusType): SpanInterface;
+  event(event: EventType): SpanInterface;
   end(): void;
 
-  child(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface;
   async(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>;
+  child(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface;
 }
 
 export interface TracerInterface extends LogInterface {
-  name: string
-  level?: LogEnum;
-  status?: Array<StatusEnum>;
-  redact: RedactFunctionType;
-  transports: Array<TransportInterface>;
-  namespaces?: Array<string>;
-  attributes?: Record<string, unknown>;
+  options: TracerOptionsType
 
   send(span: SpanType | LogType): void;
   start(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface

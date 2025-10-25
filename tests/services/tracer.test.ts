@@ -67,7 +67,7 @@ describe('Tracer with Console and HTTP Transports', () => {
     mockConsoleTransport = new MockConsoleTransport();
     
     tracer = new Tracer({
-      level: LogEnum.DEBUG,
+      name: 'test-tracer',
       transports: [mockHttpTransport, mockConsoleTransport],
       attributes: {
         service: 'test-service',
@@ -85,10 +85,9 @@ describe('Tracer with Console and HTTP Transports', () => {
 
   describe('Basic Tracer Functionality', () => {
     it('should create a tracer with correct options', () => {
-      expect(tracer.level).toBe(LogEnum.DEBUG);
-      expect(tracer.transports.length).toBe(2);
-      expect(tracer.attributes?.service).toBe('test-service');
-      expect(tracer.attributes?.user).toBe('zeeromabs');
+      expect(tracer.options.transports.length).toBe(2);
+      expect(tracer.options.attributes?.service).toBe('test-service');
+      expect(tracer.options.attributes?.user).toBe('zeeromabs');
     });
 
     it('should log messages at tracer level', () => {
@@ -101,21 +100,6 @@ describe('Tracer with Console and HTTP Transports', () => {
       expect(sentData.level).toBe(LogEnum.INFO);
       expect(sentData.message).toBe('Test message');
       expect(sentData.attributes?.key).toBe('value');
-    });
-
-    it('should respect log level threshold', () => {
-      const warnTracer = new Tracer({
-        level: LogEnum.WARN,
-        transports: [mockHttpTransport],
-      });
-
-      warnTracer.debug('Debug message');
-      warnTracer.info('Info message');
-      warnTracer.warn('Warn message');
-
-      expect(mockHttpTransport.callCount).toBe(1);
-      const sentData = mockHttpTransport.sentData[0] as unknown as LogType;
-      expect(sentData.level).toBe(LogEnum.WARN);
     });
 
     it('should send logs to both HTTP and Console transports', () => {
@@ -157,7 +141,7 @@ describe('Tracer with Console and HTTP Transports', () => {
     it('should set attributes on a span', async () => {
       const span = await tracer.start({ name: 'attribute-test' });
       
-      span.setAttributes({
+      span.attributes({
         userId: 'user-123',
         requestId: 'req-456',
         timestamp: new Date().toISOString(),
@@ -174,9 +158,9 @@ describe('Tracer with Console and HTTP Transports', () => {
     it('should add events to a span', async () => {
       const span = await tracer.start({ name: 'event-test' });
       
-      span.addEvent('validation-start');
-      span.addEvent('validation-complete', { valid: true, duration: 50 });
-      span.addEvent('processing-complete');
+      span.event({ name: 'validation-start' });
+      span.event({ name: 'validation-complete', attributes: { valid: true, duration: 50 }});
+      span.event({ name: 'processing-complete' });
 
       span.end();
 
@@ -191,7 +175,7 @@ describe('Tracer with Console and HTTP Transports', () => {
     it('should set span status', async () => {
       const span = await tracer.start({ name: 'status-test' });
       
-      span.setStatus(StatusEnum.RESOLVED, 'Operation completed successfully');
+      span.status({ type: StatusEnum.RESOLVED, message: 'Operation completed successfully' });
       span.end();
 
       const sentData = mockHttpTransport.sentData[0] as SpanType;
@@ -218,10 +202,10 @@ describe('Tracer with Console and HTTP Transports', () => {
   describe('Nested Spans - Two Levels', () => {
     it('should create parent and child spans', async () => {
       const parent = await tracer.start({ name: 'parent-operation', kind: SpanEnum.SERVER });
-      parent.setAttributes({ parentAttr: 'parent-value' });
+      parent.attributes({ parentAttr: 'parent-value' });
 
       const child = await parent.child({ name: 'child-operation', kind: SpanEnum.CLIENT });
-      child.setAttributes({ childAttr: 'child-value' });
+      child.attributes({ childAttr: 'child-value' });
 
       child.end();
       parent.end();
@@ -281,13 +265,13 @@ describe('Tracer with Console and HTTP Transports', () => {
   describe('Nested Spans - Three Levels', () => {
     it('should create three levels of nested spans', async () => {
       const level1 = await tracer.start({ name: 'level1-api-request', kind: SpanEnum.SERVER });
-      level1.setAttributes({ endpoint: '/api/users', method: 'GET' });
+      level1.attributes({ endpoint: '/api/users', method: 'GET' });
 
       const level2 = await level1.child({ name: 'level2-business-logic', kind: SpanEnum.INTERNAL });
-      level2.setAttributes({ operation: 'validate-user' });
+      level2.attributes({ operation: 'validate-user' });
 
       const level3 = await level2.child({ name: 'level3-database-query', kind: SpanEnum.CLIENT });
-      level3.setAttributes({ query: 'SELECT * FROM users', db: 'postgres' });
+      level3.attributes({ query: 'SELECT * FROM users', db: 'postgres' });
 
       level3.end();
       level2.end();
@@ -338,15 +322,15 @@ describe('Tracer with Console and HTTP Transports', () => {
       const parent = await tracer.start({ name: 'parent-with-multiple-children' });
 
       const child1 = await parent.child({ name: 'child1', kind: SpanEnum.CLIENT });
-      child1.setAttributes({ childId: 1 });
+      child1.attributes({ childId: 1 });
       child1.end();
 
       const child2 = await parent.child({ name: 'child2', kind: SpanEnum.CLIENT });
-      child2.setAttributes({ childId: 2 });
+      child2.attributes({ childId: 2 });
       child2.end();
 
       const child3 = await parent.child({ name: 'child3', kind: SpanEnum.CLIENT });
-      child3.setAttributes({ childId: 3 });
+      child3.attributes({ childId: 3 });
       child3.end();
 
       parent.end();
@@ -370,15 +354,15 @@ describe('Tracer with Console and HTTP Transports', () => {
       const parent = await tracer.start({ name: 'parent', kind: SpanEnum.SERVER });
 
       const dbSpan = await parent.child({ name: 'database-query', kind: SpanEnum.CLIENT });
-      dbSpan.setAttributes({ db: 'postgresql', operation: 'SELECT' });
+      dbSpan.attributes({ db: 'postgresql', operation: 'SELECT' });
       dbSpan.end();
 
       const cacheSpan = await parent.child({ name: 'cache-lookup', kind: SpanEnum.CLIENT });
-      cacheSpan.setAttributes({ cache: 'redis', key: 'user:123' });
+      cacheSpan.attributes({ cache: 'redis', key: 'user:123' });
       cacheSpan.end();
 
       const queueSpan = await parent.child({ name: 'queue-publish', kind: SpanEnum.PRODUCER });
-      queueSpan.setAttributes({ queue: 'notifications', messageId: 'msg-456' });
+      queueSpan.attributes({ queue: 'notifications', messageId: 'msg-456' });
       queueSpan.end();
 
       parent.end();
@@ -399,7 +383,7 @@ describe('Tracer with Console and HTTP Transports', () => {
     it('should trace a complete order processing workflow', async () => {
       const requestSpan = await tracer.start({ name: 'http.request', kind: SpanEnum.SERVER, traceId: 'trace-order-12345' });
 
-      requestSpan.setAttributes({
+      requestSpan.attributes({
         'http.method': 'POST',
         'http.route': '/api/orders',
         'http.status_code': 200,
@@ -411,14 +395,14 @@ describe('Tracer with Console and HTTP Transports', () => {
 
       const validateSpan = await requestSpan.child({ name: 'order.validate', kind: SpanEnum.INTERNAL });
       validateSpan.debug('Validating order data');
-      validateSpan.addEvent('validation.started');
+      validateSpan.event({ name: 'validation.started' });
       await new Promise(resolve => setTimeout(resolve, 10));
-      validateSpan.addEvent('validation.completed', { valid: true });
-      validateSpan.setStatus(StatusEnum.RESOLVED);
+      validateSpan.event({ name: 'validation.completed', attributes: { valid: true } });
+      validateSpan.status({ type: StatusEnum.RESOLVED });
       validateSpan.end();
 
       const inventorySpan = await requestSpan.child({ name: 'inventory.check', kind: SpanEnum.CLIENT });
-      inventorySpan.setAttributes({
+      inventorySpan.attributes({
         'inventory.sku': 'ITEM-001',
         'inventory.quantity': 5,
       });
@@ -426,57 +410,57 @@ describe('Tracer with Console and HTTP Transports', () => {
       await new Promise(resolve => setTimeout(resolve, 20));
 
       const inventoryDbSpan = await inventorySpan.child({ name: 'inventory.database.query', kind: SpanEnum.CLIENT });
-      inventoryDbSpan.setAttributes({
+      inventoryDbSpan.attributes({
         'db.system': 'postgresql',
         'db.statement': 'SELECT quantity FROM inventory WHERE sku = $1',
       });
       await new Promise(resolve => setTimeout(resolve, 15));
-      inventoryDbSpan.addEvent('query.complete', { rowCount: 1 });
+      inventoryDbSpan.event({ name: 'query.complete', attributes: { rowCount: 1 } });
       inventoryDbSpan.end();
 
-      inventorySpan.addEvent('inventory.available', { inStock: true });
+      inventorySpan.event({ name: 'inventory.available', attributes: { inStock: true } });
       inventorySpan.end();
 
       const paymentSpan = await requestSpan.child({ name: 'payment.process', kind: SpanEnum.CLIENT });
-      paymentSpan.setAttributes({
+      paymentSpan.attributes({
         'payment.provider': 'stripe',
         'payment.amount': 99.99,
         'payment.currency': 'USD',
       });
       paymentSpan.info('Processing payment');
       await new Promise(resolve => setTimeout(resolve, 30));
-      paymentSpan.addEvent('payment.authorized', {
+      paymentSpan.event({ name: 'payment.authorized', attributes: {
         transactionId: 'txn_123456789',
         authCode: 'AUTH_OK',
-      });
-      paymentSpan.setStatus(StatusEnum.RESOLVED);
+      }});
+      paymentSpan.status({ type: StatusEnum.RESOLVED });
       paymentSpan.end();
 
       const createOrderSpan = await requestSpan.child({ name: 'order.create', kind: SpanEnum.CLIENT });
-      createOrderSpan.setAttributes({
+      createOrderSpan.attributes({
         'db.system': 'postgresql',
         'db.operation': 'INSERT',
         'order.id': 'ORD-12345',
       });
       await new Promise(resolve => setTimeout(resolve, 25));
-      createOrderSpan.addEvent('order.created', { orderId: 'ORD-12345' });
+      createOrderSpan.event({ name: 'order.created', attributes: { orderId: 'ORD-12345' }});
       createOrderSpan.end();
 
       const notificationSpan = await requestSpan.child({ name: 'notification.send', kind: SpanEnum.PRODUCER });
-      notificationSpan.setAttributes({
+      notificationSpan.attributes({
         'messaging.system': 'rabbitmq',
         'messaging.destination': 'order.notifications',
         'notification.type': 'order_confirmation',
       });
       await new Promise(resolve => setTimeout(resolve, 10));
-      notificationSpan.addEvent('message.published', { messageId: 'msg_789' });
+      notificationSpan.event({ name: 'message.published', attributes: { messageId: 'msg_789' }});
       notificationSpan.end();
 
       requestSpan.info('Order processed successfully', {
         orderId: 'ORD-12345',
         totalAmount: 99.99,
       });
-      requestSpan.setStatus(StatusEnum.RESOLVED, 'Order completed');
+      requestSpan.status({ type: StatusEnum.RESOLVED, message: 'Order completed' });
       requestSpan.end();
 
       expect(mockHttpTransport.callCount).toBe(12);
@@ -499,7 +483,7 @@ describe('Tracer with Console and HTTP Transports', () => {
   describe('Namespace Filtering', () => {
     it('should filter spans by namespace', async () => {
       const filteredTracer = new Tracer({
-        level: LogEnum.INFO,
+        name: 'filtered-tracer',
         namespaces: ['api'],
         transports: [mockHttpTransport]
       });
@@ -519,7 +503,7 @@ describe('Tracer with Console and HTTP Transports', () => {
   describe('Redaction', () => {
     it('should redact sensitive data', () => {
       const redactingTracer = new Tracer({
-        level: LogEnum.INFO,
+        name: 'redacting-tracer',
         transports: [mockHttpTransport],
         redact: (key: string, value: unknown) => {
           if (key.toLowerCase().includes('password') || key.toLowerCase().includes('token')) {

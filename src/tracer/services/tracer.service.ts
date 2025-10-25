@@ -1,8 +1,7 @@
-import type { SpanInterface, TracerInterface, TransportInterface } from '~/tracer/interfaces.ts';
+import type { SpanInterface, TracerInterface } from '~/tracer/interfaces.ts';
 import type {
   AttributesType,
   LogType,
-  RedactFunctionType,
   SpanType,
   StartOptionsType,
   TracerOptionsType,
@@ -12,37 +11,20 @@ import SpanEnum from '~/tracer/enums/span.enum.ts';
 import LogEnum from '~/tracer/enums/log.enum.ts';
 import Generator from '~/tracer/services/generator.service.ts';
 import Span from '~/tracer/services/span.service.ts';
-import StatusEnum from '~/tracer/enums/status.enum.ts';
 
 export class Tracer implements TracerInterface {
-  name: string;
-  level?: LogEnum;
-  status?: Array<StatusEnum>;
-  namespaces?: Array<string>;
-  transports: Array<TransportInterface>;
-  redact: RedactFunctionType;
-  attributes?: Record<string, unknown>;
-
-  constructor(options: Partial<TracerOptionsType> = {}) {
-    this.name = options.name || 'tracer';
-    this.level = options.level;
-    this.redact = options.redact ?? ((_k: string, v: unknown) => v);
-    this.transports = options.transports ?? [];
-    this.attributes = options.attributes;
-    this.namespaces = options.namespaces;
-    this.status = options.status;
-  }
+  constructor(public options: TracerOptionsType = { name: 'default', transports: [] }) { }
 
   public send(data: SpanType | LogType): void {
     let shouldSend = true;
-    if (this.namespaces && this.namespaces.length > 0 && 'name' in data) {
-      shouldSend = this.namespaces.some((ns) => data.name.startsWith(ns));
+    if (this.options.namespaces && this.options.namespaces.length > 0 && 'name' in data) {
+      shouldSend = this.options.namespaces.some((ns) => data.name.startsWith(ns));
     }
 
     if (shouldSend) {
       const processedRecord = this.applyRedaction(data);
 
-      this.transports.forEach((transport) => {
+      this.options.transports.forEach((transport) => {
         transport.send(processedRecord).catch((error) => {
           // @TODO maybe this should not be handled here
           // Maybe logging this error on the last transport that was successfull
@@ -56,7 +38,7 @@ export class Tracer implements TracerInterface {
     const redactObject = (obj: Record<string, unknown>): Record<string, unknown> => {
       const result: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(obj)) {
-        result[key] = this.redact(key, value);
+        result[key] = (this.options.redact || ((_k: string, v: unknown) => v))(key, value);
       }
       return result;
     };
@@ -101,14 +83,10 @@ export class Tracer implements TracerInterface {
   }
 
   public log(level: LogEnum, message: string, attributes?: AttributesType): void {
-    if (this.level && level < this.level) {
-      return;
-    }
-
     this.send({
       level,
       message,
-      name: this.name,
+      name: this.options.name,
       timestamp: Date.now(),
       attributes: attributes,
     });

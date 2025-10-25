@@ -1,49 +1,58 @@
 import type { SpanInterface, TracerInterface } from '~/tracer/interfaces.ts';
-import type { AttributesType, EventType, SpanOptionsType, StartOptionsType, SpanType } from '~/tracer/types.ts';
+import type { AttributesType, SpanOptionsType, StartOptionsType, SpanType, EventType } from '~/tracer/types.ts';
 
 import LogEnum from '~/tracer/enums/log.enum.ts';
 import StatusEnum from '~/tracer/enums/status.enum.ts';
+import SpanEnum from '~/tracer/enums/span.enum.ts';
+import { StatusType } from '@zeero-systems/commons';
 
 export class Span implements SpanInterface {
-  public options: SpanOptionsType;
-  public tracer: TracerInterface;
-  public startTime: number;
-  public endTime?: number;
-  public attributes: AttributesType;
-  public ended: boolean = false;
-  public events: Array<EventType> = [];
-  public status: StatusEnum = StatusEnum.UNSET;
-  public message: string | undefined = undefined;
+  options: SpanOptionsType;
 
-  constructor(tracer: TracerInterface, options: SpanOptionsType) {
-    this.tracer = tracer;
-    this.options = options;
-    this.startTime = performance.now();
-    this.attributes = { ...tracer.attributes };
+  constructor(
+    public tracer: TracerInterface, 
+     options: Partial<SpanOptionsType>
+  ) {
+    this.options = {
+      name: options.name || tracer.options.name || 'default',
+      traceId: options.traceId || '',
+      spanId: options.spanId || '',
+      kind: SpanEnum.INTERNAL,
+      status: { type: StatusEnum.UNSET },
+      startTime: performance.now(),
+      events: [],
+      ...options
+    }
+    if (tracer.options.attributes) {
+      if (this.options.attributes) { this.options.attributes = {} }
+
+      this.options.attributes = { ...this.options.attributes, ...tracer.options.attributes };
+    }
   }
 
-  setAttributes(attributes: AttributesType): SpanInterface {
-    this.attributes = { ...this.attributes, ...attributes };
+  attributes(attributes: AttributesType): SpanInterface {
+    this.options.attributes = { ...this.options.attributes, ...attributes };
 
     return this;
   }
 
-  setStatus(status: StatusEnum, message?: string): SpanInterface {
-    this.status = status;
-    this.message = message;
+  status(status: StatusType): SpanInterface {
+    this.options.status = status;
+    this.options.message = status.message;
 
-    if (status === StatusEnum.REJECTED) {
-      this.attributes.error = true;
+    if (status.type === StatusEnum.REJECTED) {
+      if (!this.options.attributes) { this.options.attributes = {}; }
+      this.options.attributes.error = true;
     }
 
     return this;
   }
 
-  addEvent(name: string, attributes?: AttributesType): SpanInterface {
-    this.events.push({
-      name,
+  event(event: EventType): SpanInterface {
+    this.options.events.push({
+      name: event.name,
       timestamp: Date.now(),
-      attributes: attributes || {},
+      attributes: event.attributes || {},
     });
 
     return this;
@@ -53,28 +62,24 @@ export class Span implements SpanInterface {
     return {
       name: this.options.name,
       timestamp: Date.now(),
-      startTime: this.startTime,
-      endTime: this.endTime,
+      startTime: this.options.startTime,
+      endTime: this.options.endTime,
       attributes: {
-        ...this.attributes,
+        ...this.options.attributes,
         parentId: this.options.parentId,
         traceId: this.options.traceId,
         spanId: this.options.spanId,
         kind: this.options.kind,
       },
-      events: this.events,
-      status: this.status,
-      message: this.message,
+      events: this.options.events,
+      status: this.options.status,
+      message: this.options.message,
     }
   }
 
   end(): void {
-    this.ended = true;
-    this.endTime = performance.now();
-
-    if (this.tracer.status && !this.tracer.status.includes(this.status)) {
-      return;
-    }
+    this.options.ended = true;
+    this.options.endTime = performance.now();
 
     this.tracer.send(this.getData());
   }
@@ -88,10 +93,6 @@ export class Span implements SpanInterface {
   }
 
   log(level: LogEnum, message: string, attributes?: AttributesType): void {
-    if (this.tracer.level && level < this.tracer.level) {
-      return;
-    }
-
     const span = this.getData();
 
     this.tracer.send({ 
@@ -118,12 +119,12 @@ export class Span implements SpanInterface {
 
   error(message: string, attributes?: AttributesType): void {
     this.log(LogEnum.ERROR, message, attributes);
-    this.setStatus(StatusEnum.REJECTED, message);
+    this.status({ type: StatusEnum.REJECTED, message });
   }
 
   fatal(message: string, attributes?: AttributesType): void {
     this.log(LogEnum.FATAL, message, attributes);
-    this.setStatus(StatusEnum.REJECTED, message);
+    this.status({ type: StatusEnum.REJECTED, message });
   }
 }
 

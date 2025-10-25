@@ -7,13 +7,13 @@ import StatusEnum from '~/tracer/enums/status.enum.ts';
 export type AttributesType = Record<string, unknown>;
 export type EventType = {
   name: string;
-  timestamp: number;
+  timestamp?: number;
   attributes?: AttributesType;
 };
 
 export type SpanType = {
   name: string;
-  status: StatusEnum;
+  status: StatusType;
   message?: string;
   timestamp: number;
   startTime: number;
@@ -31,17 +31,20 @@ export type LogType = {
   attributes?: AttributesType;
 };
 
+export type StatusType = {
+  type: StatusEnum;
+  message?: string;
+};
+
 export type RedactFunctionType = (key: string, value: unknown) => unknown;
 
 export type TracerOptionsType = {
   name: string;
-  level?: LogEnum;
-  status?: Array<StatusEnum>;
-  namespaces?: Array<string>;
   transports: Array<TransportInterface>;
+  namespaces?: Array<string>;
   redact?: RedactFunctionType;
-  attributes?: Record<string, unknown>;
-}
+  attributes?: AttributesType;
+};
 
 export type SpanOptionsType = {
   traceId: string;
@@ -49,23 +52,34 @@ export type SpanOptionsType = {
   name: string;
   kind: SpanEnum;
   parentId?: string;
-}
+
+  startTime: number;
+  status: StatusType
+  events: Array<EventType>
+  ended?: boolean;
+  message?: string | undefined
+  endTime?: number;
+  attributes?: AttributesType;
+
+};
 
 export type StartOptionsType = {
-  name: string,
-  kind?: SpanEnum
-  traceId?: string
-  parentId?: string
-}
+  name: string;
+  kind?: SpanEnum;
+  traceId?: string;
+  parentId?: string;
+};
 
-export type ConsoleOptionsType = {
+export type TransportOptionsType = {
+  log?: Array<LogEnum> | boolean;
+  span?: Array<StatusEnum> | boolean;
   pretty?: boolean;
 };
 
 export type HttpOptionsType = {
   headers?: Record<string, string>;
   timeout?: number;
-  signal: AbortSignal
+  signal: AbortSignal;
 };
 
-export default {}
+export default {};
