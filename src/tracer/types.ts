@@ -1,4 +1,4 @@
-import type { TracerInterface, TransportInterface } from '~/tracer/interfaces.ts';
+import type { TransportInterface } from '~/tracer/interfaces.ts';
 
 import LogEnum from '~/tracer/enums/log.enum.ts';
 import SpanEnum from '~/tracer/enums/span.enum.ts';
@@ -18,7 +18,7 @@ export type SpanType = {
   timestamp: number;
   startTime: number;
   endTime?: number;
-  attributes: AttributesType | null;
+  attributes?: AttributesType;
   events: EventType[];
 };
 
@@ -28,7 +28,7 @@ export type LogType = {
   level: LogEnum;
   message: string;
   timestamp: number;
-  attributes: AttributesType | null;
+  attributes?: AttributesType;
 };
 
 export type RedactFunctionType = (key: string, value: unknown) => unknown;

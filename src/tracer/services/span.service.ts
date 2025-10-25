@@ -92,7 +92,7 @@ export class Span implements SpanInterface {
       message,
       name: this.options.name,
       timestamp: Date.now(),
-      attributes: { ...span.attributes, ...attributes },
+      attributes: { ...span.attributes, ...(attributes || {}) },
     });
   }
 

@@ -60,7 +60,7 @@ export class Tracer implements TracerInterface {
 
     return {
       ...data,
-      attributes: data.attributes ? redactObject(data.attributes) : null,
+      attributes: data.attributes ? redactObject(data.attributes) : undefined,
     };
   }
 
@@ -92,7 +92,7 @@ export class Tracer implements TracerInterface {
       message,
       name: this.name,
       timestamp: Date.now(),
-      attributes: attributes || {},
+      attributes: attributes,
     });
   }
 
