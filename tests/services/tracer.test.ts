@@ -546,9 +546,10 @@ describe('Tracer with Console and HTTP Transports', () => {
 
   describe('Error Scenarios', () => {
     it('should handle missing attributes gracefully', async () => {
-      const span = await tracer.start({ name: 'no-attributes-test' });
+      const span = await tracer.async({ name: 'no-attributes-test' });
       span.end();
 
+      
       const sentData = mockHttpTransport.sentData[0] as SpanType;
       expect(sentData.attributes).toBeTruthy();
       expect(sentData.events).toEqual([]);

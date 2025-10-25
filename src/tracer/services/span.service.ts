@@ -75,8 +75,12 @@ export class Span implements SpanInterface {
     this.tracer.send(this.getData());
   }
 
-  child(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface> {
+  child(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface {
     return this.tracer.start({ ...options, traceId: this.options.traceId, parentId: this.options.spanId }, callback);
+  }
+
+  async(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface> {
+    return this.tracer.async({ ...options, traceId: this.options.traceId, parentId: this.options.spanId }, callback);
   }
 
   log(level: LogEnum, message: string, attributes?: AttributesType): void {

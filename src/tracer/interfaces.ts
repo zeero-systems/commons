@@ -30,7 +30,8 @@ export interface SpanInterface extends LogInterface {
   addEvent(name: string, attributes?: AttributesType): SpanInterface;
   end(): void;
 
-  child(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>;
+  child(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface;
+  async(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>;
 }
 
 export interface TracerInterface extends LogInterface {
@@ -41,7 +42,8 @@ export interface TracerInterface extends LogInterface {
   attributes: Record<string, unknown> | null;
 
   send(span: SpanType | LogType): void;
-  start(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>;
+  start(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface
+  async(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>
 }
 
 export default {};

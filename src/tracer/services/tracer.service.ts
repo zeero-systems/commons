@@ -64,7 +64,7 @@ export class Tracer implements TracerInterface {
     };
   }
 
-  public start(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface> {
+  public start(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface {
     const span = new Span(this, {
       parentId: options?.parentId,
       traceId: options?.traceId ?? Generator.randomId(16),
@@ -74,9 +74,24 @@ export class Tracer implements TracerInterface {
     });
 
     if (callback) {
-      return callback(span).then(() => span).finally(() => {
-        span.end();
-      });
+      callback(span);
+      span.end();
+    }
+
+    return span;
+  }
+
+  public async(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface> {
+    const span: SpanInterface = new Span(this, {
+      parentId: options?.parentId,
+      traceId: options?.traceId ?? Generator.randomId(16),
+      spanId: Generator.randomId(8),
+      name: options.name,
+      kind: options?.kind ?? SpanEnum.INTERNAL,
+    });
+
+    if (callback) {
+      return callback(span).then(() => span).finally(() => span.end());
     }
 
     return Promise.resolve(span);
