@@ -18,7 +18,7 @@ export class Span implements SpanInterface {
   constructor(tracer: TracerInterface, options: SpanOptionsType) {
     this.tracer = tracer;
     this.options = options;
-    this.startTime = Date.now();
+    this.startTime = performance.now();
     this.attributes = { ...tracer.attributes };
   }
 
@@ -70,7 +70,7 @@ export class Span implements SpanInterface {
 
   end(): void {
     this.ended = true;
-    this.endTime = Date.now();
+    this.endTime = performance.now();
 
     this.tracer.send(this.getData());
   }

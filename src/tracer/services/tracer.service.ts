@@ -19,14 +19,14 @@ export class Tracer implements TracerInterface {
   namespaces: Array<string>;
   transports: Array<TransportInterface>;
   redact: RedactFunctionType;
-  attributes: Record<string, unknown>;
+  attributes: Record<string, unknown> | null;
 
   constructor(options: Partial<TracerOptionsType> = {}) {
     this.name = options.name || 'tracer';
     this.level = options.level ?? LogEnum.INFO;
     this.redact = options.redact ?? ((_k: string, v: unknown) => v);
     this.transports = options.transports ?? [];
-    this.attributes = options.attributes ?? {};
+    this.attributes = options.attributes ?? null;
     this.namespaces = options.namespaces ?? [];
   }
 
@@ -60,7 +60,7 @@ export class Tracer implements TracerInterface {
 
     return {
       ...data,
-      attributes: redactObject(data.attributes),
+      attributes: data.attributes ? redactObject(data.attributes) : null,
     };
   }
 

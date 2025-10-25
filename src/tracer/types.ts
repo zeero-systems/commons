@@ -18,7 +18,7 @@ export type SpanType = {
   timestamp: number;
   startTime: number;
   endTime?: number;
-  attributes: AttributesType;
+  attributes: AttributesType | null;
   events: EventType[];
 };
 
@@ -28,7 +28,7 @@ export type LogType = {
   level: LogEnum;
   message: string;
   timestamp: number;
-  attributes: AttributesType;
+  attributes: AttributesType | null;
 };
 
 export type RedactFunctionType = (key: string, value: unknown) => unknown;

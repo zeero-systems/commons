@@ -38,7 +38,7 @@ export interface TracerInterface extends LogInterface {
   redact: RedactFunctionType;
   namespaces: Array<string>;
   transports: Array<TransportInterface>;
-  attributes: Record<string, unknown>;
+  attributes: Record<string, unknown> | null;
 
   send(span: SpanType | LogType): void;
   start(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>;

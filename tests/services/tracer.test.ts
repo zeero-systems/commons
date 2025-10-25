@@ -1,9 +1,11 @@
-import { describe, it, beforeAll, afterAll, beforeEach, afterEach } from "@std/bdd";
-import { expect } from "@std/expect";
-import { Tracer } from '~/tracer/services/tracer.service.ts';
-import ConsoleTransport from '~/tracer/transports/console.transport.ts'
-import HttpTransport from '~/tracer/transports/http.transport.ts'
 import type { SpanType, LogType } from '~/tracer/types.ts';
+
+import { describe, it, beforeEach, afterEach } from "@std/bdd";
+import { expect } from "@std/expect";
+
+import ConsoleTransport from '~/tracer/transports/console.transport.ts'
+import Tracer from '~/tracer/services/tracer.service.ts';
+import HttpTransport from '~/tracer/transports/http.transport.ts'
 import LogEnum from '~/tracer/enums/log.enum.ts';
 import SpanEnum from '~/tracer/enums/span.enum.ts';
 import StatusEnum from '~/tracer/enums/status.enum.ts';
@@ -164,9 +166,9 @@ describe('Tracer with Console and HTTP Transports', () => {
       span.end();
 
       const sentData = mockHttpTransport.sentData[0] as SpanType;
-      expect(sentData.attributes.userId).toBe('user-123');
-      expect(sentData.attributes.requestId).toBe('req-456');
-      expect(sentData.attributes.timestamp).toBeTruthy();
+      expect(sentData.attributes?.userId).toBe('user-123');
+      expect(sentData.attributes?.requestId).toBe('req-456');
+      expect(sentData.attributes?.timestamp).toBeTruthy();
     });
 
     it('should add events to a span', async () => {
@@ -209,7 +211,7 @@ describe('Tracer with Console and HTTP Transports', () => {
       expect(logData.message).toBe('Something went wrong');
 
       const spanData = mockHttpTransport.sentData[1] as SpanType;
-      expect(spanData.attributes.error).toBe(true);
+      expect(spanData.attributes?.error).toBe(true);
     });
   });
 
@@ -230,11 +232,11 @@ describe('Tracer with Console and HTTP Transports', () => {
       const parentData = mockHttpTransport.sentData[1] as SpanType;
 
       expect(childData.name).toBe('child-operation');
-      expect(childData.attributes.parentId).toBe(parent.options.spanId);
-      expect(childData.attributes.traceId).toBe(parent.options.traceId);
+      expect(childData.attributes?.parentId).toBe(parent.options.spanId);
+      expect(childData.attributes?.traceId).toBe(parent.options.traceId);
 
       expect(parentData.name).toBe('parent-operation');
-      expect(parentData.attributes.spanId).toBe(parent.options.spanId);
+      expect(parentData.attributes?.spanId).toBe(parent.options.spanId);
     });
 
     it('should maintain trace context across parent-child', async () => {
@@ -248,9 +250,9 @@ describe('Tracer with Console and HTTP Transports', () => {
       const childData = mockHttpTransport.sentData[0] as SpanType;
       const parentData = mockHttpTransport.sentData[1] as SpanType;
 
-      expect(childData.attributes.traceId).toBe(traceId);
-      expect(parentData.attributes.traceId).toBe(traceId);
-      expect(childData.attributes.parentId).toBe(parent.options.spanId);
+      expect(childData.attributes?.traceId).toBe(traceId);
+      expect(parentData.attributes?.traceId).toBe(traceId);
+      expect(childData.attributes?.parentId).toBe(parent.options.spanId);
     });
 
     it('should log within span context', async () => {
@@ -297,12 +299,12 @@ describe('Tracer with Console and HTTP Transports', () => {
       const level2Data = mockHttpTransport.sentData[1] as SpanType;
       const level1Data = mockHttpTransport.sentData[2] as SpanType;
 
-      expect(level3Data.attributes.traceId).toBe(level1Data.attributes.traceId);
-      expect(level2Data.attributes.traceId).toBe(level1Data.attributes.traceId);
+      expect(level3Data.attributes?.traceId).toBe(level1Data.attributes?.traceId);
+      expect(level2Data.attributes?.traceId).toBe(level1Data.attributes?.traceId);
 
-      expect(level3Data.attributes.parentId).toBe(level2.options.spanId);
-      expect(level2Data.attributes.parentId).toBe(level1.options.spanId);
-      expect(level1Data.attributes.parentId).toBeUndefined();
+      expect(level3Data.attributes?.parentId).toBe(level2.options.spanId);
+      expect(level2Data.attributes?.parentId).toBe(level1.options.spanId);
+      expect(level1Data.attributes?.parentId).toBeUndefined();
     });
 
     it('should handle errors at different nesting levels', async () => {
@@ -355,13 +357,13 @@ describe('Tracer with Console and HTTP Transports', () => {
       const child2Data = mockHttpTransport.sentData[1] as SpanType;
       const child3Data = mockHttpTransport.sentData[2] as SpanType;
 
-      expect(child1Data.attributes.parentId).toBe(parent.options.spanId);
-      expect(child2Data.attributes.parentId).toBe(parent.options.spanId);
-      expect(child3Data.attributes.parentId).toBe(parent.options.spanId);
+      expect(child1Data.attributes?.parentId).toBe(parent.options.spanId);
+      expect(child2Data.attributes?.parentId).toBe(parent.options.spanId);
+      expect(child3Data.attributes?.parentId).toBe(parent.options.spanId);
 
-      expect(child1Data.attributes.childId).toBe(1);
-      expect(child2Data.attributes.childId).toBe(2);
-      expect(child3Data.attributes.childId).toBe(3);
+      expect(child1Data.attributes?.childId).toBe(1);
+      expect(child2Data.attributes?.childId).toBe(2);
+      expect(child3Data.attributes?.childId).toBe(3);
     });
 
     it('should handle sibling spans with different kinds', async () => {
@@ -387,9 +389,9 @@ describe('Tracer with Console and HTTP Transports', () => {
       const cacheData = mockHttpTransport.sentData[1] as SpanType;
       const queueData = mockHttpTransport.sentData[2] as SpanType;
 
-      expect(dbData.attributes.kind).toBe(SpanEnum.CLIENT);
-      expect(cacheData.attributes.kind).toBe(SpanEnum.CLIENT);
-      expect(queueData.attributes.kind).toBe(SpanEnum.PRODUCER);
+      expect(dbData.attributes?.kind).toBe(SpanEnum.CLIENT);
+      expect(cacheData.attributes?.kind).toBe(SpanEnum.CLIENT);
+      expect(queueData.attributes?.kind).toBe(SpanEnum.PRODUCER);
     });
   });
 
@@ -480,7 +482,7 @@ describe('Tracer with Console and HTTP Transports', () => {
       expect(mockHttpTransport.callCount).toBe(12);
 
       const spanData = mockHttpTransport.sentData.filter(d => 'startTime' in d) as SpanType[];
-      const allTraceIds = spanData.map(s => s.attributes.traceId);
+      const allTraceIds = spanData.map(s => s.attributes?.traceId);
       const uniqueTraceIds = new Set(allTraceIds);
       expect(uniqueTraceIds.size).toBe(1);
       expect(uniqueTraceIds.has('trace-order-12345')).toBe(true);
@@ -489,8 +491,8 @@ describe('Tracer with Console and HTTP Transports', () => {
       const inventoryData = spanData.find(s => s.name === 'inventory.check');
       const inventoryDbData = spanData.find(s => s.name === 'inventory.database.query');
 
-      expect(inventoryData?.attributes.parentId).toBe(requestData?.attributes.spanId);
-      expect(inventoryDbData?.attributes.parentId).toBe(inventorySpan.options.spanId);
+      expect(inventoryData?.attributes?.parentId).toBe(requestData?.attributes?.spanId);
+      expect(inventoryDbData?.attributes?.parentId).toBe(inventorySpan.options.spanId);
     });
   });
 

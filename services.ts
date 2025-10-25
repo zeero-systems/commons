@@ -1,4 +1,5 @@
 import Container from '~/container/services/container.service.ts';
+import Console from '~/common/services/console.service.ts';
 import ConsoleTransport from '~/tracer/transports/console.transport.ts';
 import Decorator from '~/decorator/services/decorator.service.ts';
 import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.ts';
@@ -17,6 +18,7 @@ import Tracer from '~/tracer/services/tracer.service.ts';
 import Validator from '~/validator/services/validator.service.ts';
 
 export { default as Container } from '~/container/services/container.service.ts';
+export { default as Console } from '~/common/services/console.service.ts';
 export { default as ConsoleTransport } from '~/tracer/transports/console.transport.ts';
 export { default as Decorator } from '~/decorator/services/decorator.service.ts';
 export { default as DecoratorMetadata } from '~/decorator/services/decorator-metadata.service.ts';
@@ -36,6 +38,7 @@ export { default as Validator } from '~/validator/services/validator.service.ts'
 
 export default {
   Container,
+  Console,
   ConsoleTransport,
   Decorator,
   DecoratorMetadata,
