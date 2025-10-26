@@ -39,7 +39,7 @@ export interface SpanInterface extends LogInterface {
 export interface TracerInterface extends LogInterface {
   options: TracerOptionsType
 
-  send(span: SpanType | LogType): void;
+  send(span: SpanType | LogType): Promise<void>;
   start(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface
   async(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>
 }

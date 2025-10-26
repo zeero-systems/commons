@@ -1,6 +1,6 @@
 {
   "name": "@zeero-systems/commons",
-  "version": "0.41.8",
+  "version": "0.41.9",
   "license": "GPL-3.0",
   "exports": {
     ".": "./index.ts",
@@ -27,9 +27,6 @@
       "src/**/*.ts"
     ],
     "exclude": ["!dist"]
-  },
-  "tasks": {
-    "dev": "deno run --watch index.ts"
   },
   "imports": {
     "-/": "./",

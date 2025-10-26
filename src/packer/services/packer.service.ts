@@ -27,7 +27,7 @@ export class Packer implements PackerInterface {
     return this.container.collection.values().map((collection) => collection.artifact).toArray() || [];
   }
 
-  public unpack(pack: PackNewableType): void {
+  public unpack(pack: PackNewableType = this.pack): void {
     const decorator = DecoratorMetadata.findByAnnotationInteroperableName(pack, 'pack', 'construct');
 
     if (decorator) {

@@ -9,7 +9,7 @@ export class HttpTransport implements TransportInterface {
     this.options = options;
   }
 
-  async send(data: LogType | SpanType): Promise<void> {
+  public async send(data: SpanType | LogType): Promise<void> {
     const isLog = 'level' in data;
     const isSpan = 'status' in data;
     

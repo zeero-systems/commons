@@ -15,7 +15,7 @@ import Span from '~/tracer/services/span.service.ts';
 export class Tracer implements TracerInterface {
   constructor(public options: TracerOptionsType = { name: 'default', transports: [] }) { }
 
-  public send(data: SpanType | LogType): void {
+  public async send(data: SpanType | LogType): Promise<void> {
     let shouldSend = true;
     if (this.options.namespaces && this.options.namespaces.length > 0 && 'name' in data) {
       shouldSend = this.options.namespaces.some((ns) => data.name.startsWith(ns));
