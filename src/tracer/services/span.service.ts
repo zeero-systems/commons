@@ -42,7 +42,9 @@ export class Span implements SpanInterface {
 
     if (status.type === StatusEnum.REJECTED) {
       if (!this.options.attributes) { this.options.attributes = {}; }
-      this.options.attributes.error = true;
+      if (!this.options.attributes.error) {
+        this.options.attributes.error = true;
+      }
     }
 
     return this;
