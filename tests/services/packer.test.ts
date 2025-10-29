@@ -11,11 +11,10 @@ describe('packer', () => {
   @Pack()
   class Trace implements PackInterface {
     constructor(container: ContainerInterface) {
-      container.collection
     }
 
-    onBoot(container: ContainerInterface): void {
-      container.collection
+    onBoot(container: ContainerInterface): Promise<void> {
+      return Promise.resolve();
     }
   }
   
@@ -24,7 +23,6 @@ describe('packer', () => {
   })
   class App implements PackInterface {
     constructor(container: ContainerInterface) {
-      container.collection
     }
   }
 

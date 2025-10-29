@@ -4,9 +4,9 @@ import type { PackNewableType } from '~/packer/types.ts';
 import type { DispatcherInterface } from '~/emitter/interfaces.ts';
 
 export interface PackInterface {  
-  onBoot?(...args: any[]): void
-  onStart?(...args: any[]): void
-  onStop?(...args: any[]): void
+  onBoot?(...args: any[]): Promise<void>
+  onStart?(...args: any[]): Promise<void>
+  onStop?(...args: any[]): Promise<void>
 }
 
 export interface PackerInterface { 
