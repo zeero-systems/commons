@@ -22,6 +22,10 @@ export class Timer implements TimerInterface {
     this.timers.delete(key);
     return time 
   }
+
+  [Symbol.dispose](): void {
+    this.timers.clear();
+  }
 }
 
 export default Timer

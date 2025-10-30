@@ -34,6 +34,8 @@ export interface SpanInterface extends LogInterface {
 
   async(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>;
   child(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface;
+  
+  [Symbol.dispose](): void;
 }
 
 export interface TracerInterface extends LogInterface {
@@ -42,6 +44,8 @@ export interface TracerInterface extends LogInterface {
   send(span: SpanType | LogType): Promise<void>;
   start(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface
   async(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>
+  
+  [Symbol.asyncDispose](): Promise<void>;
 }
 
 export default {};

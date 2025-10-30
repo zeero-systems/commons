@@ -29,6 +29,10 @@ export class Dispatcher<T> implements DispatcherInterface<T> {
       }
     }
   }
+
+  [Symbol.dispose](): void {
+    this.listeners = {};
+  }
 }
 
 export default Dispatcher

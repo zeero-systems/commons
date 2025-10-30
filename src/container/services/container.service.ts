@@ -216,14 +216,18 @@ export class Container implements ContainerInterface {
     });
   }
 
-  private getProviderByName(name: KeyableType, decorator?: DecoratorType): { name: KeyableType; scope: ScopeEnum } {
-    const provider = { name, scope: ScopeEnum.Default };
-    const annotation = decorator?.annotation.target as ConsumerAnnotation | undefined;
+  private getProviderByName(name: KeyableType, decorator?: DecoratorType): { name: KeyableType, scope: ScopeEnum } {
+    const provider = { name, scope: ScopeEnum.Default }
+    const annotation = decorator?.annotation.target as ConsumerAnnotation | undefined
 
-    if (annotation?.provider) provider.name = annotation.provider;
-    if (annotation?.options?.scope) provider.scope = annotation.options.scope;
+    if (annotation?.provider) provider.name = annotation.provider
+    if (annotation?.options?.scope) provider.scope = annotation.options.scope
 
-    return provider;
+    return provider
+  }
+
+  [Symbol.dispose](): void {
+    this.instances.clear();
   }
 }
 

@@ -51,6 +51,8 @@ export interface TimerInterface {
   setTime(key: string): void
   endTime(key: string): void
   getTime(key: string): TimeType | undefined
+  
+  [Symbol.dispose](): void;
 }
 
 export default {};

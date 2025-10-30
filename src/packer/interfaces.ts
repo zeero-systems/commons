@@ -16,4 +16,6 @@ export interface PackerInterface {
 
   artifacts(): Array<ArtifactType>
   unpack(pack: PackNewableType): void
+  
+  [Symbol.dispose](): void;
 }

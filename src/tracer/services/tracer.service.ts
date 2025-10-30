@@ -111,6 +111,22 @@ export class Tracer implements TracerInterface {
   fatal(message: string, attributes?: AttributesType): void {
     this.log(LogEnum.FATAL, message, attributes);
   }
+
+  async [Symbol.asyncDispose](): Promise<void> {
+    // Allow any pending transport operations to complete
+    await Promise.allSettled(
+      this.options.transports.map(transport => {
+        // If transport has a flush/close method, call it
+        if ('flush' in transport && typeof transport.flush === 'function') {
+          return transport.flush();
+        }
+        if ('close' in transport && typeof transport.close === 'function') {
+          return transport.close();
+        }
+        return Promise.resolve();
+      })
+    );
+  }
 }
 
 export default Tracer;

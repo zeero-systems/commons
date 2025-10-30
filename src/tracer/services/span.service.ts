@@ -128,6 +128,12 @@ export class Span implements SpanInterface {
     this.log(LogEnum.FATAL, message, attributes);
     this.status({ type: StatusEnum.REJECTED, message });
   }
+
+  [Symbol.dispose](): void {
+    if (!this.options.ended) {
+      this.end();
+    }
+  }
 }
 
 export default Span;
