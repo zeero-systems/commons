@@ -51,23 +51,61 @@ export class Objector {
     properties: Array<string | symbol>,
   ): OmitType<T, keyof typeof properties> {
     return Objector.getEntries(target).reduce((previous: any, [key, value]: any) => {
-      if (!properties.includes(key)) previous[key] = value;
+      if (!properties.includes(key)) {
+        previous[key] = value;
+      }
       return previous;
     }, {}) as OmitType<T, keyof typeof properties>;
   }
 
-  public static toEntries<T extends Record<PropertyKey, any>>(target: T): ReadonlyArray<EntryType<OmitType<T, FunctionType>>> {
-    return Objector.getEntries<OmitType<T, FunctionType>>(target);
+  public static toEntries<T extends Record<PropertyKey, any>>(
+    target: T,
+    options: { maxDepth?: number; currentDepth?: number } = {}
+  ): ReadonlyArray<EntryType<OmitType<T, FunctionType>>> {
+    const { maxDepth = Infinity, currentDepth = 0 } = options;
+    
+    if (currentDepth >= maxDepth) {
+      return Objector.getEntries<OmitType<T, FunctionType>>(target);
+    }
+    
+    const entries: Array<EntryType<OmitType<T, FunctionType>>> = [];
+    
+    for (const [key, value] of Objector.getEntries<OmitType<T, FunctionType>>(target)) {
+      if (Array.isArray(value)) {
+        const processedArray = value.map((item) => {
+          if (typeof item === 'object' && item !== null && !isDate(item)) {
+            return Object.fromEntries(
+              Objector.toEntries(item, {
+                maxDepth,
+                currentDepth: currentDepth + 1
+              })
+            );
+          }
+          return item;
+        });
+        entries.push([key, processedArray] as EntryType<OmitType<T, FunctionType>>);
+      } else if (typeof value === 'object' && value !== null && !isDate(value)) {
+        const nestedEntries = Objector.toEntries(value, {
+          maxDepth,
+          currentDepth: currentDepth + 1
+        });
+        entries.push([key, Object.fromEntries(nestedEntries)] as EntryType<OmitType<T, FunctionType>>);
+      } else {
+        entries.push([key, value] as EntryType<OmitType<T, FunctionType>>);
+      }
+    }
+    
+    return entries;
   }
 
-  public static toPlain<T extends Record<PropertyKey, any>>(target: T): string {
-    return Objector.toEntries(target).reduce((a, [key, value]) => {
+  public static toPlain<T extends Record<PropertyKey, any>>(target: T, maxDepth?: number): string {
+    return Objector.toEntries(target, { maxDepth }).reduce((a, [key, value]) => {
       return a += `${String(key)}=${value}\n`;
     }, '').trim();
   }
 
-  public static toJson<T extends Record<PropertyKey, any>>(target: T): OmitType<T, FunctionType> {
-    return Objector.toEntries(target).reduce((a, [key, value]) => {
+  public static toJson<T extends Record<PropertyKey, any>>(target: T, maxDepth?: number): OmitType<T, FunctionType> {
+    return Objector.toEntries(target, { maxDepth }).reduce((a, [key, value]) => {
       return { ...a, [key]: value };
     }, {}) as T;
   }

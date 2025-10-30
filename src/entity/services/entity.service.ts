@@ -9,6 +9,7 @@ import ValidationEnum from '~/validator/enums/validation.enum.ts';
 import Validator from '~/validator/services/validator.service.ts';
 import DecoratorMetadata from '~/decorator/services/decorator-metadata.service.ts';
 import isValidation from '~/validator/guards/is-validation.guard.ts';
+import isEntity from '~/entity/guards/is-entity.guard.ts';
 
 export class Entity implements EntityInterface {
   public toEntries(): readonly [string, unknown][] {
@@ -31,7 +32,7 @@ export class Entity implements EntityInterface {
     return Objector.getPropertyType(this, propertyKey)
   }
 
-  public validateProperty<K extends keyof OmitType<this, FunctionType>>(propertyKey: K): Promise<Array<ValidationResultType>> {
+  public async validateProperty<K extends keyof OmitType<this, FunctionType>>(propertyKey: K): Promise<Array<ValidationResultType> | any> {
     const decorations = DecoratorMetadata.filterByTargetPropertyKeys(this, [propertyKey])
 
     const validations = decorations.reduce((previous: (ValidationInterface & AnnotationInterface)[], current) => {
@@ -41,18 +42,48 @@ export class Entity implements EntityInterface {
       return previous;
     }, [])
 
-    return Validator.validateValue(this[propertyKey], validations);
+    const value = this[propertyKey];
+
+    if (isEntity(value)) {
+      return await value.validateProperties();
+    }
+
+    if (Array.isArray(value)) {
+      const arrayValidations = await Promise.all(
+        value.map(async (item) => {
+          if (isEntity(item)) {
+            return await item.validateProperties();
+          }
+          return undefined;
+        })
+      );
+      
+      const filteredValidations = arrayValidations.filter(v => v !== undefined);
+      if (filteredValidations.length > 0) {
+        return arrayValidations;
+      }
+    }
+
+    return await Validator.validateValue(value, validations);
   }
 
-  public validateProperties(onlyResultWithKeys?: Array<ValidationEnum>): Promise<MappedPropertiesType<this, ValidationResultType[]> | undefined> {
+  public validateProperties(onlyResultWithKeys?: Array<ValidationEnum>): Promise<MappedPropertiesType<this, ValidationResultType[] | any> | undefined> {
     const promises = [];
 
     for (const key of this.getPropertyKeys()) {
       promises.push(
         this.validateProperty(key)
-          .then((validations) => {
-            if (onlyResultWithKeys) {
-              validations = validations.filter((v) => onlyResultWithKeys!.includes(v.key));
+          .then((validations: any) => {
+            if (validations && typeof validations === 'object' && !Array.isArray(validations)) {
+              return { key, validations };
+            }
+            
+            if (Array.isArray(validations) && validations.some((v: any) => v && typeof v === 'object' && !v.key)) {
+              return { key, validations };
+            }
+            
+            if (onlyResultWithKeys && Array.isArray(validations)) {
+              validations = validations.filter((v: ValidationResultType) => onlyResultWithKeys!.includes(v.key));
             }
 
             return { key, validations };
@@ -61,14 +92,17 @@ export class Entity implements EntityInterface {
     }
 
     return Promise.all(promises).then((results) => {
-      let targetValidations: { [key: string | symbol]: ValidationResultType[] } | undefined;
+      let targetValidations: { [key: string | symbol]: ValidationResultType[] | any } | undefined;
       for (const { key, validations } of results) {
-        if (validations.length > 0) {
+        if (validations && (
+          (Array.isArray(validations) && validations.length > 0) ||
+          (!Array.isArray(validations) && typeof validations === 'object')
+        )) {
           if (!targetValidations) targetValidations = {};
           targetValidations[key] = validations;
         }
       }
-      return targetValidations as MappedPropertiesType<this, ValidationResultType[]> | undefined;
+      return targetValidations as MappedPropertiesType<this, ValidationResultType[] | any> | undefined;
     });
   }
 }

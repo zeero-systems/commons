@@ -6,6 +6,7 @@ import isClass from '~/common/guards/is-class.guard.ts';
 import isClassDecoratorContext from '~/decorator/guards/is-class-decorator-context.guard.ts';
 import isClassMemberDecoratorContext from '~/decorator/guards/is-class-member-decorator-context.guard.ts';
 import isDate from '~/common/guards/is-date.guard.ts';
+import isEntity from '~/entity/guards/is-entity.guard.ts';
 import isFunction from '~/common/guards/is-function.guard.ts';
 import isMap from '~/common/guards/is-map.guard.ts';
 import isNull from '~/common/guards/is-null.guard.ts';
@@ -27,6 +28,7 @@ export { default as isClass } from '~/common/guards/is-class.guard.ts';
 export { default as isClassDecoratorContext } from '~/decorator/guards/is-class-decorator-context.guard.ts';
 export { default as isClassMemberDecoratorContext } from '~/decorator/guards/is-class-member-decorator-context.guard.ts';
 export { default as isDate } from '~/common/guards/is-date.guard.ts';
+export { default as isEntity } from '~/entity/guards/is-entity.guard.ts';
 export { default as isFunction } from '~/common/guards/is-function.guard.ts';
 export { default as isMap } from '~/common/guards/is-map.guard.ts';
 export { default as isNull } from '~/common/guards/is-null.guard.ts';
@@ -49,6 +51,7 @@ export default {
   isClassDecoratorContext,
   isClassMemberDecoratorContext,
   isDate,
+  isEntity,
   isFunction,
   isMap,
   isNull,

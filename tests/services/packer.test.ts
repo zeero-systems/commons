@@ -10,10 +10,10 @@ import Packer from '~/packer/services/packer.service.ts';
 describe('packer', () => {
   @Pack()
   class Trace implements PackInterface {
-    constructor(container: ContainerInterface) {
+    constructor(_container: ContainerInterface) {
     }
 
-    onBoot(container: ContainerInterface): Promise<void> {
+    onBoot(_container: ContainerInterface): Promise<void> {
       return Promise.resolve();
     }
   }
@@ -22,7 +22,7 @@ describe('packer', () => {
     packs: [Trace]
   })
   class App implements PackInterface {
-    constructor(container: ContainerInterface) {
+    constructor(_container: ContainerInterface) {
     }
   }
 
