@@ -2,7 +2,6 @@ import type {
   AttributesType,
   EventType,
   LogType,
-  RedactFunctionType,
   SpanOptionsType,
   SpanType,
   StartOptionsType,
