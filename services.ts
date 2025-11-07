@@ -8,6 +8,7 @@ import Entity from '~/entity/services/entity.service.ts';
 import Exception from '~/common/services/exception.service.ts';
 import Factory from '~/common/services/factory.service.ts';
 import HttpTransport from '~/tracer/transports/http.transport.ts';
+import Generator from '~/tracer/services/generator.service.ts';
 import List from '~/common/services/list.service.ts';
 import Metadata from '~/common/services/metadata.service.ts';
 import Objector from '~/common/services/objector.service.ts';
@@ -26,6 +27,7 @@ export { default as Dispatcher } from '~/emitter/services/dispatcher.service.ts'
 export { default as Entity } from '~/entity/services/entity.service.ts';
 export { default as Exception } from '~/common/services/exception.service.ts';
 export { default as Factory } from '~/common/services/factory.service.ts';
+export { default as Generator } from '~/tracer/services/generator.service.ts';
 export { default as HttpTransport } from '~/tracer/transports/http.transport.ts';
 export { default as List } from '~/common/services/list.service.ts';
 export { default as Metadata } from '~/common/services/metadata.service.ts';
@@ -47,6 +49,7 @@ export default {
   Exception,
   Factory,
   HttpTransport,
+  Generator,
   List,
   Metadata,
   Objector,
