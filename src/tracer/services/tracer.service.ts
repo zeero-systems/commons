@@ -15,16 +15,17 @@ import Span from '~/tracer/services/span.service.ts';
 export class Tracer implements TracerInterface {
   constructor(public options: TracerOptionsType = { name: 'default', transports: [] }) { }
 
-  public async send(data: SpanType | LogType): Promise<void> {
+  public send(data: SpanType | LogType): Promise<void> {
     let shouldSend = true;
     if (this.options.namespaces && this.options.namespaces.length > 0 && 'name' in data) {
       shouldSend = this.options.namespaces.some((ns) => data.name.startsWith(ns));
     }
 
     if (shouldSend) {
-      queueMicrotask(() => {
-        const processedRecord = this.applyRedaction(data);
+      const processedRecord = this.applyRedaction(data);
 
+      // Fire and forget - execute transport sends asynchronously without blocking
+      queueMicrotask(() => {
         this.options.transports.forEach((transport) => {
           transport.send(processedRecord).catch((error) => {
             // @TODO maybe this should not be handled here
@@ -34,6 +35,9 @@ export class Tracer implements TracerInterface {
         });
       });
     }
+
+    // Return resolved promise immediately without waiting
+    return Promise.resolve();
   }
 
   public applyRedaction(data: SpanType | LogType): SpanType | LogType {
