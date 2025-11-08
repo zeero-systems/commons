@@ -35,10 +35,10 @@ export class HttpTransport implements TransportInterface {
 
     try {
       const response = await fetch(this.url, {
-        method: 'POST',
+        method: this.options?.method || 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...this.options?.headers || {},
+          ...(this.options?.headers || {}),
         },
         body: JSON.stringify(data),
         signal: this.options?.signal,

@@ -77,6 +77,7 @@ export type TransportOptionsType = {
 };
 
 export type HttpOptionsType = {
+  method?: 'POST' | 'PUT' | 'PATCH';
   headers?: Record<string, string>;
   timeout?: number;
   signal: AbortSignal;
