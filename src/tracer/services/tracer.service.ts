@@ -22,9 +22,9 @@ export class Tracer implements TracerInterface {
     }
 
     if (shouldSend) {
-      const processedRecord = this.applyRedaction(data);
-
       queueMicrotask(() => {
+        const processedRecord = this.applyRedaction(data);
+
         this.options.transports.forEach((transport) => {
           transport.send(processedRecord).catch((error) => {
             // @TODO maybe this should not be handled here
