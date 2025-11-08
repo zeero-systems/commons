@@ -1,10 +1,10 @@
 import type { SpanInterface, TracerInterface } from '~/tracer/interfaces.ts';
 import type { AttributesType, SpanOptionsType, StartOptionsType, SpanType, EventType } from '~/tracer/types.ts';
+import type { StatusType } from '~/tracer/types.ts';
 
 import LogEnum from '~/tracer/enums/log.enum.ts';
 import StatusEnum from '~/tracer/enums/status.enum.ts';
 import SpanEnum from '~/tracer/enums/span.enum.ts';
-import { StatusType } from '@zeero-systems/commons';
 
 export class Span implements SpanInterface {
   options: SpanOptionsType;

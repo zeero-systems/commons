@@ -8,10 +8,10 @@ import type {
   StatusType,
   TransportOptionsType
 } from '~/tracer/types.ts';
-import { TracerOptionsType } from '@zeero-systems/commons';
+import { TracerOptionsType } from '~/tracer/types.ts';
 
 export interface TransportInterface {
-  options: TransportOptionsType
+  options?: TransportOptionsType
   send(data: SpanType | LogType): Promise<void>;
 }
 

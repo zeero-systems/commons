@@ -4,7 +4,7 @@ import { HttpOptionsType, LogType, SpanType, TransportOptionsType } from '~/trac
 export class HttpTransport implements TransportInterface {
   public url: string;
 
-  constructor(url: string, public options: TransportOptionsType & HttpOptionsType) {
+  constructor(url: string, public options?: TransportOptionsType & HttpOptionsType) {
     this.url = url;
     this.options = options;
   }
@@ -38,10 +38,10 @@ export class HttpTransport implements TransportInterface {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...this.options.headers,
+          ...this.options?.headers || {},
         },
         body: JSON.stringify(data),
-        signal: this.options.signal,
+        signal: this.options?.signal,
       });
 
       if (!response.ok) {

@@ -66,7 +66,7 @@ export class ConsoleTransport implements TransportInterface {
   logPrettyPrint(timestamp: string, data: LogType): void {
     let log = console.log
     const name = data.name.toUpperCase()
-    const color = this.colors[data.level];
+    const color = this.colors[data.level as keyof typeof this.colors] || Console.white.light;
 
     let key = LogEnum[data.level] || 'LOG  '
     if (data.level === LogEnum.DEBUG) { 
@@ -110,7 +110,7 @@ export class ConsoleTransport implements TransportInterface {
       nextIndent = '├─';
     }
     const parentId = data.attributes?.parentId ? ` parentId=${data.attributes.parentId}` : '';
-    log(`${Console.gray.medium}${nextIndent} ATTRS traceId=${data.attributes?.traceId}${parentId} spanId=${data.attributes?.spanId}`)
+    log(`${Console.gray.medium}${nextIndent} ATTRS traceId=${data.attributes?.traceId}${parentId} spanId=${data.attributes?.spanId}${Console.reset}`)
     
     const attributes = Object.entries(data.attributes || {}).filter(([key]) => key !== 'traceId' && key !== 'spanId' && key !== 'parentId')
       .map(([key, value]) => `${key}=${typeof value === 'object' ? JSON.stringify(value) : value}`)
