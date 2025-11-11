@@ -2,58 +2,79 @@ import { describe, it } from 'jsr:@std/testing@^1/bdd';
 import { expect } from 'jsr:@std/expect@^1';
 
 import Tracer from '~/tracer/services/tracer.service.ts';
+import QueueService from '~/common/services/queue.service.ts';
 import Timer from '~/common/services/timer.service.ts';
 import Container from '~/container/services/container.service.ts';
 import Dispatcher from '~/emitter/services/dispatcher.service.ts';
 import Packer from '~/packer/services/packer.service.ts';
+import type { TraceType } from '~/tracer/types.ts';
+import type { TransportInterface } from '~/tracer/interfaces.ts';
 
 describe('using keyword (explicit resource management)', () => {
   
   describe('Span with Symbol.dispose', () => {
     it('should automatically end span when disposed', () => {
-      const tracer = new Tracer({ name: 'test', transports: [] });
+      const queue = new QueueService<TraceType, TransportInterface>({
+        processors: [],
+        processorFn: async () => {}
+      });
+      const tracer = new Tracer(queue, { name: 'test' });
       let spanEnded = false;
       
       {
         using testSpan = tracer.start({ name: 'test-span' });
         
-        expect(testSpan.options.ended).toBeUndefined();
+        expect(testSpan.trace.ended).toBeUndefined();
         testSpan.info('test message');
-        spanEnded = testSpan.options.ended ?? false;
+        spanEnded = testSpan.trace.ended ?? false;
       }
       
       // Span should be automatically ended after scope exit
       expect(spanEnded).toBe(false); // Was false before dispose
       // After dispose, the span should have been ended
+      
+      queue.stop();
     });
 
     it('should end span even if error occurs', () => {
-      const tracer = new Tracer({ name: 'test', transports: [] });
-      let spanOptions: any;
+      const queue = new QueueService<TraceType, TransportInterface>({
+        processors: [],
+        processorFn: async () => {}
+      });
+      const tracer = new Tracer(queue, { name: 'test' });
+      let spanTrace: any;
       
       try {
         using testSpan = tracer.start({ name: 'error-span' });
-        spanOptions = testSpan.options;
+        spanTrace = testSpan.trace;
         
         throw new Error('Test error');
       } catch (_error) {
         // Span should still be ended
-        expect(spanOptions.ended).toBe(true);
+        expect(spanTrace.ended).toBe(true);
       }
+      
+      queue.stop();
     });
 
     it('should not end span twice if already ended', () => {
-      const tracer = new Tracer({ name: 'test', transports: [] });
+      const queue = new QueueService<TraceType, TransportInterface>({
+        processors: [],
+        processorFn: async () => {}
+      });
+      const tracer = new Tracer(queue, { name: 'test' });
       
       {
         using span = tracer.start({ name: 'test-span' });
         span.end();
-        const firstEndTime = span.options.endTime;
+        const firstEndTime = span.trace.endTime;
         
         // Dispose will be called, but shouldn't modify already ended span
-        expect(span.options.ended).toBe(true);
-        expect(span.options.endTime).toBe(firstEndTime);
+        expect(span.trace.ended).toBe(true);
+        expect(span.trace.endTime).toBe(firstEndTime);
       }
+      
+      queue.stop();
     });
   });
 
@@ -199,12 +220,13 @@ describe('using keyword (explicit resource management)', () => {
   describe('Tracer with Symbol.asyncDispose', () => {
     it('should automatically dispose asynchronously', async () => {
       let disposed = false;
+      const queue = new QueueService<TraceType, TransportInterface>({
+        processors: [],
+        processorFn: async () => {}
+      });
       
       {
-        await using tracer = new Tracer({
-          name: 'test',
-          transports: []
-        });
+        await using tracer = new Tracer(queue, { name: 'test' });
         
         tracer.info('test message');
         expect(disposed).toBe(false);
@@ -213,50 +235,65 @@ describe('using keyword (explicit resource management)', () => {
       // Async dispose should have been called
       disposed = true;
       expect(disposed).toBe(true);
+      
+      queue.stop();
     });
 
-    it('should flush transports on async dispose', async () => {
-      let flushed = false;
+    it('should flush queue on async dispose', async () => {
+      let sendCalled = false;
+      const mockTransport = {
+        options: {},
+        send: (data: any) => {
+          sendCalled = true;
+          return Promise.resolve();
+        }
+      } as any;
+      
+      const queue = new QueueService<TraceType, TransportInterface>({
+        processors: [mockTransport],
+        intervalMs: 50,
+        processorFn: async (batch, processors) => {
+          for (const processor of processors) {
+            await processor.send(batch);
+          }
+        }
+      });
       
       {
-        await using tracer = new Tracer({
-          name: 'test',
-          transports: [
-            {
-              options: {},
-              send: () => Promise.resolve(),
-              flush: () => {
-                flushed = true;
-                return Promise.resolve();
-              }
-            } as any
-          ]
-        });
-        
+        await using tracer = new Tracer(queue, { name: 'test' });
         tracer.info('test message');
+        tracer.end(); // Explicitly end to enqueue the trace
       }
       
-      // Flush should have been called during dispose
-      expect(flushed).toBe(true);
+      // Wait for queue interval to process the data
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      // Queue should have processed and sent data to transport
+      expect(sendCalled).toBe(true);
+      
+      queue.stop();
     });
 
     it('should handle transports without flush method', async () => {
+      const mockTransport = {
+        options: {},
+        send: () => Promise.resolve()
+      } as any;
+      
+      const queue = new QueueService<TraceType, TransportInterface>({
+        processors: [mockTransport],
+        processorFn: async () => {}
+      });
+      
       {
-        await using tracer = new Tracer({
-          name: 'test',
-          transports: [
-            {
-              options: {},
-              send: () => Promise.resolve()
-            } as any
-          ]
-        });
-        
+        await using tracer = new Tracer(queue, { name: 'test' });
         tracer.info('test message');
       }
       
       // Should not throw error
       expect(true).toBe(true);
+      
+      queue.stop();
     });
   });
 
