@@ -1,5 +1,5 @@
 
-export enum SpanEnum {
+export enum SpanKindEnum {
   INTERNAL = 'internal',
   SERVER = 'server',
   CLIENT = 'client',
@@ -7,4 +7,4 @@ export enum SpanEnum {
   CONSUMER = 'consumer',
 }
 
-export default SpanEnum
+export default SpanKindEnum

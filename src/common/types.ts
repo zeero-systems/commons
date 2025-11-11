@@ -153,4 +153,11 @@ export type TimeType = {
   start: number
 }
 
+export type QueueOptionsType<T, P> = {
+  processors: P[];
+  intervalMs?: number;
+  chunkSize?: number;
+  processorFn: (batch: T[], processors: P[]) => void | Promise<void>;
+};
+
 export default {};

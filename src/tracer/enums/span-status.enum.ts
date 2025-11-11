@@ -1,8 +1,8 @@
 
-export enum StatusEnum {
+export enum SpanStatusEnum {
   UNSET = 'unset',
   RESOLVED = 'resolved',
   REJECTED = 'rejected',
 }
 
-export default StatusEnum
+export default SpanStatusEnum

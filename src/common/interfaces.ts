@@ -55,4 +55,10 @@ export interface TimerInterface {
   [Symbol.dispose](): void;
 }
 
+export interface QueueInterface<T, P> {
+  enqueue(item: T): void
+  flush(): void
+  stop(): void
+}
+
 export default {};

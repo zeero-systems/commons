@@ -1,50 +1,37 @@
 import type {
   AttributesType,
-  EventType,
-  LogType,
-  SpanOptionsType,
-  SpanType,
-  StartOptionsType,
-  StatusType,
-  TransportOptionsType
+  TransportOptionsType,
+  TracerOptionsType,
+  TraceType
 } from '~/tracer/types.ts';
-import { TracerOptionsType } from '~/tracer/types.ts';
+import SpanStatusEnum from '~/tracer/enums/span-status.enum.ts';
 
 export interface TransportInterface {
   options?: TransportOptionsType
-  send(data: SpanType | LogType): Promise<void>;
+  send(data: TraceType | TraceType[]): Promise<void>;
 }
 
-export interface LogInterface {
-  debug(message: string, attributes?: AttributesType): void;
-  info(message: string, attributes?: AttributesType): void;
-  warn(message: string, attributes?: AttributesType): void;
-  error(message: string, attributes?: AttributesType): void;
-  fatal(message: string, attributes?: AttributesType): void;
-}
-
-export interface SpanInterface extends LogInterface {
-  options: SpanOptionsType;
-
-  attributes(attributes: AttributesType): SpanInterface;
-  status(status: StatusType): SpanInterface;
-  event(event: EventType): SpanInterface;
-  end(): void;
-
-  async(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>;
-  child(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface;
-  
-  [Symbol.dispose](): void;
-}
-
-export interface TracerInterface extends LogInterface {
+export interface TracerInterface {
+  trace: TraceType
   options: TracerOptionsType
 
-  send(span: SpanType | LogType): Promise<void>;
-  start(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface
-  async(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface>
+  start(options: Partial<TracerOptionsType> & { name: string }): TracerInterface;
   
-  [Symbol.asyncDispose](): Promise<void>;
+  status(status: SpanStatusEnum): void;
+  attributes(attributes: AttributesType): void;
+  event(name: string): void;
+  
+  end(): void;
+  flush(): void;
+  
+  info(...messages: Array<string>): void;
+  warn(...messages: Array<string>): void;
+  error(...messages: Array<string>): void;
+  fatal(...messages: Array<string>): void;
+  debug(...messages: Array<string>): void;
+  
+  [Symbol.dispose](): void;
+  [Symbol.asyncDispose](): void;
 }
 
 export default {};

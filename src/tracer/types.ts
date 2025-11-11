@@ -1,79 +1,84 @@
 import type { TransportInterface } from '~/tracer/interfaces.ts';
 
-import LogEnum from '~/tracer/enums/log.enum.ts';
-import SpanEnum from '~/tracer/enums/span.enum.ts';
-import StatusEnum from '~/tracer/enums/status.enum.ts';
+import LogLevelEnum from '~/tracer/enums/log-level.enum.ts';
+import SpanKindEnum from '~/tracer/enums/span-kind.enum.ts';
+import SpanStatusEnum from '~/tracer/enums/span-status.enum.ts';
+import QueueService from '~/common/services/queue.service.ts';
 
 export type AttributesType = Record<string, unknown>;
+
 export type EventType = {
   name: string;
-  timestamp?: number;
-  attributes?: AttributesType;
-};
-
-export type SpanType = {
-  name: string;
-  status: StatusType;
-  message?: string;
   timestamp: number;
-  startTime: number;
-  endTime?: number;
-  attributes?: AttributesType;
-  events: EventType[];
 };
 
 export type LogType = {
-  span?: SpanType;
-  name: string;
-  level: LogEnum;
+  level: LogLevelEnum;
   message: string;
   timestamp: number;
+};
+
+export type TraceType = {
+  id: string;
+  spanId: string;
+  spanParentId?: string;
+  name: string;
+  kind: SpanKindEnum;
+
+  status: SpanStatusEnum;
+  startTime: number;
+  endTime?: number;
+  ended?: boolean;
+
+  logs: Array<LogType>;
+  events: Array<EventType>;
   attributes?: AttributesType;
 };
-
-export type StatusType = {
-  type: StatusEnum;
-  message?: string;
-};
-
-export type RedactFunctionType = (key: string, value: unknown) => unknown;
 
 export type TracerOptionsType = {
   name: string;
-  transports: Array<TransportInterface>;
-  namespaces?: Array<string>;
-  redact?: RedactFunctionType;
-  attributes?: AttributesType;
-};
-
-export type SpanOptionsType = {
-  traceId: string;
-  spanId: string;
-  name: string;
-  kind: SpanEnum;
-  parentId?: string;
-
-  startTime: number;
-  status: StatusType
-  events: Array<EventType>
-  ended?: boolean;
-  message?: string | undefined
-  endTime?: number;
-  attributes?: AttributesType;
-
-};
-
-export type StartOptionsType = {
-  name: string;
-  kind?: SpanEnum;
+  kind?: SpanKindEnum;
   traceId?: string;
   parentId?: string;
+  namespaces?: Array<string>;
+  redactKeys?: Record<string, unknown>;
+  useWorker?: boolean;
 };
 
+export type SerializedTransportType = {
+  moduleUrl: string;
+  exportName: string;
+  args: any[];
+  redactKeys?: Record<string, unknown>;
+};
+
+export type InitMessageType = {
+  type: 'init';
+  transport: SerializedTransportType;
+};
+
+export type SendMessageType = {
+  type: 'send';
+  data: TraceType;
+};
+
+export type BatchMessageType = {
+  type: 'batch';
+  data: TraceType[];
+};
+
+export type ShutdownMessageType = {
+  type: 'shutdown';
+};
+
+export type WorkerMessageType = InitMessageType | SendMessageType | BatchMessageType | ShutdownMessageType;
+
 export type TransportOptionsType = {
-  log?: Array<LogEnum> | boolean;
-  span?: Array<StatusEnum> | boolean;
+  log?: Array<LogLevelEnum> | boolean;
+  span?: Array<SpanStatusEnum> | boolean;
+  namespaces?: Array<string>;
   pretty?: boolean;
+  useWorker?: boolean;
 };
 
 export type HttpOptionsType = {
@@ -82,5 +87,9 @@ export type HttpOptionsType = {
   timeout?: number;
   signal: AbortSignal;
 };
+
+export type WorkerOptionsType = {
+  baseUrl: string
+}
 
 export default {};

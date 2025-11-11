@@ -1,137 +1,127 @@
-import type { SpanInterface, TracerInterface } from '~/tracer/interfaces.ts';
+import type { TracerInterface, TransportInterface } from '~/tracer/interfaces.ts';
 import type {
   AttributesType,
-  LogType,
-  SpanType,
-  StartOptionsType,
   TracerOptionsType,
+  TraceType,
 } from '~/tracer/types.ts';
 
-import SpanEnum from '~/tracer/enums/span.enum.ts';
-import LogEnum from '~/tracer/enums/log.enum.ts';
+import SpanKindEnum from '~/tracer/enums/span-kind.enum.ts';
+import LogLevelEnum from '~/tracer/enums/log-level.enum.ts';
+import SpanStatusEnum from '~/tracer/enums/span-status.enum.ts';
 import Generator from '~/tracer/services/generator.service.ts';
-import Span from '~/tracer/services/span.service.ts';
+import QueueService from '~/common/services/queue.service.ts';
 
 export class Tracer implements TracerInterface {
-  constructor(public options: TracerOptionsType = { name: 'default', transports: [] }) { }
+  public trace: TraceType;
 
-  public send(data: SpanType | LogType): Promise<void> {
-    let shouldSend = true;
-    if (this.options.namespaces && this.options.namespaces.length > 0 && 'name' in data) {
-      shouldSend = this.options.namespaces.some((ns) => data.name.startsWith(ns));
-    }
-
-    if (shouldSend) {
-      const processedRecord = this.applyRedaction(data);
-
-      // Fire and forget - execute transport sends asynchronously without blocking
-      queueMicrotask(() => {
-        this.options.transports.forEach((transport) => {
-          transport.send(processedRecord).catch((error) => {
-            // @TODO maybe this should not be handled here
-            // Maybe logging this error on the last transport that was successfull
-            console.error('Transport error:', error);
-          });
-        });
-      });
-    }
-
-    // Return resolved promise immediately without waiting
-    return Promise.resolve();
-  }
-
-  public applyRedaction(data: SpanType | LogType): SpanType | LogType {
-    const redactObject = (obj: Record<string, unknown>): Record<string, unknown> => {
-      const result: Record<string, unknown> = {};
-      for (const [key, value] of Object.entries(obj)) {
-        result[key] = (this.options.redact || ((_k: string, v: unknown) => v))(key, value);
-      }
-      return result;
-    };
-
-    return {
-      ...data,
-      attributes: data.attributes ? redactObject(data.attributes) : undefined,
+  constructor(public queue: QueueService<TraceType, TransportInterface>, public options: TracerOptionsType) {
+    this.trace = {
+      id: options.traceId || Generator.randomId(16),
+      spanId: Generator.randomId(8),
+      spanParentId: options.parentId,
+      name: options.name,
+      kind: options.kind || SpanKindEnum.INTERNAL,
+      status: SpanStatusEnum.UNSET,
+      startTime: Date.now(),
+      logs: [],
+      events: [],
     };
   }
 
-  public start(options: StartOptionsType, callback?: (span: SpanInterface) => void): SpanInterface {
-    const span = new Span(this, {
-      parentId: options?.parentId,
-      traceId: options?.traceId ?? Generator.randomId(16),
-      spanId: Generator.randomId(8),
+  public start(options: Partial<TracerOptionsType> & { name: string }): TracerInterface {
+    const childTracer = new Tracer(this.queue, {
       name: options.name,
-      kind: options?.kind ?? SpanEnum.INTERNAL,
+      kind: options.kind,
+      traceId: options.traceId || this.trace.id,
+      parentId: this.trace.spanId,
+      namespaces: options.namespaces || this.options.namespaces,
+      redactKeys: options.redactKeys || this.options.redactKeys,
+      useWorker: options.useWorker ?? this.options.useWorker,
     });
-
-    if (callback) {
-      callback(span);
-      span.end();
-    }
-
-    return span;
+    
+    return childTracer;
   }
 
-  public async(options: StartOptionsType, callback?: (span: SpanInterface) => Promise<void>): Promise<SpanInterface> {
-    const span: SpanInterface = new Span(this, {
-      parentId: options?.parentId,
-      traceId: options?.traceId ?? Generator.randomId(16),
-      spanId: Generator.randomId(8),
-      name: options.name,
-      kind: options?.kind ?? SpanEnum.INTERNAL,
-    });
-
-    if (callback) {
-      return callback(span).then(() => span).finally(() => span.end());
-    }
-
-    return Promise.resolve(span);
+  public status(status: SpanStatusEnum): void {
+    this.trace.status = status;
   }
 
-  public log(level: LogEnum, message: string, attributes?: AttributesType): void {
-    this.send({
+  public attributes(attributes: AttributesType): void {
+    this.trace.attributes = { ...this.trace.attributes, ...attributes };
+  }
+
+  public event(name: string): void {
+    this.trace.events.push({
+      name,
+      timestamp: Date.now(),
+    });
+  }
+
+  public end(): void {
+    this.trace.ended = true;
+    this.trace.endTime = Date.now();
+    
+    this.queue.enqueue(this.trace);
+  }
+
+  public flush(): void {
+    if (this.queue) {
+      this.queue.flush();
+    }
+  }
+
+  private log(level: LogLevelEnum, message: string): void {
+    this.trace.logs.push({
       level,
       message,
-      name: this.options.name,
       timestamp: Date.now(),
-      attributes: attributes,
     });
   }
 
-  debug(message: string, attributes?: AttributesType): void {
-    this.log(LogEnum.DEBUG, message, attributes);
+  public info(...messages: Array<string>): void {
+    for (const message of messages) {
+      this.log(LogLevelEnum.INFO, message);
+    }
   }
 
-  info(message: string, attributes?: AttributesType): void {
-    this.log(LogEnum.INFO, message, attributes);
+  public warn(...messages: Array<string>): void {
+    for (const message of messages) {
+      this.log(LogLevelEnum.WARN, message);
+    }
   }
 
-  warn(message: string, attributes?: AttributesType): void {
-    this.log(LogEnum.WARN, message, attributes);
+  public error(...messages: Array<string>): void {
+    for (const message of messages) {
+      this.log(LogLevelEnum.ERROR, message);
+    }
+    if (this.trace.status === SpanStatusEnum.UNSET) {
+      this.trace.status = SpanStatusEnum.REJECTED;
+    }
   }
 
-  error(message: string, attributes?: AttributesType): void {
-    this.log(LogEnum.ERROR, message, attributes);
+  public fatal(...messages: Array<string>): void {
+    for (const message of messages) {
+      this.log(LogLevelEnum.FATAL, message);
+    }
+    this.trace.status = SpanStatusEnum.REJECTED;
   }
 
-  fatal(message: string, attributes?: AttributesType): void {
-    this.log(LogEnum.FATAL, message, attributes);
+  public debug(...messages: Array<string>): void {
+    for (const message of messages) {
+      this.log(LogLevelEnum.DEBUG, message);
+    }
   }
 
-  async [Symbol.asyncDispose](): Promise<void> {
-    // Allow any pending transport operations to complete
-    await Promise.allSettled(
-      this.options.transports.map(transport => {
-        // If transport has a flush/close method, call it
-        if ('flush' in transport && typeof transport.flush === 'function') {
-          return transport.flush();
-        }
-        if ('close' in transport && typeof transport.close === 'function') {
-          return transport.close();
-        }
-        return Promise.resolve();
-      })
-    );
+  [Symbol.dispose](): void {
+    if (!this.trace.ended) {
+      this.end();
+    }
+  }
+
+  [Symbol.asyncDispose](): void {
+    if (!this.trace.ended) {
+      this.end();
+    }
   }
 }
 
