@@ -12,26 +12,27 @@ export class HttpTransport implements TransportInterface {
   public async send(data: TraceType | TraceType[]): Promise<void> {
     const traces = Array.isArray(data) ? data : [data];
     
-    for (let trace of traces) {
-      if (this.options && typeof this.options.span !== 'undefined') {
-        if (this.options.span === false) {
-          continue;
-        }
-        if (this.options.span !== true && !this.options.span.includes(trace.status)) {
-          continue;
-        }
+    for (const trace of traces) {
+      let filteredEntries = [...trace.entries];
+      
+      const shouldIncludeLogs = this.options?.log === undefined || this.options.log === true;
+      if (!shouldIncludeLogs) {
+        filteredEntries = filteredEntries.filter(entry => entry.type !== 'log');
+      } else if (Array.isArray(this.options?.log)) {
+        filteredEntries = filteredEntries.filter(entry => 
+          entry.type !== 'log' || (this.options!.log as LogLevelEnum[]).includes(entry.level)
+        );
       }
-
-      if (this.options && typeof this.options.log !== 'undefined' && trace.logs.length > 0) {
-        if (this.options.log === false) {
-          trace = { ...trace, logs: [] };
-        } else if (this.options.log !== true) {
-          trace = { 
-            ...trace, 
-            logs: trace.logs.filter(log => (this.options!.log as LogLevelEnum[]).includes(log.level))
-          };
-        }
+      
+      const shouldIncludeEvents = this.options?.event === undefined || this.options.event === true;
+      if (!shouldIncludeEvents) {
+        filteredEntries = filteredEntries.filter(entry => entry.type !== 'event');
       }
+      
+      const shouldIncludeAttributes = this.options?.attributes === undefined || this.options.attributes === true;
+      const filteredTrace = shouldIncludeAttributes 
+        ? { ...trace, entries: filteredEntries }
+        : { ...trace, entries: filteredEntries, attributes: undefined };
 
       try {
         const response = await fetch(this.url, {
@@ -40,7 +41,7 @@ export class HttpTransport implements TransportInterface {
             'Content-Type': 'application/json',
             ...(this.options?.headers || {}),
           },
-          body: JSON.stringify(trace),
+          body: JSON.stringify(filteredTrace),
           signal: this.options?.signal,
         });
 

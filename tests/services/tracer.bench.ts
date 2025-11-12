@@ -7,7 +7,7 @@ import SpanStatusEnum from '~/tracer/enums/span-status.enum.ts';
 import QueueService from '~/common/services/queue.service.ts';
 import SilentTransport from '../transports/silent.transport.ts';
 
-const silentTransport = new SilentTransport({ pretty: false, log: true, span: true });
+const silentTransport = new SilentTransport({ pretty: false, log: true });
 
 const emptyQueue = new QueueService<TraceType, TransportInterface>({
   processors: [],
@@ -42,7 +42,6 @@ async function processSimpleRequest(tracer: Tracer): Promise<{ result: string, s
   
   const result = JSON.stringify(data);
   
-  // Return both result and span - flush happens at macro level
   return { result, span: requestSpan };
 }
 
@@ -84,7 +83,6 @@ async function processRequestWithMiddleware(tracer: Tracer): Promise<{ result: s
   
   const result = JSON.stringify({ status: 'ok' });
   
-  // Return both result and span - flush happens at macro level
   return { result, span: serverSpan };
 }
 

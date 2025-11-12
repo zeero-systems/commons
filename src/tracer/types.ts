@@ -1,22 +1,27 @@
-import type { TransportInterface } from '~/tracer/interfaces.ts';
-
 import LogLevelEnum from '~/tracer/enums/log-level.enum.ts';
 import SpanKindEnum from '~/tracer/enums/span-kind.enum.ts';
 import SpanStatusEnum from '~/tracer/enums/span-status.enum.ts';
-import QueueService from '~/common/services/queue.service.ts';
 
 export type AttributesType = Record<string, unknown>;
 
 export type EventType = {
+  type: 'event';
   name: string;
   timestamp: number;
+  data?: Record<string, unknown>;
+  location?: string;
 };
 
 export type LogType = {
+  type: 'log';
   level: LogLevelEnum;
   message: string;
   timestamp: number;
+  data?: Record<string, unknown>;
+  location?: string;
 };
+
+export type TraceEntryType = EventType | LogType;
 
 export type TraceType = {
   id: string;
@@ -24,14 +29,13 @@ export type TraceType = {
   spanParentId?: string;
   name: string;
   kind: SpanKindEnum;
-
   status: SpanStatusEnum;
+
   startTime: number;
   endTime?: number;
   ended?: boolean;
 
-  logs: Array<LogType>;
-  events: Array<EventType>;
+  entries: Array<TraceEntryType>;
   attributes?: AttributesType;
 };
 
@@ -75,7 +79,8 @@ export type WorkerMessageType = InitMessageType | SendMessageType | BatchMessage
 
 export type TransportOptionsType = {
   log?: Array<LogLevelEnum> | boolean;
-  span?: Array<SpanStatusEnum> | boolean;
+  event?: boolean;
+  attributes?: boolean;
   namespaces?: Array<string>;
   pretty?: boolean;
   useWorker?: boolean;

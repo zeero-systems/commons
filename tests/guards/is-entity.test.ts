@@ -54,7 +54,6 @@ describe('guard', () => {
     it('should return false for objects with partial interface', () => {
       const partial = {
         validateProperty: () => Promise.resolve([]),
-        // Missing other required methods
       };
       expect(isEntity(partial)).toBe(false);
     });

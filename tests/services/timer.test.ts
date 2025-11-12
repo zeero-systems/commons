@@ -76,11 +76,8 @@ describe('timer', () => {
       const timer = new Timer();
       timer.setTime('test');
       
-      // Small delay
       const start = performance.now();
-      while (performance.now() - start < 5) {
-        // Busy wait for ~5ms
-      }
+      while (performance.now() - start < 5) { }
       
       timer.endTime('test');
       
@@ -155,20 +152,15 @@ describe('timer', () => {
     it('should handle complete timer lifecycle', () => {
       const timer = new Timer();
       
-      // Start timer
+      
       timer.setTime('workflow');
       expect(timer.timers.has('workflow')).toBe(true);
-      
-      // Simulate some work
+
       const start = performance.now();
-      while (performance.now() - start < 5) {
-        // Busy wait
-      }
+      while (performance.now() - start < 5) { }
       
-      // End timer
       timer.endTime('workflow');
-      
-      // Get and verify results
+
       const time = timer.getTime('workflow');
       expect(time).toBeDefined();
       expect(time!.duration).toBeGreaterThan(0);

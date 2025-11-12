@@ -66,12 +66,10 @@ export class Packer implements PackerInterface {
   }
 
   [Symbol.dispose](): void {
-    // Clean up dispatcher listeners
     if (Symbol.dispose in this.dispatcher) {
       (this.dispatcher as any)[Symbol.dispose]();
     }
     
-    // Clean up container instances
     if (Symbol.dispose in this.container) {
       (this.container as any)[Symbol.dispose]();
     }

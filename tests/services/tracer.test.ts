@@ -121,7 +121,6 @@ describe('Tracer with Console and HTTP Transports', () => {
     mockHttpTransport = new MockHttpTransport();
     mockConsoleTransport = new MockConsoleTransport();
     
-    // Create shared queue
     queue = new QueueService<TraceType, TransportInterface>({
       processors: [mockHttpTransport, mockConsoleTransport],
       intervalMs: 50,
@@ -139,7 +138,6 @@ describe('Tracer with Console and HTTP Transports', () => {
   afterEach(() => {
     mockHttpTransport.reset();
     mockConsoleTransport.reset();
-    // Stop all queues created during tests
     for (const q of queuesToCleanup) {
       q.stop();
     }
@@ -157,7 +155,6 @@ describe('Tracer with Console and HTTP Transports', () => {
       tracer.info('Test message');
       tracer.end();
       
-      // Wait for queue to process
       await new Promise(resolve => setTimeout(resolve, 100));
 
       expect(mockHttpTransport.callCount).toBe(1);
@@ -165,27 +162,29 @@ describe('Tracer with Console and HTTP Transports', () => {
 
       const sentData = mockHttpTransport.sentData[0];
       expect(sentData.name).toBe('test-tracer');
-      expect(sentData.logs.length).toBe(1);
-      expect(sentData.logs[0].level).toBe(LogLevelEnum.INFO);
-      expect(sentData.logs[0].message).toBe('Test message');
+      const logs = sentData.entries.filter(e => e.type === 'log');
+      expect(logs.length).toBe(1);
+      expect(logs[0].level).toBe(LogLevelEnum.INFO);
+      expect(logs[0].message).toBe('Test message');
     });
 
     it('should send traces to both HTTP and Console transports', async () => {
       tracer.error('Error occurred');
       tracer.end();
       
-      // Wait for queue to process
       await new Promise(resolve => setTimeout(resolve, 100));
 
       expect(mockHttpTransport.callCount).toBe(1);
       expect(mockConsoleTransport.callCount).toBe(1);
 
       const httpData = mockHttpTransport.sentData[0];
-      expect(httpData.logs[0].message).toBe('Error occurred');
+      const logs = httpData.entries.filter(e => e.type === 'log');
+      expect(logs[0].message).toBe('Error occurred');
       expect(httpData.status).toBe(SpanStatusEnum.REJECTED);
 
       const consoleData = JSON.parse(mockConsoleTransport.logs[0]);
-      expect(consoleData.logs[0].message).toBe('Error occurred');
+      const consoleLogs = consoleData.entries.filter((e: any) => e.type === 'log');
+      expect(consoleLogs[0].message).toBe('Error occurred');
     });
   });
 
@@ -200,7 +199,6 @@ describe('Tracer with Console and HTTP Transports', () => {
 
       span.end();
       
-      // Wait for queue to process
       await new Promise(resolve => setTimeout(resolve, 100));
 
       expect(mockHttpTransport.callCount).toBe(1);
@@ -243,10 +241,11 @@ describe('Tracer with Console and HTTP Transports', () => {
       await new Promise(resolve => setTimeout(resolve, 100));
 
       const sentData = mockHttpTransport.sentData[0];
-      expect(sentData.events.length).toBe(3);
-      expect(sentData.events[0].name).toBe('validation-start');
-      expect(sentData.events[1].name).toBe('validation-complete');
-      expect(sentData.events[2].name).toBe('processing-complete');
+      const events = sentData.entries.filter(e => e.type === 'event');
+      expect(events.length).toBe(3);
+      expect(events[0].name).toBe('validation-start');
+      expect(events[1].name).toBe('validation-complete');
+      expect(events[2].name).toBe('processing-complete');
     });
 
     it('should set span status', async () => {
@@ -272,8 +271,9 @@ describe('Tracer with Console and HTTP Transports', () => {
       expect(mockHttpTransport.callCount).toBe(1);
 
       const spanData = mockHttpTransport.sentData[0];
-      expect(spanData.logs[0].level).toBe(LogLevelEnum.ERROR);
-      expect(spanData.logs[0].message).toBe('Something went wrong');
+      const logs = spanData.entries.filter(e => e.type === 'log');
+      expect(logs[0].level).toBe(LogLevelEnum.ERROR);
+      expect(logs[0].message).toBe('Something went wrong');
       expect(spanData.status).toBe(SpanStatusEnum.REJECTED);
     });
   });
@@ -338,19 +338,20 @@ describe('Tracer with Console and HTTP Transports', () => {
       expect(mockHttpTransport.callCount).toBe(2);
 
       const childData = mockHttpTransport.sentData[0];
-      expect(childData.logs.length).toBe(2);
-      expect(childData.logs[0].message).toBe('Child processing');
-      expect(childData.logs[1].message).toBe('Child completed');
+      const childLogs = childData.entries.filter(e => e.type === 'log');
+      expect(childLogs.length).toBe(2);
+      expect(childLogs[0].message).toBe('Child processing');
+      expect(childLogs[1].message).toBe('Child completed');
 
       const parentData = mockHttpTransport.sentData[1];
-      expect(parentData.logs.length).toBe(1);
-      expect(parentData.logs[0].message).toBe('Parent started');
+      const parentLogs = parentData.entries.filter(e => e.type === 'log');
+      expect(parentLogs.length).toBe(1);
+      expect(parentLogs[0].message).toBe('Parent started');
     });
   });
 
   describe('Nested Spans - Three Levels', () => {
     it('should create three levels of nested spans', async () => {
-      // Create a fresh root tracer for this test
       const rootTracer = new Tracer(queue, { name: 'root-tracer'});
 
       const level1 = rootTracer.start({ name: 'level1-api-request', kind: SpanKindEnum.SERVER });
@@ -368,7 +369,6 @@ describe('Tracer with Console and HTTP Transports', () => {
       
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      // Note: The root tracer itself is not ended, so we should only have 3 traces
       expect(mockHttpTransport.callCount).toBe(3);
 
       const level3Data = mockHttpTransport.sentData[0];
@@ -404,7 +404,8 @@ describe('Tracer with Console and HTTP Transports', () => {
       expect(mockHttpTransport.callCount).toBe(3);
 
       const level3Data = mockHttpTransport.sentData[0];
-      const level3ErrorLog = level3Data.logs.find(l => l.level === LogLevelEnum.ERROR);
+      const level3Logs = level3Data.entries.filter(e => e.type === 'log');
+      const level3ErrorLog = level3Logs.find(l => l.level === LogLevelEnum.ERROR);
       expect(level3ErrorLog?.message).toBe('Level 3 encountered an error');
     });
   });
@@ -552,7 +553,6 @@ describe('Tracer with Console and HTTP Transports', () => {
       requestSpan.status(SpanStatusEnum.RESOLVED);
       requestSpan.end();
       
-      // Wait for all spans to be processed by the queue
       await new Promise(resolve => setTimeout(resolve, 100));
 
       expect(mockHttpTransport.callCount).toBe(7);
@@ -575,7 +575,7 @@ describe('Tracer with Console and HTTP Transports', () => {
   describe('Namespace Filtering', () => {
     it('should filter spans by namespace with worker transport', async () => {
       const silentTransport = new (await import('../transports/silent.transport.ts')).SilentTransport(
-        { pretty: false, log: true, span: true, namespaces: ['api'] }
+        { pretty: false, log: true, namespaces: ['api'] }
       );
 
       const filteredTracer = new Tracer(queue, { name: 'filtered-tracer' });
@@ -586,12 +586,8 @@ describe('Tracer with Console and HTTP Transports', () => {
       const internalSpan = filteredTracer.start({ name: 'internal.cache' });
       internalSpan.end();
 
-      // Wait for worker to process
       await new Promise(resolve => setTimeout(resolve, 50));
 
-      // Both spans are sent to the transport, but worker filters by namespace
-      // So we can't directly assert the count here without inspecting worker internals
-      // This test mainly validates that namespace filtering doesn't cause errors
     });
   });
 
@@ -604,7 +600,6 @@ describe('Tracer with Console and HTTP Transports', () => {
 
       const mockRedactingTransport = new MockRedactingTransport(false, redactKeys);
 
-      // Create separate queue for this test
       const redactQueue = new QueueService<TraceType, TransportInterface>({
         processors: [mockRedactingTransport],
         intervalMs: 50,
@@ -614,7 +609,7 @@ describe('Tracer with Console and HTTP Transports', () => {
           }
         },
       });
-      queuesToCleanup.push(redactQueue); // Track for cleanup
+      queuesToCleanup.push(redactQueue);
 
       const redactTracer = new Tracer(redactQueue, { name: 'redacting-tracer' });
 
@@ -645,8 +640,10 @@ describe('Tracer with Console and HTTP Transports', () => {
       await new Promise(resolve => setTimeout(resolve, 100));
 
       const sentData = mockHttpTransport.sentData[0];
-      expect(sentData.events).toEqual([]);
-      expect(sentData.logs).toEqual([]);
+      const events = sentData.entries.filter(e => e.type === 'event');
+      const logs = sentData.entries.filter(e => e.type === 'log');
+      expect(events).toEqual([]);
+      expect(logs).toEqual([]);
     });
   });
 });

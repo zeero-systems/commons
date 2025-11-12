@@ -13,14 +13,6 @@ describe('list', () => {
 
     it('should find index where predicate becomes false', () => {
       const arr = [10, 20, 30, 40, 50];
-      // Find first index where (current >= 25) i.e., where (25 < current) is false becomes (current <= 25) is true
-      // Actually, isLessThan true means "keep looking right", false means "found it or go left"
-      // With (value < current): if true for element, search continues right (low = mid+1)
-      //                        if false, element is >= value, search goes left or stops (high = mid)
-      // So it finds first element where isLessThan is FALSE
-      
-      // For sorted insertion: use (value >= current) to find where value should go
-      // Element 25 should go before 30 (index 2)
       const index = List.getSortedIndex(arr, (current) => 25 >= current);
       expect(index).toBe(2);
     });
@@ -66,17 +58,16 @@ describe('list', () => {
     it('should handle duplicate values', () => {
       const arr = [10, 20, 20, 20, 30];
       const index = List.getSortedIndex(arr, (current) => 20 >= current);
-      // Finds first position where 20 >= current is false, i.e., current > 20
+
       expect(index).toBe(4);
     });
 
     it('should use binary search efficiently', () => {
-      // Create large sorted array
-      const arr = Array.from({ length: 1000 }, (_, i) => i * 10);
-      const target = 500 * 10; // 5000 is already at index 500
-      const index = List.getSortedIndex(arr, (current) => target >= current);
       
-      // Should return 501 (after the existing 5000)
+      const arr = Array.from({ length: 1000 }, (_, i) => i * 10);
+      const target = 500 * 10; 
+      const index = List.getSortedIndex(arr, (current) => target >= current);
+
       expect(index).toBe(501);
     });
 

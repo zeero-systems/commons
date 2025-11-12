@@ -6,115 +6,132 @@ import SpanStatusEnum from '~/tracer/enums/span-status.enum.ts';
 import Console from '~/common/services/console.service.ts';
 
 export class ConsoleTransport implements TransportInterface {
-  public colors = {
+  public logColors = {
     [LogLevelEnum.ERROR]: Console.red.dark,
     [LogLevelEnum.FATAL]: Console.red.medium,
     [LogLevelEnum.WARN]: Console.yellow.dark,
-    [LogLevelEnum.INFO]: Console.white.light,
+    [LogLevelEnum.INFO]: Console.gray.dark,
     [LogLevelEnum.DEBUG]: Console.gray.medium,
-    [LogLevelEnum.TRACE]: Console.yellow.cream,
   };
+
+  public traceColors = {
+    [SpanStatusEnum.UNSET]: Console.yellow.cream,
+    [SpanStatusEnum.RESOLVED]: Console.green.dark,
+    [SpanStatusEnum.REJECTED]: Console.red.dark,
+  }
 
   constructor(public options: TransportOptionsType) {}
 
   public send(data: TraceType | TraceType[]): Promise<void> {
     const traces = Array.isArray(data) ? data : [data];
     
-    for (let trace of traces) {
-      if (this.options && typeof this.options.span !== 'undefined') {
-        if (this.options.span === false) {
-          continue;
-        }
-        if (this.options.span !== true && !this.options.span.includes(trace.status)) {
-          continue;
-        }
+    for (const trace of traces) {
+      let filteredEntries = [...trace.entries];
+      
+      const shouldIncludeLogs = this.options?.log === undefined || this.options.log === true;
+      if (!shouldIncludeLogs) {
+        filteredEntries = filteredEntries.filter(entry => entry.type !== 'log');
+      } else if (Array.isArray(this.options?.log)) {
+        filteredEntries = filteredEntries.filter(entry => 
+          entry.type !== 'log' || (this.options.log as LogLevelEnum[]).includes(entry.level)
+        );
       }
-
-      if (this.options && typeof this.options.log !== 'undefined' && trace.logs.length > 0) {
-        if (this.options.log === false) {
-          trace = { ...trace, logs: [] };
-        } else if (this.options.log !== true) {
-          trace = { 
-            ...trace, 
-            logs: trace.logs.filter(log => (this.options.log as LogLevelEnum[]).includes(log.level))
-          };
-        }
+      
+      const shouldIncludeEvents = this.options?.event === undefined || this.options.event === true;
+      if (!shouldIncludeEvents) {
+        filteredEntries = filteredEntries.filter(entry => entry.type !== 'event');
       }
+      
+      const shouldIncludeAttributes = this.options?.attributes === undefined || this.options.attributes === true;
+      const filteredTrace = shouldIncludeAttributes 
+        ? { ...trace, entries: filteredEntries }
+        : { ...trace, entries: filteredEntries, attributes: undefined };
 
-      // Output trace
-      if (this.options.pretty) {
-        this.tracePrettyPrint(trace);
+      if (this.options?.pretty) {
+        this.prettyPrint(filteredTrace);
       } else {
-        console.log(JSON.stringify(trace));
+        console.log(JSON.stringify(filteredTrace));
       }
     }
     
     return Promise.resolve();
   }
 
-  tracePrettyPrint(data: TraceType): void {
-    const name = data.name.toUpperCase();
-    const color = this.colors[LogLevelEnum.TRACE];
-    const duration = Number(data.endTime ? data.endTime - data.startTime : 0).toFixed(3);
-    const date = new Date(data.startTime);
+  private timestampToFullDateString(timestamp: number): string {
+    const date = new Date(timestamp);
     const year = date.getUTCFullYear();
     const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
     const day = date.getUTCDate().toString().padStart(2, '0');
+    return `${year}/${month}/${day} ${this.timestampToTimeString(timestamp)} UTC`;
+  }
+
+  private timestampToTimeString(timestamp: number): string {
+    const date = new Date(timestamp);
     const hours = date.getUTCHours().toString().padStart(2, '0');
     const minutes = date.getUTCMinutes().toString().padStart(2, '0');
     const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-    const timestamp = `${year}/${month}/${day} ${hours}:${minutes}:${seconds} UTC`;
+    const milliseconds = date.getUTCMilliseconds().toString().padStart(3, '0');
+    return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+  }
+
+  private prettyPrint(data: TraceType): void {
+    const name = data.name.toUpperCase();
+    const traceColor = this.traceColors[data.status]
+    const timestamp = this.timestampToFullDateString(data.startTime);
+    const duration = Number(data.endTime ? data.endTime - data.startTime : 0).toFixed(3);
 
     let log = console.log;
     if (data.status === SpanStatusEnum.REJECTED) log = console.error;
     
-    log(`${color}·  TRACE ${String(data.kind).toUpperCase()} ${name} at ${timestamp} took ${duration}ms as ${data.status}${Console.reset}`);
+    log(`${traceColor}·  TRACE ${String(data.kind).toUpperCase()} ${name} at ${timestamp} took ${duration}ms was ${data.status}${Console.reset}`);
 
-    let nextIndent = '└─';
-    if (data.attributes || data.events.length > 0 || data.logs.length > 0) {
-      nextIndent = '├─';
-    }
-    const parentId = data.spanParentId ? ` parentId=${data.spanParentId}` : '';
-    log(`${Console.gray.medium}${nextIndent} SPAN traceId=${data.id}${parentId} spanId=${data.spanId}${Console.reset}`);
+    const items: Array<{ type: 'span' | 'attrs' | 'entry', timestamp: number, data: any }> = [];
+
+    items.push({ type: 'span', timestamp: data.startTime, data: { id: data.id, spanId: data.spanId, spanParentId: data.spanParentId } });
     
     if (data.attributes) {
-      const attributes = Object.entries(data.attributes)
-        .map(([key, value]) => `${key}=${typeof value === 'object' ? JSON.stringify(value) : value}`)
-        .join(' ');
+      items.push({ type: 'attrs', timestamp: data.startTime, data: JSON.stringify(data.attributes) });
+    }
+    
+    for (const entry of data.entries) {
+      items.push({ type: 'entry', timestamp: entry.timestamp, data: entry });
+    }
+    
+    for (let index = 0; index < items.length; index++) {
+      const item = items[index];
+      const isLast = index === items.length - 1;
+      const indent = isLast ? '└─' : '├─';
       
-      if (attributes.length > 0) {
-        nextIndent = '└─';
-        if (data.events.length > 0 || data.logs.length > 0) nextIndent = '├─';
-
-        log(`${Console.gray.medium}${nextIndent} ATTRS ${attributes}${Console.reset}`);
+      if (item.type === 'span') {
+        let parentId = ``
+        if (item.data.spanParentId) {
+          parentId = ` spanParentId ${item.data.spanParentId} `;
+        }
+        log(`${Console.gray.medium}${indent} SPAN traceId ${item.data.id}${parentId} spanId ${item.data.spanId}${Console.reset}`);
       }
-    }
-
-    if (data.events.length > 0) {
-      for (let index = 0; index < data.events.length; index++) {
-        const event = data.events[index];
-        const compact = Object.entries(event).map(([key, value]) => `${key}=${typeof value === 'object' ? JSON.stringify(value) : value}`);
-        
-        nextIndent = '├─';
-        if (index === data.events.length - 1 && data.logs.length === 0) nextIndent = '└─';
-
-        log(`${Console.gray.medium}${nextIndent} EVENT ${compact.join(' ')}${Console.reset}`);
+      
+      if (item.type === 'attrs') {
+        log(`${Console.gray.medium}${indent} WITH ${item.data}${Console.reset}`);
       }
-    }
-
-    if (data.logs.length > 0) {
-      for (let index = 0; index < data.logs.length; index++) {
-        const logEntry = data.logs[index];
-        const logColor = this.colors[logEntry.level as keyof typeof this.colors] || Console.white.light;
-        let key = LogLevelEnum[logEntry.level] || 'LOG  ';
+      
+      if (item.type === 'entry' && item.data.type === 'event') {
+        const eventTime = this.timestampToTimeString(item.timestamp);
+        const dataStr = item.data.data ? ` with ${JSON.stringify(item.data.data)}` : '';
+        const location = item.data.location ? ` in ${item.data.location}` : '';
+        log(`${Console.gray.medium}${indent} EVENT${location} at ${eventTime} name ${item.data.name}${dataStr}${Console.reset}`);
+      }
+      
+      if (item.type === 'entry' && item.data.type === 'log') {
+        const logTime = this.timestampToTimeString(item.timestamp);
+        const logColor = this.logColors[item.data.level as keyof typeof this.logColors];
+        let key = LogLevelEnum[item.data.level] || 'LOG';
         
-        if (logEntry.level === LogLevelEnum.WARN) key = 'WARN ';
-        if (logEntry.level === LogLevelEnum.INFO) key = 'INFO ';
+        if (item.data.level === LogLevelEnum.WARN) key = 'WARN';
+        if (item.data.level === LogLevelEnum.INFO) key = 'INFO';
         
-        nextIndent = '├─';
-        if (index === data.logs.length - 1) nextIndent = '└─';
-
-        log(`${logColor}${nextIndent} ${key} ${logEntry.message}${Console.reset}`);
+        const dataStr = item.data.data ? ` with ${JSON.stringify(item.data.data)}` : '';
+        const location = item.data.location ? ` in ${item.data.location}` : '';
+        log(`${logColor}${indent} ${key}${location} at ${logTime} message ${item.data.message}${dataStr}${Console.reset}`);
       }
     }
   }

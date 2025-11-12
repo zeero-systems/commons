@@ -27,6 +27,14 @@ export class Console {
     cream: "\x1b[38;5;229m",
   };
 
+  public static green = {
+    darkest: "\x1b[32m\x1b[2m",  // Dimmed green/Darkest green
+    dark: "\x1b[32m",            // Green/Dark green
+    medium: "\x1b[92m\x1b[2m",   // Dimmed bright green/Medium green
+    light: "\x1b[92m",           // Bright green/Light green
+    lightest: "\x1b[92m\x1b[1m", // Bold bright green/Lightest green
+  };
+
   public static white = {
     darkest: "\x1b[37m\x1b[2m",  // Dimmed white/Darkest white (light gray)
     dark: "\x1b[37m",            // White/Dark white

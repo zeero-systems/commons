@@ -19,16 +19,16 @@ export interface TracerInterface {
   
   status(status: SpanStatusEnum): void;
   attributes(attributes: AttributesType): void;
-  event(name: string): void;
+  event(name: string, data?: Record<string, unknown>): void;
   
   end(): void;
   flush(): void;
   
-  info(...messages: Array<string>): void;
-  warn(...messages: Array<string>): void;
-  error(...messages: Array<string>): void;
-  fatal(...messages: Array<string>): void;
-  debug(...messages: Array<string>): void;
+  info(...messages: Array<string | Record<string, unknown>>): void;
+  warn(...messages: Array<string | Record<string, unknown>>): void;
+  error(...messages: Array<string | Record<string, unknown>>): void;
+  fatal(...messages: Array<string | Record<string, unknown>>): void;
+  debug(...messages: Array<string | Record<string, unknown>>): void;
   
   [Symbol.dispose](): void;
   [Symbol.asyncDispose](): void;

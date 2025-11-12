@@ -7,31 +7,29 @@ export class SilentTransport implements TransportInterface {
   public send(data: TraceType | TraceType[]): Promise<void> {
     const traces = Array.isArray(data) ? data : [data];
     
-    for (let trace of traces) {
-      // Filter spans based on options
-      if (this.options && typeof this.options.span !== 'undefined') {
-        if (this.options.span === false) {
-          continue;
-        }
-        if (this.options.span !== true && !this.options.span.includes(trace.status)) {
-          continue;
-        }
+    for (const trace of traces) {
+      let filteredEntries = [...trace.entries];
+      
+      const shouldIncludeLogs = this.options?.log === undefined || this.options.log === true;
+      if (!shouldIncludeLogs) {
+        filteredEntries = filteredEntries.filter(entry => entry.type !== 'log');
+      } else if (Array.isArray(this.options?.log)) {
+        filteredEntries = filteredEntries.filter(entry => 
+          entry.type !== 'log' || (this.options.log as any[]).includes(entry.level)
+        );
       }
-
-      // Filter logs based on options
-      if (this.options && typeof this.options.log !== 'undefined' && trace.logs.length > 0) {
-        if (this.options.log === false) {
-          trace = { ...trace, logs: [] };
-        } else if (this.options.log !== true) {
-          trace = { 
-            ...trace, 
-            logs: trace.logs.filter(log => (this.options.log as any[]).includes(log.level))
-          };
-        }
+      
+      const shouldIncludeEvents = this.options?.event === undefined || this.options.event === true;
+      if (!shouldIncludeEvents) {
+        filteredEntries = filteredEntries.filter(entry => entry.type !== 'event');
       }
+      
+      const shouldIncludeAttributes = this.options?.attributes === undefined || this.options.attributes === true;
+      const filteredTrace = shouldIncludeAttributes 
+        ? { ...trace, entries: filteredEntries }
+        : { ...trace, entries: filteredEntries, attributes: undefined };
 
-      // Silent processing - just format the data
-      const date = new Date(trace.startTime);
+      const date = new Date(filteredTrace.startTime);
       const year = date.getUTCFullYear();
       const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
       const day = date.getUTCDate().toString().padStart(2, '0');
@@ -40,7 +38,7 @@ export class SilentTransport implements TransportInterface {
       const seconds = date.getUTCSeconds().toString().padStart(2, '0');
       const timestamp = `${year}/${month}/${day} ${hours}:${minutes}:${seconds} UTC`;
 
-      const output = JSON.stringify(trace);
+      const output = JSON.stringify(filteredTrace);
       
       if (timestamp.length + output.length < 0) {
         throw new Error('impossible');

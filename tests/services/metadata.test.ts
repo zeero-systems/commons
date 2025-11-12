@@ -237,26 +237,21 @@ describe('metadata', () => {
     it('should handle full metadata lifecycle', () => {
       class MyClass {}
       const instance = new MyClass();
-      
-      // Initially no metadata
+
       expect(Metadata.has(instance)).toBe(false);
-      
-      // Add first key
+    
       Metadata.add(instance, 'version', '1.0.0');
       expect(Metadata.has(instance)).toBe(true);
       expect(Metadata.getByKey(instance, 'version')).toBe('1.0.0');
-      
-      // Add more keys
+    
       Metadata.add(instance, 'author', 'John Doe');
       Metadata.add(instance, 'tags', ['typescript', 'metadata']);
-      
-      // Retrieve all
+    
       const metadata = Metadata.get(instance);
       expect(metadata?.version).toBe('1.0.0');
       expect(metadata?.author).toBe('John Doe');
       expect(metadata?.tags).toEqual(['typescript', 'metadata']);
-      
-      // Update existing key
+    
       Metadata.add(instance, 'version', '2.0.0');
       expect(Metadata.getByKey(instance, 'version')).toBe('2.0.0');
     });
@@ -268,13 +263,11 @@ describe('metadata', () => {
       
       Metadata.add(instance1, 'id', 1);
       Metadata.add(instance2, 'id', 2);
-      
-      // Metadata is shared via constructor, so both will have the last value
-      // This is how Symbol.metadata works in TypeScript
+
       const id1 = Metadata.getByKey(instance1, 'id');
       const id2 = Metadata.getByKey(instance2, 'id');
-      expect(id2).toBe(2); // Last value set
-      expect(id1).toBe(id2); // Both should be the same
+      expect(id2).toBe(2);
+      expect(id1).toBe(id2);
     });
   });
 });

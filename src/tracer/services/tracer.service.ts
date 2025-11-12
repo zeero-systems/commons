@@ -23,8 +23,7 @@ export class Tracer implements TracerInterface {
       kind: options.kind || SpanKindEnum.INTERNAL,
       status: SpanStatusEnum.UNSET,
       startTime: Date.now(),
-      logs: [],
-      events: [],
+      entries: [],
     };
   }
 
@@ -50,10 +49,18 @@ export class Tracer implements TracerInterface {
     this.trace.attributes = { ...this.trace.attributes, ...attributes };
   }
 
-  public event(name: string): void {
-    this.trace.events.push({
+  public event(name: string, data?: Record<string, unknown>): void {
+    const stack = new Error().stack;
+    const caller = stack?.split('\n')[2]?.trim();
+    const match = caller?.match(/at\s+(?:.*\s+\()?(.+):(\d+):(\d+)/);
+    const location = match ? `${match[1].split('/').pop()}:${match[2]}` : undefined;
+    
+    this.trace.entries.push({
+      type: 'event',
       name,
       timestamp: Date.now(),
+      ...(data && { data }),
+      ...(location && { location }),
     });
   }
 
@@ -70,45 +77,93 @@ export class Tracer implements TracerInterface {
     }
   }
 
-  private log(level: LogLevelEnum, message: string): void {
-    this.trace.logs.push({
+  private log(level: LogLevelEnum, message: string, data?: Record<string, unknown>, location?: string): void {
+    this.trace.entries.push({
+      type: 'log',
       level,
       message,
       timestamp: Date.now(),
+      ...(data && { data }),
+      ...(location && { location }),
     });
   }
 
-  public info(...messages: Array<string>): void {
-    for (const message of messages) {
-      this.log(LogLevelEnum.INFO, message);
+  public info(...messages: Array<string | Record<string, unknown>>): void {
+    const stack = new Error().stack;
+    const caller = stack?.split('\n')[2]?.trim();
+    const match = caller?.match(/at\s+(?:.*\s+\()?(.+):(\d+):(\d+)/);
+    const location = match ? `${match[1].split('/').pop()}:${match[2]}` : undefined;
+    
+    const data = typeof messages[messages.length - 1] === 'object' && !Array.isArray(messages[messages.length - 1])
+      ? messages.pop() as Record<string, unknown>
+      : undefined;
+    
+    for (const message of messages as Array<string>) {
+      this.log(LogLevelEnum.INFO, message, data, location);
     }
   }
 
-  public warn(...messages: Array<string>): void {
-    for (const message of messages) {
-      this.log(LogLevelEnum.WARN, message);
+  public warn(...messages: Array<string | Record<string, unknown>>): void {
+    const stack = new Error().stack;
+    const caller = stack?.split('\n')[2]?.trim();
+    const match = caller?.match(/at\s+(?:.*\s+\()?(.+):(\d+):(\d+)/);
+    const location = match ? `${match[1].split('/').pop()}:${match[2]}` : undefined;
+    
+    const data = typeof messages[messages.length - 1] === 'object' && !Array.isArray(messages[messages.length - 1])
+      ? messages.pop() as Record<string, unknown>
+      : undefined;
+    
+    for (const message of messages as Array<string>) {
+      this.log(LogLevelEnum.WARN, message, data, location);
     }
   }
 
-  public error(...messages: Array<string>): void {
-    for (const message of messages) {
-      this.log(LogLevelEnum.ERROR, message);
+  public error(...messages: Array<string | Record<string, unknown>>): void {
+    const stack = new Error().stack;
+    const caller = stack?.split('\n')[2]?.trim();
+    const match = caller?.match(/at\s+(?:.*\s+\()?(.+):(\d+):(\d+)/);
+    const location = match ? `${match[1].split('/').pop()}:${match[2]}` : undefined;
+    
+    const data = typeof messages[messages.length - 1] === 'object' && !Array.isArray(messages[messages.length - 1])
+      ? messages.pop() as Record<string, unknown>
+      : undefined;
+    
+    for (const message of messages as Array<string>) {
+      this.log(LogLevelEnum.ERROR, message, data, location);
     }
     if (this.trace.status === SpanStatusEnum.UNSET) {
       this.trace.status = SpanStatusEnum.REJECTED;
     }
   }
 
-  public fatal(...messages: Array<string>): void {
-    for (const message of messages) {
-      this.log(LogLevelEnum.FATAL, message);
+  public fatal(...messages: Array<string | Record<string, unknown>>): void {
+    const stack = new Error().stack;
+    const caller = stack?.split('\n')[2]?.trim();
+    const match = caller?.match(/at\s+(?:.*\s+\()?(.+):(\d+):(\d+)/);
+    const location = match ? `${match[1].split('/').pop()}:${match[2]}` : undefined;
+    
+    const data = typeof messages[messages.length - 1] === 'object' && !Array.isArray(messages[messages.length - 1])
+      ? messages.pop() as Record<string, unknown>
+      : undefined;
+    
+    for (const message of messages as Array<string>) {
+      this.log(LogLevelEnum.FATAL, message, data, location);
     }
     this.trace.status = SpanStatusEnum.REJECTED;
   }
 
-  public debug(...messages: Array<string>): void {
-    for (const message of messages) {
-      this.log(LogLevelEnum.DEBUG, message);
+  public debug(...messages: Array<string | Record<string, unknown>>): void {
+    const stack = new Error().stack;
+    const caller = stack?.split('\n')[2]?.trim();
+    const match = caller?.match(/at\s+(?:.*\s+\()?(.+):(\d+):(\d+)/);
+    const location = match ? `${match[1].split('/').pop()}:${match[2]}` : undefined;
+    
+    const data = typeof messages[messages.length - 1] === 'object' && !Array.isArray(messages[messages.length - 1])
+      ? messages.pop() as Record<string, unknown>
+      : undefined;
+    
+    for (const message of messages as Array<string>) {
+      this.log(LogLevelEnum.DEBUG, message, data, location);
     }
   }
 

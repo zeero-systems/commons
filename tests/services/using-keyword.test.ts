@@ -29,10 +29,8 @@ describe('using keyword (explicit resource management)', () => {
         spanEnded = testSpan.trace.ended ?? false;
       }
       
-      // Span should be automatically ended after scope exit
-      expect(spanEnded).toBe(false); // Was false before dispose
-      // After dispose, the span should have been ended
-      
+      expect(spanEnded).toBe(false);
+
       queue.stop();
     });
 
@@ -50,7 +48,6 @@ describe('using keyword (explicit resource management)', () => {
         
         throw new Error('Test error');
       } catch (_error) {
-        // Span should still be ended
         expect(spanTrace.ended).toBe(true);
       }
       
@@ -69,7 +66,6 @@ describe('using keyword (explicit resource management)', () => {
         span.end();
         const firstEndTime = span.trace.endTime;
         
-        // Dispose will be called, but shouldn't modify already ended span
         expect(span.trace.ended).toBe(true);
         expect(span.trace.endTime).toBe(firstEndTime);
       }
@@ -92,7 +88,6 @@ describe('using keyword (explicit resource management)', () => {
         expect(timer.timers.size).toBe(2);
       }
       
-      // Timers should be cleared after scope exit
       expect(timer!.timers.size).toBe(0);
     });
 
@@ -108,7 +103,6 @@ describe('using keyword (explicit resource management)', () => {
         
         throw new Error('Test error');
       } catch (_error) {
-        // Timer should still be cleared
         expect(timer!.timers.size).toBe(0);
       }
     });
@@ -133,7 +127,6 @@ describe('using keyword (explicit resource management)', () => {
         expect(container.instances.size).toBe(1);
       }
       
-      // Instances should be cleared after scope exit
       expect(container!.instances.size).toBe(0);
     });
 
@@ -153,7 +146,6 @@ describe('using keyword (explicit resource management)', () => {
         
         throw new Error('Test error');
       } catch (_error) {
-        // Instances should still be cleared
         expect(container!.instances.size).toBe(0);
       }
     });
@@ -174,7 +166,6 @@ describe('using keyword (explicit resource management)', () => {
         expect(Object.keys(dispatcher.listeners).length).toBe(1);
       }
       
-      // Listeners should be cleared after scope exit
       expect(Object.keys(dispatcher!.listeners).length).toBe(0);
     });
 
@@ -191,7 +182,6 @@ describe('using keyword (explicit resource management)', () => {
         
         throw new Error('Test error');
       } catch (_error) {
-        // Listeners should still be cleared
         expect(Object.keys(dispatcher!.listeners).length).toBe(0);
       }
     });
@@ -205,12 +195,10 @@ describe('using keyword (explicit resource management)', () => {
         using testPacker = new Packer(class TestPack {});
         packer = testPacker;
         
-        // Manually add a pack to test cleanup
         packer.packs.push('TestPack');
         expect(packer.packs.length).toBe(1);
       }
       
-      // Resources should be cleaned up after scope exit
       expect(packer!.packs.length).toBe(0);
       expect(packer!.container.instances.size).toBe(0);
       expect(Object.keys(packer!.dispatcher.listeners).length).toBe(0);
@@ -232,7 +220,6 @@ describe('using keyword (explicit resource management)', () => {
         expect(disposed).toBe(false);
       }
       
-      // Async dispose should have been called
       disposed = true;
       expect(disposed).toBe(true);
       
@@ -262,13 +249,11 @@ describe('using keyword (explicit resource management)', () => {
       {
         await using tracer = new Tracer(queue, { name: 'test' });
         tracer.info('test message');
-        tracer.end(); // Explicitly end to enqueue the trace
+        tracer.end();
       }
       
-      // Wait for queue interval to process the data
       await new Promise(resolve => setTimeout(resolve, 150));
       
-      // Queue should have processed and sent data to transport
       expect(sendCalled).toBe(true);
       
       queue.stop();
@@ -290,7 +275,6 @@ describe('using keyword (explicit resource management)', () => {
         tracer.info('test message');
       }
       
-      // Should not throw error
       expect(true).toBe(true);
       
       queue.stop();
@@ -315,12 +299,10 @@ describe('using keyword (explicit resource management)', () => {
           expect(timer2.timers.size).toBe(1);
         }
         
-        // timer2 disposed first
         disposeOrder.push('timer2-disposed');
-        expect(timer1.timers.size).toBe(1); // timer1 still active
+        expect(timer1.timers.size).toBe(1);
       }
       
-      // timer1 disposed second
       disposeOrder.push('timer1-disposed');
       
       expect(disposeOrder).toEqual([
@@ -348,13 +330,12 @@ describe('using keyword (explicit resource management)', () => {
         dispatcher = testDispatcher;
         
         testTimer.setTime('test');
-        testContainer.construct('NonExistent'); // Will return undefined but won't error
+        testContainer.construct('NonExistent');
         testDispatcher.subscribe('test', () => {});
         
         expect(timer.timers.size).toBe(1);
       }
       
-      // All resources should be disposed
       expect(timer!.timers.size).toBe(0);
       expect(container!.instances.size).toBe(0);
       expect(Object.keys(dispatcher!.listeners).length).toBe(0);
@@ -367,14 +348,11 @@ describe('using keyword (explicit resource management)', () => {
         using timer = new Timer();
         timer.setTime('test');
         
-        // Manually call dispose
         timer[Symbol.dispose]();
         expect(timer.timers.size).toBe(0);
         
-        // Automatic dispose will be called but timers already cleared
       }
       
-      // Should not throw error
       expect(true).toBe(true);
     });
   });
